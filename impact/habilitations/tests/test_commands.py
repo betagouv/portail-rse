@@ -17,10 +17,10 @@ from users.models import User
 def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_ajoute_toujours_le_contact(
     db, mocker, entreprise_factory, alice, bob
 ):
-    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    entreprise = entreprise_factory(identifiant=settings.SIREN_ENTREPRISE_TEST)
     Habilitation.ajouter(entreprise, alice)
     Habilitation.ajouter(entreprise, bob)
-    autre_entreprise = entreprise_factory(siren="123456789")
+    autre_entreprise = entreprise_factory(identifiant="123456789")
     Habilitation.ajouter(autre_entreprise, alice)
     Habilitation.ajouter(autre_entreprise, bob)
     User.objects.create(email=settings.SUPPORT_EMAIL)
@@ -50,7 +50,7 @@ def test_nettoie_entreprise_test_supprime_ses_utilisateurs_après_30_jours_et_aj
 def test_nettoie_entreprise_test_garde_adresse_de_contact_si_elle_existe(
     db, mocker, entreprise_factory
 ):
-    entreprise = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    entreprise = entreprise_factory(identifiant=settings.SIREN_ENTREPRISE_TEST)
     contact = User.objects.create(email=settings.SUPPORT_EMAIL)
     Habilitation.ajouter(entreprise, contact)
 
@@ -70,8 +70,8 @@ def test_nettoie_entreprise_test_sans_action_si_pas_d_entreprise_test(db, mocker
 def test_nettoie_entreprise_test_ne_laisse_que_l_entreprise_test_sur_le_compte_utilisateur_test(
     user_test, entreprise_factory
 ):
-    entreprise_test = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
-    autre_entreprise = entreprise_factory(siren="123456789")
+    entreprise_test = entreprise_factory(identifiant=settings.SIREN_ENTREPRISE_TEST)
+    autre_entreprise = entreprise_factory(identifiant="123456789")
 
     Habilitation.ajouter(autre_entreprise, user_test)
 
@@ -85,7 +85,7 @@ def test_nettoie_entreprise_test_ne_laisse_que_l_entreprise_test_sur_le_compte_u
 def test_nettoie_utilisateur_test_force_non_conseiller_rse(
     user_test, entreprise_factory
 ):
-    entreprise_test = entreprise_factory(siren=settings.SIREN_ENTREPRISE_TEST)
+    entreprise_test = entreprise_factory(identifiant=settings.SIREN_ENTREPRISE_TEST)
     user_test.is_conseiller_rse = True
     user_test.save()
 

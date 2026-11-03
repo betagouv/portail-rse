@@ -33,7 +33,7 @@ def test_reglementation_info():
 @pytest.fixture
 def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_MOINS_DE_10,
@@ -49,7 +49,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_sans_comptes_consoli
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
-        siren="000000002",
+        identifiant="000000002",
         date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         est_interet_public=False,
@@ -67,7 +67,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe_et_comptes_consolide
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
-        siren="000000003",
+        identifiant="000000003",
         date_cloture_exercice=date(2023, 12, 31),
         est_cotee=False,
         est_interet_public=False,

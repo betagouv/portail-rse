@@ -71,7 +71,7 @@ def test_synchronise_une_entreprise_qualifiee_sans_groupe(
     )
     with freeze_time(date_creation) as frozen_datetime:
         entreprise = entreprise_factory(
-            siren="000000001",
+            identifiant="000000001",
             denomination="Entreprise A",
             date_cloture_exercice=date_cloture_dernier_exercice,
             date_derniere_qualification=date_derniere_qualification,
@@ -210,7 +210,7 @@ def test_synchronise_une_entreprise_qualifiee_appartenant_a_un_groupe(
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         denomination="Entreprise A",
     )
 
@@ -340,16 +340,16 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_nouvelle_entreprise_creee_entre_la_synchronisation_des_entreprises_et_des_utilisateurs(
-    entreprise_factory, alice
+    entreprise_unique_factory, alice
 ):
-    entreprise = entreprise_factory()
+    entreprise = entreprise_unique_factory()
     Habilitation.ajouter(entreprise, alice)
 
     call_command("sync_metabase", entreprises=True)
 
     assert MetabaseEntreprise.objects.count() == 1
 
-    nouvelle_entreprise = entreprise_factory(siren="000000002")
+    nouvelle_entreprise = entreprise_unique_factory()
     Habilitation.ajouter(nouvelle_entreprise, alice)
 
     call_command("sync_metabase", entreprises=False, utilisateurs=True)
@@ -403,19 +403,19 @@ def test_synchronise_les_invitations(entreprise_factory, alice, django_user_mode
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BDESE(
-    alice, entreprise_factory, bdese_factory, mock_api_egapro
+    alice, entreprise_unique_factory, bdese_factory, mock_api_egapro
 ):
-    entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    entreprise_non_soumise = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    entreprise_soumise_a_actualiser = entreprise_factory(
-        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_soumise_a_actualiser = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_soumise_en_cours = entreprise_factory(
-        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_soumise_en_cours = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_soumise_a_jour = entreprise_factory(
-        siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_soumise_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     for entreprise in (
         entreprise_non_soumise,
@@ -475,16 +475,16 @@ def test_synchronise_les_reglementations_BDESE(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_IndexEgaPro(
-    alice, entreprise_factory, mock_api_egapro
+    alice, entreprise_unique_factory, mock_api_egapro
 ):
-    entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    entreprise_non_soumise = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    entreprise_soumise_a_actualiser = entreprise_factory(
-        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_soumise_a_actualiser = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_soumise_a_jour = entreprise_factory(
-        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_soumise_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     for entreprise in (
         entreprise_non_soumise,
@@ -528,16 +528,16 @@ def test_synchronise_les_reglementations_IndexEgaPro(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_BGES(
-    alice, entreprise_factory, mock_api_egapro, mock_api_bges
+    alice, entreprise_unique_factory, mock_api_egapro, mock_api_bges
 ):
-    entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    entreprise_non_soumise = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    entreprise_soumise_a_actualiser = entreprise_factory(
-        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    entreprise_soumise_a_actualiser = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
     )
-    entreprise_soumise_a_jour = entreprise_factory(
-        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    entreprise_soumise_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
     )
     for entreprise in (
         entreprise_non_soumise,
@@ -577,15 +577,15 @@ def test_synchronise_les_reglementations_BGES(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
-    alice, entreprise_factory, mock_api_egapro
+    alice, entreprise_unique_factory, mock_api_egapro
 ):
-    entreprise_sans_vsme = entreprise_factory(siren="000000001", utilisateur=alice)
-    entreprise_avec_vsme_vide = entreprise_factory(siren="000000002", utilisateur=alice)
-    entreprise_avec_vsme_commencee = entreprise_factory(
-        siren="000000003", utilisateur=alice
+    entreprise_sans_vsme = entreprise_unique_factory(utilisateur=alice)
+    entreprise_avec_vsme_vide = entreprise_unique_factory(utilisateur=alice)
+    entreprise_avec_vsme_commencee = entreprise_unique_factory(
+        utilisateur=alice
     )
-    entreprise_avec_vsme_terminee = entreprise_factory(
-        siren="000000004", utilisateur=alice
+    entreprise_avec_vsme_terminee = entreprise_unique_factory(
+        utilisateur=alice
     )
 
     vsme_vide = RapportVSME.objects.create(
@@ -664,7 +664,7 @@ def test_synchronise_les_rapports_VSME_de_différentes_entreprises(
 def test_synchronise_tous_les_rapports_VSME_d_une_entreprise(
     alice, entreprise_factory, mock_api_egapro
 ):
-    entreprise = entreprise_factory(siren="000000001", utilisateur=alice)
+    entreprise = entreprise_factory(identifiant="000000001", utilisateur=alice)
     vsme_2023 = RapportVSME.objects.create(entreprise=entreprise, annee=2023)
     vsme_2024 = RapportVSME.objects.create(entreprise=entreprise, annee=2024)
     vsme_2025 = RapportVSME.objects.create(entreprise=entreprise, annee=2025)
@@ -677,7 +677,7 @@ def test_synchronise_tous_les_rapports_VSME_d_une_entreprise(
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_les_reglementations_plusieurs_fois(alice, entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+        identifiant="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
     Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
 
@@ -751,19 +751,19 @@ def test_ignore_les_entreprises_inscrites_qui_ne_sont_pas_suffisamment_qualifié
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro, mock_api_bges
+    alice, bob, entreprise_unique_factory, bdese_factory, mock_api_egapro, mock_api_bges
 ):
-    entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    entreprise_non_soumise = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    entreprise_tout_a_actualiser = entreprise_factory(
-        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_tout_a_actualiser = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_tout_a_jour = entreprise_factory(
-        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_tout_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
-    entreprise_bdese_a_jour = entreprise_factory(
-        siren="000000004", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+    entreprise_bdese_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
     )
     for entreprise in (
         entreprise_non_soumise,
@@ -809,16 +809,16 @@ def test_synchronise_l_indicateur_d_impact_nombre_de_reglementations_a_jour(
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_l_indicateur_d_impact_avec_des_entreprises_soumises_au_BGES(
-    alice, bob, entreprise_factory, bdese_factory, mock_api_egapro, mock_api_bges
+    alice, bob, entreprise_unique_factory, bdese_factory, mock_api_egapro, mock_api_bges
 ):
-    entreprise_non_soumise = entreprise_factory(
-        siren="000000001", effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
+    entreprise_non_soumise = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_MOINS_DE_10
     )
-    entreprise_bges_a_actualiser = entreprise_factory(
-        siren="000000002", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    entreprise_bges_a_actualiser = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
     )
-    entreprise_bges_a_jour = entreprise_factory(
-        siren="000000003", effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
+    entreprise_bges_a_jour = entreprise_unique_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_500_ET_4999
     )
     for entreprise in (
         entreprise_non_soumise,

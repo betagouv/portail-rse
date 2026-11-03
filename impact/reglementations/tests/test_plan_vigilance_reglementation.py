@@ -29,7 +29,7 @@ def test_reglementation_info():
 @pytest.fixture
 def _caracteristiques_suffisamment_qualifiantes_sans_groupe(entreprise_factory):
     entreprise = entreprise_factory(
-        siren="000000001",
+        identifiant="000000001",
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         appartient_groupe=False,
@@ -42,7 +42,7 @@ def _caracteristiques_suffisamment_qualifiantes_avec_groupe(
     entreprise_factory,
 ):
     entreprise = entreprise_factory(
-        siren="000000002",
+        identifiant="000000002",
         categorie_juridique_sirene=CODE_SA,
         effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_250_ET_299,
         appartient_groupe=True,
