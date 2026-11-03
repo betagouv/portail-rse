@@ -11,6 +11,7 @@ from pytest_django.asserts import assertTemplateNotUsed
 from pytest_django.asserts import assertTemplateUsed
 
 from analyseia.models import AnalyseIA
+from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
@@ -107,6 +108,17 @@ def test_ancienne_url_tableau_de_bord_avec_siren_est_privee(
 
 
 def test_ancienne_url_tableau_de_bord_avec_siren_inexistant(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/tableau-de-bord/000000001/")
+
+    assert response.status_code == 404
+
+
+def test_ancienne_url_tableau_de_bord_avec_siren_ignore_les_entreprises_etrangeres(
+    client, alice
+):
+    Entreprise.objects.create(code_pays="MAR", identifiant="000000001")
     client.force_login(alice)
 
     response = client.get("/tableau-de-bord/000000001/")

@@ -30,6 +30,7 @@ from .models import AnalyseIA
 from api import analyse_ia
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_requise
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from reglementations.enums import ESRS
@@ -61,7 +62,9 @@ def analyses(request, entreprise):
 @login_required
 def redirection_analyses_par_siren(request, siren):
     # les e-mails de résultats d'analyse IA envoyés avant le passage à l'id_public contiennent le SIREN
-    entreprise = get_object_or_404(Entreprise, siren=siren)
+    entreprise = get_object_or_404(
+        Entreprise, code_pays=CODE_PAYS_FRANCE, identifiant=siren
+    )
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
     return redirect("analyseia:analyses", id_public=entreprise.id_public)

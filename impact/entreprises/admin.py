@@ -40,12 +40,12 @@ class UsersFilter(admin.SimpleListFilter):
 
 
 class EntrepriseAdmin(admin.ModelAdmin):
-    list_display = ["siren", "denomination"]
+    list_display = ["identifiant", "code_pays", "denomination"]
     inlines = (HabilitationInline, CaracteristiquesInline)
     model = Entreprise
     form = EntrepriseAdminForm
     readonly_fields = ("id_public",)
-    search_fields = ("denomination", "siren")
+    search_fields = ("denomination", "identifiant")
     list_filter = (UsersFilter,)
 
 

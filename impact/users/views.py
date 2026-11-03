@@ -20,6 +20,7 @@ from .forms import UserEditionForm
 from .forms import UserPasswordForm
 from .models import User
 from api.exceptions import APIError
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -335,8 +336,12 @@ def tableau_de_bord_conseiller(request):
                 )
 
                 # CAS 1 : Entreprise existe
-                if Entreprise.objects.filter(siren=siren).exists():
-                    entreprise = Entreprise.objects.get(siren=siren)
+                if Entreprise.objects.filter(
+                    code_pays=CODE_PAYS_FRANCE, identifiant=siren
+                ).exists():
+                    entreprise = Entreprise.objects.get(
+                        code_pays=CODE_PAYS_FRANCE, identifiant=siren
+                    )
 
                     # Vérifier si le conseiller n'est pas déjà rattaché
                     if Habilitation.existe(entreprise, request.user):

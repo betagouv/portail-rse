@@ -19,7 +19,7 @@ class RapportVSMEAdmin(admin.ModelAdmin):
     inlines = (IndicateurInline,)
     search_fields = (
         "entreprise__denomination",
-        "entreprise__siren",
+        "entreprise__identifiant",
     )
     list_display = ("id", "entreprise", "annee")
 

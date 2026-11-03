@@ -6,6 +6,7 @@ import aiohttp
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from metabase.models import TempEgaPro
 
@@ -73,9 +74,11 @@ class Command(BaseCommand):
         declaration_existantes = list(declaration_existantes)
 
         # récupére le champ SIREN de tous les objets "Entreprise"
-        entreprises = Entreprise.objects.exclude(
-            siren__in=declaration_existantes
-        ).values_list("siren", flat=True)
+        entreprises = (
+            Entreprise.objects.filter(code_pays=CODE_PAYS_FRANCE)
+            .exclude(identifiant__in=declaration_existantes)
+            .values_list("identifiant", flat=True)
+        )
 
         # pour éviter de faire des appels "lazy" pendant une opération asynchrone de Django
         entreprises = list(entreprises)

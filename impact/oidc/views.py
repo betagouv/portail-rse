@@ -10,6 +10,7 @@ from django.urls import reverse
 from lasuite.oidc_login.views import OIDCAuthenticationCallbackView as CallbackView
 
 from api.exceptions import APIError
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
@@ -68,7 +69,9 @@ def proconnect_dispatch_view(request):
 
     # vérification de l'existence de l'entreprise choisie via ProConnect
     try:
-        entreprise = Entreprise.objects.get(siren=oidc_siren)
+        entreprise = Entreprise.objects.get(
+            code_pays=CODE_PAYS_FRANCE, identifiant=oidc_siren
+        )
     except Entreprise.DoesNotExist:
         logger.warning(
             f"L'entreprise sélectionnée sur ProConnect ({oidc_siren}) n'existe pas encore sur le portail"

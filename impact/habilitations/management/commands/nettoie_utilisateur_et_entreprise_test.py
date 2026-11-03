@@ -11,6 +11,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.core.management.base import BaseCommand
 
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from users.models import User
@@ -19,7 +20,7 @@ from users.models import User
 class Command(BaseCommand):
     def handle(self, *args, **options):
         if entreprise_test := Entreprise.objects.filter(
-            siren=settings.SIREN_ENTREPRISE_TEST
+            code_pays=CODE_PAYS_FRANCE, identifiant=settings.SIREN_ENTREPRISE_TEST
         ).first():
             date_min_habilitation = date.today() - timedelta(
                 days=settings.MAX_JOURS_HABILITATION

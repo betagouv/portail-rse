@@ -10,6 +10,7 @@ import api.infos_entreprise
 from api.exceptions import APIError
 from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from public.forms import ContactForm
 from public.forms import SimulationForm
@@ -147,7 +148,8 @@ def resultats_simulation(request):
     if simulation_form.is_valid():
         reglementations_applicables = calcule_simulation(simulation_form)
         id_public = Entreprise.objects.get(
-            siren=simulation_form.cleaned_data["siren"]
+            code_pays=CODE_PAYS_FRANCE,
+            identifiant=simulation_form.cleaned_data["siren"],
         ).id_public
     else:
         return redirect("simulation")
@@ -163,7 +165,8 @@ def resultats_simulation(request):
 
 def calcule_simulation(simulation_form):
     if entreprises := Entreprise.objects.filter(
-        siren=simulation_form.cleaned_data["siren"]
+        code_pays=CODE_PAYS_FRANCE,
+        identifiant=simulation_form.cleaned_data["siren"],
     ):
         entreprise = entreprises[0]
         entreprise.denomination = simulation_form.cleaned_data["denomination"]

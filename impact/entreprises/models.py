@@ -18,8 +18,10 @@ from habilitations.enums import UserRole
 from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
+from utils.pays import CODES_PAYS_ISO_3166_1
 
 DENOMINATION_MAX_LENGTH = 250
+CODE_PAYS_FRANCE = "FRA"
 
 # Requalification de l'entreprise :
 # les données de l'entreprise doivent être vérifiées
@@ -203,7 +205,15 @@ class Exercice:
 
 class Entreprise(TimestampedModel):
     id_public = models.UUIDField(default=uuid.uuid4, unique=True, editable=False)
-    siren = models.CharField(max_length=9, unique=True)
+    code_pays = models.CharField(
+        max_length=3,
+        choices=CODES_PAYS_ISO_3166_1.items(),
+        default=CODE_PAYS_FRANCE,
+    )
+    identifiant = models.CharField(
+        max_length=20,
+        verbose_name="Identifiant externe (SIREN pour la France)",
+    )
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
     date_derniere_qualification = models.DateField(
         verbose_name="Date de la dernière qualification",
@@ -251,8 +261,26 @@ class Entreprise(TimestampedModel):
         AnalyseIA, related_name="entreprises", blank=True
     )
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["code_pays", "identifiant"],
+                name="unique_code_pays_identifiant",
+            )
+        ]
+
     def __str__(self):
-        return f"{self.siren} {self.denomination}"
+        return f"{self.identifiant} {self.denomination}"
+
+    @property
+    def siren(self):
+        if self.code_pays == CODE_PAYS_FRANCE:
+            return self.identifiant
+
+    @siren.setter
+    def siren(self, siren):
+        self.code_pays = CODE_PAYS_FRANCE
+        self.identifiant = siren
 
     @property
     def dernier_exercice_clos(self):

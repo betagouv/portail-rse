@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 import api.infos_entreprise
 from .decorators import entreprise_requise
+from .models import CODE_PAYS_FRANCE
 from .models import Entreprise
 from api.exceptions import APIError
 from entreprises.forms import EntrepriseAttachForm
@@ -48,7 +49,9 @@ def index(request):
             if form.is_valid():
                 siren = form.cleaned_data["siren"]
                 try:
-                    entreprise = Entreprise.objects.get(siren=siren)
+                    entreprise = Entreprise.objects.get(
+                        code_pays=CODE_PAYS_FRANCE, identifiant=siren
+                    )
                     Habilitation.retirer(entreprise, request.user)
                     id_entreprise_en_session = request.session.get("entreprise")
                     if id_entreprise_en_session == entreprise.id:
@@ -83,7 +86,9 @@ def attach(request):
     try:
         if form.is_valid():
             siren = form.cleaned_data["siren"]
-            if entreprises := Entreprise.objects.filter(siren=siren):
+            if entreprises := Entreprise.objects.filter(
+                code_pays=CODE_PAYS_FRANCE, identifiant=siren
+            ):
                 entreprise = entreprises[0]
             else:
                 entreprise = Entreprise.search_and_create_entreprise(siren)

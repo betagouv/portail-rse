@@ -22,6 +22,7 @@ from openpyxl import Workbook
 from analyseia.forms import AnalyseIAForm
 from analyseia.helpers import synthese_analyse_v1
 from entreprises.models import CaracteristiquesAnnuelles
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from entreprises.views import get_current_entreprise
 from habilitations.enums import UserRole
@@ -515,7 +516,9 @@ def rapport_csrd(entreprise, annee):
 @login_required
 def redirection_analyse_ecart_par_siren(request, siren):
     # les e-mails de résultats d'analyse IA envoyés avant le passage à l'id_public contiennent le SIREN
-    entreprise = get_object_or_404(Entreprise, siren=siren)
+    entreprise = get_object_or_404(
+        Entreprise, code_pays=CODE_PAYS_FRANCE, identifiant=siren
+    )
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
     return redirect(
