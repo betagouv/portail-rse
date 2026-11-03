@@ -21,7 +21,8 @@ class Entreprise(models.Model):
     impact_id = models.BigIntegerField(primary_key=True)
     ajoutee_le = models.DateTimeField()
     modifiee_le = models.DateTimeField()
-    siren = models.CharField(max_length=9, unique=True)
+    code_pays = models.CharField(max_length=3)
+    identifiant = models.CharField(max_length=20)
     denomination = models.CharField(max_length=DENOMINATION_MAX_LENGTH)
 
     date_cloture_exercice = models.DateField(null=True)
@@ -55,8 +56,16 @@ class Entreprise(models.Model):
 
     utilisateurs = models.ManyToManyField(Utilisateur, through="Habilitation")
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["code_pays", "identifiant"],
+                name="metabase_entreprise_unique_code_pays_identifiant",
+            )
+        ]
+
     def __str__(self):
-        return f"{self.siren} {self.denomination}"
+        return f"{self.identifiant} {self.denomination}"
 
 
 class Invitation(models.Model):
