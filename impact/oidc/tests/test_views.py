@@ -22,7 +22,7 @@ def test_proconnect_dispatch_view_cree_l_entreprise_sélectionnée_et_ajoute_l_h
 
     response = client.get("/oidc/dispatch/", follow=True)
 
-    entreprise = Entreprise.objects.get(siren=siren)
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant=siren)
     habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
     assert habilitation.role == UserRole.ADMINISTRATEUR
 

@@ -81,7 +81,7 @@ def test_rattachement_entreprise_inexistante(
         follow=True,
     )
 
-    entreprise = Entreprise.objects.get(siren=SIREN)
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant=SIREN)
     assert Habilitation.existe(entreprise, conseiller_rse)
     habilitation = Habilitation.pour(entreprise, conseiller_rse)
     assert habilitation.role == UserRole.ADMINISTRATEUR

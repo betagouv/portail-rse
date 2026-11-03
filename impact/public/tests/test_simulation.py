@@ -95,7 +95,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     response = client.post("/simulation", data=data, follow=True)
 
     # l'entreprise a été créée avec les caractéristiques de simulation
-    entreprise = Entreprise.objects.get(siren=siren)
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant=siren)
     assert entreprise.denomination == denomination
     assert entreprise.categorie_juridique_sirene == categorie_juridique_sirene
     assert entreprise.code_pays_etranger_sirene is None

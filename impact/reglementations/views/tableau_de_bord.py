@@ -7,6 +7,7 @@ from django.urls import reverse_lazy
 
 from .toutes_reglementations import REGLEMENTATIONS
 from entreprises.decorators import entreprise_requise
+from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from habilitations.views import utilisateurs_context
@@ -25,7 +26,9 @@ def tableau_de_bord_menu_context(entreprise, page_resume=False):
 @login_required
 def redirection_tableau_de_bord_par_siren(request, siren):
     # les e-mails d'arrivée d'un nouveau membre envoyés avant le passage à l'id_public contiennent le SIREN
-    entreprise = get_object_or_404(Entreprise, siren=siren)
+    entreprise = get_object_or_404(
+        Entreprise, code_pays=CODE_PAYS_FRANCE, identifiant=siren
+    )
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
     return redirect("reglementations:tableau_de_bord", id_public=entreprise.id_public)

@@ -95,7 +95,7 @@ def test_echec_de_creation_car_fonctions_trop_courte(client, db):
 
     assert response.status_code == 200
     assert not User.objects.filter(email="user@domaine.test")
-    assert not Entreprise.objects.filter(siren="123456789")
+    assert not Entreprise.objects.filter(code_pays="FRA", identifiant="123456789")
 
 
 def test_echec_de_creation_car_fonctions_trop_longue(client, db):
@@ -115,7 +115,7 @@ def test_echec_de_creation_car_fonctions_trop_longue(client, db):
 
     assert response.status_code == 200
     assert not User.objects.filter(email="user@domaine.test")
-    assert not Entreprise.objects.filter(siren="123456789")
+    assert not Entreprise.objects.filter(code_pays="FRA", identifiant="123456789")
 
 
 def test_la_déconnexion_renvoie_vers_le_site_vitrine(client, alice):

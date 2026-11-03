@@ -35,7 +35,11 @@ class BDESE_Admin(admin.ModelAdmin):
     form = BDESEAdminForm
     list_display = ["entreprise", "annee", "user"]
     list_filter = (("user", admin.EmptyFieldListFilter),)
-    search_fields = ("user__email", "entreprise__denomination", "entreprise__siren")
+    search_fields = (
+        "user__email",
+        "entreprise__denomination",
+        "entreprise__identifiant",
+    )
     raw_id_fields = ("user", "entreprise")
 
 
@@ -46,6 +50,6 @@ class RapportCSRDAdmin(admin.ModelAdmin):
     search_fields = (
         "proprietaire__email",
         "entreprise__denomination",
-        "entreprise__siren",
+        "entreprise__identifiant",
     )
     raw_id_fields = ("proprietaire", "entreprise")

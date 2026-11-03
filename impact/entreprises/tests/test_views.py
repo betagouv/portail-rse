@@ -98,7 +98,7 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
 
     Entreprise.search_and_create_entreprise("123456789")
 
-    entreprise = Entreprise.objects.get(siren="123456789")
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant="123456789")
     assert entreprise.denomination == "Entreprise SAS"
     assert entreprise.categorie_juridique_sirene == 5710
     assert entreprise.code_pays_etranger_sirene == CODE_PAYS_PORTUGAL
@@ -138,7 +138,7 @@ def test_create_and_attach_to_entreprise(client, alice, mock_api_infos_entrepris
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'entreprise a été ajoutée." in content
 
-    entreprise = Entreprise.objects.get(siren="000000001")
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant="000000001")
 
     assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
     assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
