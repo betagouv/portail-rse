@@ -46,8 +46,7 @@ class SafeEmailField(forms.EmailField):
     """Pour éviter des injections de type <script>…</script>@domaine.example"""
     def validate(self, value):
         super().validate(value)
-        if "<" in value or ">" in value:
-            raise ValidationError("Les caractères < et > ne sont pas autorisés.")
+        sans_balise_html(value)
 
 
 def sans_balise_html(valeur):
