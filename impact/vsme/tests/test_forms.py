@@ -256,13 +256,13 @@ def test_multiform_tableau_texte_trop_long_invalide(
         "employes-TOTAL_FORMS": "1",
         "employes-INITIAL_FORMS": "0",
         "employes-0-nom_employe": "Alice",
-        "employes-0-fonction": "a" * 256,
+        "employes-0-fonction": "a" * 401,
     }
     multiform = multiform_class(data)
 
     assert not multiform.is_valid()
     assert multiform.forms[0].forms[0].errors["fonction"] == [
-        "Assurez-vous que cette valeur comporte au plus 255 caractères (actuellement 256)."
+        "Assurez-vous que cette valeur comporte au plus 400 caractères (actuellement 401)."
     ]
 
 
