@@ -2,7 +2,6 @@ import pytest
 
 from vsme.forms.vsme import create_multiform_from_schema
 
-
 CHAMP_NOM = {
     "id": "nom",
     "label": "Nom",
@@ -230,6 +229,41 @@ def test_multiform_validation_tableau(indicateur_avec_tableau, rapport_vsme):
         "nom_employe": "Alice",
         "fonction": "Présidente",
     }
+
+
+def test_champ_texte_sans_attribut_maxlength(indicateur_avec_tableau, rapport_vsme):
+    multiform_class = create_multiform_from_schema(
+        indicateur_avec_tableau, rapport_vsme
+    )
+    data = {
+        "employes-TOTAL_FORMS": "1",
+        "employes-INITIAL_FORMS": "0",
+        "employes-0-nom_employe": "Alice",
+    }
+    multiform = multiform_class(data)
+
+    assert multiform.is_valid()
+    assert "maxlength" not in str(multiform.forms[0].forms[0]["fonction"])
+
+
+def test_multiform_tableau_texte_trop_long_invalide(
+    indicateur_avec_tableau, rapport_vsme
+):
+    multiform_class = create_multiform_from_schema(
+        indicateur_avec_tableau, rapport_vsme
+    )
+    data = {
+        "employes-TOTAL_FORMS": "1",
+        "employes-INITIAL_FORMS": "0",
+        "employes-0-nom_employe": "Alice",
+        "employes-0-fonction": "a" * 256,
+    }
+    multiform = multiform_class(data)
+
+    assert not multiform.is_valid()
+    assert multiform.forms[0].forms[0].errors["fonction"] == [
+        "Assurez-vous que cette valeur comporte au plus 255 caractères (actuellement 256)."
+    ]
 
 
 def test_multiform_tableau_suppression_ligne(indicateur_avec_tableau, rapport_vsme):
