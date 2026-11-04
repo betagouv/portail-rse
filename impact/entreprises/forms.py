@@ -12,6 +12,7 @@ from .models import CaracteristiquesAnnuelles
 from .models import Entreprise
 from utils.forms import DateInput
 from utils.forms import DsfrForm
+from utils.forms import sans_balise_html
 
 
 ERREUR_CHAMP_MANQUANT_GROUPE = (
@@ -50,6 +51,9 @@ class PreremplissageSirenForm(forms.Form):
 class EntrepriseAttachForm(DsfrForm):
     siren = SirenField()
     fonctions = forms.CharField(label="Fonction(s) dans la société")
+
+    def clean_fonctions(self):
+        return sans_balise_html(self.cleaned_data["fonctions"])
 
 
 class EntrepriseDetachForm(DsfrForm):

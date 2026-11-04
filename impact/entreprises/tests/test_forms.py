@@ -3,6 +3,7 @@ from datetime import timedelta
 
 import pytest
 
+from entreprises.forms import EntrepriseAttachForm
 from entreprises.forms import EntrepriseQualificationForm
 from entreprises.forms import est_superieur
 from entreprises.forms import PreremplissageSirenForm
@@ -319,3 +320,18 @@ def test_erreur_si_siren_invalide():
 
     assert not bound_form.is_valid()
     assert bound_form.errors["siren"] == ["Le siren est incorrect"]
+
+
+@pytest.mark.parametrize("fonctions", ["<script>", "Présidente>", "<b"])
+def test_fonctions_avec_chevrons_refusee(fonctions):
+    form = EntrepriseAttachForm(data={"siren": "123456789", "fonctions": fonctions})
+
+    assert not form.is_valid()
+    assert form.errors["fonctions"] == ["Les caractères < et > ne sont pas autorisés."]
+
+
+def test_fonctions_sans_chevron_acceptee():
+    form = EntrepriseAttachForm(data={"siren": "123456789", "fonctions": "Présidente"})
+
+    assert form.is_valid(), form.errors
+    assert form.cleaned_data["fonctions"] == "Présidente"
