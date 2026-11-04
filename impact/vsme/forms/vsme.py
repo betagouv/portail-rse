@@ -198,7 +198,7 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
             field = forms.IntegerField(**field_kwargs)
             field.auto_id = True
         case "texte":
-            field_kwargs["max_length"] = field_schema.get("max_length", 255)
+            field_kwargs["max_length"] = field_schema.get("max_length", 400)
             if suggestions := field_schema.get("suggestions"):
                 widget = DatalistTextInput(options=suggestions)
             else:
