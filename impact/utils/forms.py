@@ -48,3 +48,9 @@ class SafeEmailField(forms.EmailField):
         super().validate(value)
         if "<" in value or ">" in value:
             raise ValidationError("Les caractères < et > ne sont pas autorisés.")
+
+
+def sans_balise_html(valeur):
+    if "<" in valeur or ">" in valeur:
+        raise ValidationError("Les caractères < et > ne sont pas autorisés.")
+    return valeur

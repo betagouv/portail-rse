@@ -10,6 +10,7 @@ from entreprises.forms import PreremplissageSirenForm
 from utils.anonymisation import cache_partiellement_un_email
 from utils.forms import DsfrForm
 from utils.forms import SafeEmailField
+from utils.forms import sans_balise_html
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
@@ -112,16 +113,10 @@ class _AbstractUserEditionForm(DsfrForm, forms.ModelForm):
         }
 
     def clean_prenom(self):
-        return _sans_balise_html(self.cleaned_data["prenom"])
+        return sans_balise_html(self.cleaned_data["prenom"])
 
     def clean_nom(self):
-        return _sans_balise_html(self.cleaned_data["nom"])
-
-
-def _sans_balise_html(valeur):
-    if "<" in valeur or ">" in valeur:
-        raise ValidationError("Les caractères < et > ne sont pas autorisés.")
-    return valeur
+        return sans_balise_html(self.cleaned_data["nom"])
 
 
 class UserEditionForm(_AbstractUserEditionForm):
