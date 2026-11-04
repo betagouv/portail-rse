@@ -207,6 +207,10 @@ def create_simple_field_from_schema(field_schema, rapport_vsme):
                 widget=widget,
                 **field_kwargs,
             )
+            # Suppression de la contrainte en HTML, sinon le navigateur tronque
+            # silencieusement la copie de l'utilisateur.
+            # La validation serveur affichera une erreur explicite.
+            field.widget.attrs.pop("maxlength", None)
         case "texte_long":
             rows = field_schema.get("nombre_lignes")
             attrs = {"rows": rows} if rows else None
