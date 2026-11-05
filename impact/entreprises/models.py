@@ -277,11 +277,6 @@ class Entreprise(TimestampedModel):
         if self.code_pays == CODE_PAYS_FRANCE:
             return self.identifiant
 
-    @siren.setter
-    def siren(self, siren):
-        self.code_pays = CODE_PAYS_FRANCE
-        self.identifiant = siren
-
     @property
     def dernier_exercice_clos(self):
         annee_en_cours = date.today().year

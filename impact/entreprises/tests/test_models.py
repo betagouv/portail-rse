@@ -62,15 +62,6 @@ def test_entreprise_a_un_id_public_uuid4_unique(db):
     assert entreprise.id_public != autre_entreprise.id_public
 
 
-def test_siren_d_une_entreprise_francaise(db):
-    entreprise = Entreprise.objects.create(siren="123456789")
-
-    entreprise.refresh_from_db()
-    assert entreprise.code_pays == "FRA"
-    assert entreprise.identifiant == "123456789"
-    assert entreprise.siren == "123456789"
-
-
 def test_code_pays_par_defaut_est_la_france(db):
     entreprise = Entreprise.objects.create(identifiant="123456789")
 
