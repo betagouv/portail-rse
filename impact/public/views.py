@@ -186,7 +186,7 @@ def calcule_simulation(simulation_form):
     else:
         entreprise = Entreprise.objects.create(
             denomination=simulation_form.cleaned_data["denomination"],
-            siren=simulation_form.cleaned_data["siren"],
+            identifiant=simulation_form.cleaned_data["siren"],
             categorie_juridique_sirene=simulation_form.cleaned_data[
                 "categorie_juridique_sirene"
             ],

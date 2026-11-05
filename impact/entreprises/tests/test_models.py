@@ -26,7 +26,7 @@ def test_entreprise():
 
     with freeze_time(now):
         entreprise = Entreprise.objects.create(
-            siren="123456789",
+            identifiant="123456789",
             denomination="Entreprise SAS",
             date_cloture_exercice=date(2023, 7, 7),
             appartient_groupe=False,
@@ -44,7 +44,7 @@ def test_entreprise():
 
     with pytest.raises(IntegrityError):
         Entreprise.objects.create(
-            siren="123456789", denomination="Autre Entreprise SAS"
+            identifiant="123456789", denomination="Autre Entreprise SAS"
         )
 
     with freeze_time(now + timedelta(1)):
@@ -55,8 +55,8 @@ def test_entreprise():
 
 
 def test_entreprise_a_un_id_public_uuid4_unique(db):
-    entreprise = Entreprise.objects.create(siren="123456789")
-    autre_entreprise = Entreprise.objects.create(siren="987654321")
+    entreprise = Entreprise.objects.create(identifiant="123456789")
+    autre_entreprise = Entreprise.objects.create(identifiant="987654321")
 
     assert entreprise.id_public.version == 4
     assert entreprise.id_public != autre_entreprise.id_public
@@ -88,7 +88,7 @@ def test_pas_de_siren_pour_une_entreprise_etrangere(db):
 
 
 def test_unicite_du_couple_code_pays_identifiant(db):
-    Entreprise.objects.create(siren="123456789")
+    Entreprise.objects.create(identifiant="123456789")
     Entreprise.objects.create(code_pays="MAR", identifiant="123456789")
 
     with pytest.raises(IntegrityError):
@@ -812,7 +812,7 @@ def test_exercice_comptable_est_annee_civile():
 def test_secteur_principal_d_une_entreprise():
     entreprise = Entreprise.objects.create(
         code_NAF="01.11Z",
-        siren="111111111",
+        identifiant="111111111",
     )
 
     assert entreprise.secteur_principal == "01.1 - Cultures non permanentes"
@@ -822,7 +822,7 @@ def test_secteur_principal_d_une_entreprise():
 def test_secteur_principal_d_une_entreprise_sans_code_NAF_valide():
     entreprise = Entreprise.objects.create(
         code_NAF=None,
-        siren="111111111",
+        identifiant="111111111",
     )
 
     assert entreprise.secteur_principal is None
