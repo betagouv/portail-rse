@@ -106,7 +106,7 @@ def user_test(django_user_model, settings):
 @pytest.fixture
 def entreprise_non_qualifiee(alice):
     entreprise = Entreprise.objects.create(
-        siren="000000001",
+        identifiant="000000001",
         denomination="Entreprise SAS",
         categorie_juridique_sirene=5710,
         code_NAF="01.11Z",

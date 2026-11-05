@@ -419,7 +419,7 @@ class Entreprise(TimestampedModel):
         except APIError as exception:
             raise exception
         return Entreprise.objects.create(
-            siren=infos_entreprise["siren"],
+            identifiant=infos_entreprise["siren"],
             denomination=infos_entreprise["denomination"],
             categorie_juridique_sirene=infos_entreprise["categorie_juridique_sirene"],
             code_pays_etranger_sirene=infos_entreprise["code_pays_etranger_sirene"],

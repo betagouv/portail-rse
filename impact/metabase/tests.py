@@ -227,7 +227,7 @@ def test_synchronise_une_entreprise_plusieurs_fois(entreprise_factory):
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
     entreprise = Entreprise.objects.create(
-        siren="000000001", denomination="Entreprise SAS"
+        identifiant="000000001", denomination="Entreprise SAS"
     )
 
     call_command("sync_metabase")
@@ -246,7 +246,7 @@ def test_synchronise_une_entreprise_sans_caracteristiques_annuelles():
 
 @pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
 def test_synchronise_le_code_pays_et_l_identifiant_des_entreprises():
-    Entreprise.objects.create(siren="123456789", denomination="Entreprise SAS")
+    Entreprise.objects.create(identifiant="123456789", denomination="Entreprise SAS")
     Entreprise.objects.create(
         code_pays="MAR", identifiant="123456789000012", denomination="Entreprise SARL"
     )
