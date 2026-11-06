@@ -2,7 +2,6 @@ import pytest
 from django.core.files.base import ContentFile
 
 from analyseia.models import AnalyseIA
-from reglementations.tests.conftest import csrd  # noqa
 
 
 @pytest.fixture
