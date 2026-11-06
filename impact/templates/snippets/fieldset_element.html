@@ -1,3 +1,3 @@
-<div class="fr-fieldset__element"{% if fieldset_id %} id="{{ fieldset_id }}"{% endif %}>
+<div class="fr-fieldset__element"{% if fieldset_id %} id="{{ fieldset_id }}"{% endif %}{% if affiche_si %} data-affiche-si="{{ affiche_si }}"{% endif %}>
     {% include 'snippets/field.html' %}
 </div>

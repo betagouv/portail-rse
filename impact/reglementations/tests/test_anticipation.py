@@ -234,3 +234,23 @@ def test_anticipation_avec_un_formulaire_invalide_affiche_un_message_d_erreur(
         messages[0].message
         == "Impossible de finaliser cet essai car le formulaire contient des erreurs."
     )
+
+
+def test_page_anticipation_affiche_certains_champs_selon_des_cases_a_cocher(
+    client, alice, entreprise_factory, mock_api_infos_entreprise
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(
+        reverse(
+            "reglementations:anticipation", kwargs={"id_public": entreprise.id_public}
+        )
+    )
+
+    content = response.content.decode("utf-8")
+    assert "js/affiche-si.js" in content
+    assert 'id="svelte-est-cotee-field" data-affiche-si="id_est_interet_public"' in content
+    assert 'id="svelte-groupe-fields" class="fr-col-12" data-affiche-si="id_appartient_groupe"' in content
+    assert 'id="svelte-comptes-consolides-fields" data-affiche-si="id_comptes_consolides"' in content
