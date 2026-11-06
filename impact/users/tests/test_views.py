@@ -5,7 +5,10 @@ from datetime import timezone
 
 import pytest
 from django.conf import settings
+from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode
 from freezegun import freeze_time
 
 from entreprises.models import Entreprise
@@ -297,6 +300,35 @@ def test_edit_account_info_and_not_conseiller_rse(client, alice_with_password):
     alice.refresh_from_db()
     assert not alice.is_conseiller_rse
     assert not alice.fonction_rse
+
+
+def test_page_mon_compte_affiche_la_validation_du_mot_de_passe(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/mon-compte")
+
+    content = response.content.decode("utf-8")
+    assert "js/validation-mot-de-passe.js" in content
+    assert "data-validation-mot-de-passe" in content
+    assert 'name="password1"' in content
+    assert 'name="password2"' in content
+    assert 'data-regle="identique"' in content
+
+
+def test_page_reinitialisation_affiche_la_validation_du_mot_de_passe(client, alice):
+    uid = urlsafe_base64_encode(force_bytes(alice.pk))
+    token = default_token_generator.make_token(alice)
+
+    response = client.get(
+        reverse("users:password_reset_confirm", args=[uid, token]), follow=True
+    )
+
+    content = response.content.decode("utf-8")
+    assert "js/validation-mot-de-passe.js" in content
+    assert "data-validation-mot-de-passe" in content
+    assert 'name="new_password1"' in content
+    assert 'name="new_password2"' in content
+    assert 'data-regle="identique"' in content
 
 
 def test_edit_password(client, alice):
