@@ -12,6 +12,11 @@ urlpatterns = [
         name="recherche_entreprise",
     ),
     path(
+        "entreprises/fragments/identification-entreprise",
+        views.identification_entreprise,
+        name="identification_entreprise",
+    ),
+    path(
         "entreprises/fragments/preremplissage-siren",
         views.preremplissage_siren,
         name="preremplissage_siren",

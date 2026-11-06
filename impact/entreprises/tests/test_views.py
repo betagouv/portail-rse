@@ -1,10 +1,12 @@
 import html
+import uuid
 from datetime import date
 
 import pytest
 from django.conf import settings
 from django.urls import reverse
 from freezegun import freeze_time
+from pytest_django.asserts import assertTemplateNotUsed
 from pytest_django.asserts import assertTemplateUsed
 
 import api.exceptions
@@ -107,7 +109,12 @@ def test_search_and_create_entreprise(db, mock_api_infos_entreprise):
 
 
 def _attach_data(siren):
-    return {"siren": siren, "fonctions": "Présidente", "action": "attach"}
+    return {
+        "code_pays": "FRA",
+        "siren": siren,
+        "fonctions": "Présidente",
+        "action": "attach",
+    }
 
 
 def test_entreprises_page_requires_login(client):
@@ -160,6 +167,102 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     assert entreprise in alice.entreprises
     assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
+
+
+def _attach_data_entreprise_etrangere(code_pays="MAR", identifiant="001234567000089"):
+    return {
+        "code_pays": code_pays,
+        "identifiant": identifiant,
+        "denomination": "Entreprise marocaine",
+        "fonctions": "Présidente",
+        "action": "attach",
+    }
+
+
+def test_cree_et_rattache_une_entreprise_etrangere_sans_appel_api(
+    client, alice, mock_api_infos_entreprise
+):
+    client.force_login(alice)
+
+    response = client.post(
+        "/entreprises", data=_attach_data_entreprise_etrangere(), follow=True
+    )
+
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "L'entreprise a été ajoutée." in content
+    entreprise = Entreprise.objects.get(code_pays="MAR", identifiant="001234567000089")
+    assert entreprise.denomination == "Entreprise marocaine"
+    assert entreprise.siren is None
+    assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
+    assert not mock_api_infos_entreprise.called
+
+
+def test_rattache_une_entreprise_etrangere_existante(
+    client, alice, entreprise_factory, mock_api_infos_entreprise
+):
+    entreprise = entreprise_factory(
+        code_pays="MAR", identifiant="001234567000089", denomination="Nom existant"
+    )
+    client.force_login(alice)
+
+    client.post("/entreprises", data=_attach_data_entreprise_etrangere(), follow=True)
+
+    assert Entreprise.objects.count() == 1
+    entreprise.refresh_from_db()
+    assert entreprise.denomination == "Nom existant"
+    assert entreprise in alice.entreprises
+    assert not mock_api_infos_entreprise.called
+
+
+def test_meme_identifiant_dans_deux_pays_differents_cree_deux_entreprises(
+    client, alice, entreprise_factory
+):
+    entreprise_francaise = entreprise_factory(identifiant="123456789")
+    client.force_login(alice)
+
+    client.post(
+        "/entreprises",
+        data=_attach_data_entreprise_etrangere(identifiant="123456789"),
+        follow=True,
+    )
+
+    entreprise_etrangere = Entreprise.objects.get(
+        code_pays="MAR", identifiant="123456789"
+    )
+    assert entreprise_etrangere != entreprise_francaise
+    assert entreprise_etrangere in alice.entreprises
+    assert entreprise_francaise not in alice.entreprises
+
+
+def test_echec_ajout_entreprise_etrangere_sans_denomination(client, alice):
+    client.force_login(alice)
+    data = _attach_data_entreprise_etrangere()
+    del data["denomination"]
+
+    response = client.post("/entreprises", data=data, follow=True)
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Impossible d'ajouter cette entreprise car les données sont incorrectes."
+        in content
+    )
+    assert Entreprise.objects.count() == 0
+
+
+def test_detache_une_entreprise_etrangere(client, alice, bob, entreprise_factory):
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001234567000089")
+    Habilitation.ajouter(entreprise, bob, fonctions="Vice-président")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    client.post(
+        "/entreprises",
+        data={"id_public": entreprise.id_public, "action": "detach"},
+        follow=True,
+    )
+
+    assert entreprise not in alice.entreprises
 
 
 def test_fail_to_create_entreprise(client, alice, mock_api_infos_entreprise):
@@ -246,7 +349,7 @@ def test_detach_from_an_entreprise(
         session["entreprise"] = entreprise.id
         session.save()
 
-    data = {"siren": entreprise.siren, "action": "detach"}
+    data = {"id_public": entreprise.id_public, "action": "detach"}
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -268,7 +371,7 @@ def test_fail_to_detach_without_relation_to_an_entreprise(
 ):
     entreprise = entreprise_factory()
     client.force_login(alice)
-    data = {"siren": entreprise.siren, "action": "detach"}
+    data = {"id_public": entreprise.id_public, "action": "detach"}
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -278,7 +381,7 @@ def test_fail_to_detach_without_relation_to_an_entreprise(
 
 def test_fail_to_detach_to_an_entreprise_which_does_not_exist(client, alice):
     client.force_login(alice)
-    data = {"siren": "000000001", "action": "detach"}
+    data = {"id_public": uuid.uuid4(), "action": "detach"}
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -291,7 +394,7 @@ def test_echec_quitter_entreprise_car_dernier_administrateur(
 ):
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
-    data = {"siren": entreprise.siren, "action": "detach"}
+    data = {"id_public": entreprise.id_public, "action": "detach"}
 
     response = client.post("/entreprises", data=data, follow=True)
 
@@ -306,7 +409,7 @@ def test_echec_quitter_entreprise_redirige_vers_tableau_de_bord_si_l_utilisateur
     # On peut quitter une entreprise depuis son tableau de bord. En cas d'échec, on y est redirigé.
     entreprise = entreprise_factory(utilisateur=alice)
     client.force_login(alice)
-    data = {"siren": entreprise.siren, "action": "detach"}
+    data = {"id_public": entreprise.id_public, "action": "detach"}
 
     response = client.post(
         "/entreprises",
@@ -932,3 +1035,38 @@ def test_preremplissage_siren(client):
     preremplissage_form = response.context["form"]
     assert preremplissage_form["siren"].value() == siren
     assert preremplissage_form["denomination"].value() == denomination
+
+
+def test_identification_entreprise_francaise(client):
+    response = client.get(
+        "/entreprises/fragments/identification-entreprise",
+        query_params={"code_pays": "FRA"},
+    )
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "fragments/identification_entreprise.html")
+    assertTemplateUsed(response, "fragments/siren_field.html")
+    assert 'name="identifiant"' not in response.content.decode("utf-8")
+
+
+def test_identification_entreprise_etrangere(client):
+    response = client.get(
+        "/entreprises/fragments/identification-entreprise",
+        query_params={"code_pays": "MAR"},
+    )
+
+    assert response.status_code == 200
+    assertTemplateNotUsed(response, "fragments/siren_field.html")
+    content = response.content.decode("utf-8")
+    assert 'name="identifiant"' in content
+    assert 'name="denomination"' in content
+
+
+def test_page_entreprises_affiche_la_france_par_defaut(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/entreprises")
+
+    content = response.content.decode("utf-8")
+    assert '<option value="FRA" selected>' in content
+    assertTemplateUsed(response, "fragments/siren_field.html")

@@ -1,0 +1,8 @@
+<div id="htmx-identification-entreprise">
+    {% if form.code_pays.value == "FRA" %}
+        {% include 'fragments/siren_field.html' %}
+    {% else %}
+        {% include 'snippets/field.html' with field=form.identifiant %}
+        {% include 'snippets/field.html' with field=form.denomination %}
+    {% endif %}
+</div>

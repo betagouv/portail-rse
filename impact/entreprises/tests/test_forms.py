@@ -324,14 +324,91 @@ def test_erreur_si_siren_invalide():
 
 @pytest.mark.parametrize("fonctions", ["<script>", "Présidente>", "<b"])
 def test_fonctions_avec_chevrons_refusee(fonctions):
-    form = EntrepriseAttachForm(data={"siren": "123456789", "fonctions": fonctions})
+    form = EntrepriseAttachForm(
+        data={"code_pays": "FRA", "siren": "123456789", "fonctions": fonctions}
+    )
 
     assert not form.is_valid()
     assert form.errors["fonctions"] == ["Les caractères < et > ne sont pas autorisés."]
 
 
 def test_fonctions_sans_chevron_acceptee():
-    form = EntrepriseAttachForm(data={"siren": "123456789", "fonctions": "Présidente"})
+    form = EntrepriseAttachForm(
+        data={"code_pays": "FRA", "siren": "123456789", "fonctions": "Présidente"}
+    )
 
     assert form.is_valid(), form.errors
     assert form.cleaned_data["fonctions"] == "Présidente"
+
+
+def test_entreprise_francaise_exige_un_siren():
+    form = EntrepriseAttachForm(data={"code_pays": "FRA", "fonctions": "Présidente"})
+
+    assert not form.is_valid()
+    assert form.errors["siren"] == ["Ce champ est obligatoire."]
+
+
+def test_entreprise_francaise_utilise_le_siren_comme_identifiant():
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": "FRA",
+            "siren": "123456789",
+            "identifiant": "autre",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert form.is_valid(), form.errors
+    assert form.cleaned_data["identifiant"] == "123456789"
+
+
+def test_entreprise_etrangere_exige_identifiant_et_denomination():
+    form = EntrepriseAttachForm(data={"code_pays": "MAR", "fonctions": "Présidente"})
+
+    assert not form.is_valid()
+    assert form.errors["identifiant"] == ["Ce champ est obligatoire."]
+    assert form.errors["denomination"] == ["Ce champ est obligatoire."]
+    assert "siren" not in form.errors
+
+
+def test_entreprise_etrangere_valide():
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": "MAR",
+            "identifiant": "001234567000089",
+            "denomination": "Entreprise marocaine",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert form.is_valid(), form.errors
+    assert form.cleaned_data["identifiant"] == "001234567000089"
+
+
+@pytest.mark.parametrize("champ", ["identifiant", "denomination"])
+def test_entreprise_etrangere_refuse_les_chevrons(champ):
+    data = {
+        "code_pays": "MAR",
+        "identifiant": "001234567000089",
+        "denomination": "Entreprise marocaine",
+        "fonctions": "Présidente",
+    }
+    data[champ] = "<script>"
+    form = EntrepriseAttachForm(data=data)
+
+    assert not form.is_valid()
+    assert form.errors[champ] == ["Les caractères < et > ne sont pas autorisés."]
+
+
+def test_code_pays_inconnu_refuse():
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": "XXX",
+            "identifiant": "123",
+            "denomination": "Entreprise",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert not form.is_valid()
+    assert "code_pays" in form.errors

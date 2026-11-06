@@ -1,13 +1,13 @@
-<dialog aria-labelledby="modal-detach-{{ entreprise.siren }}-title" id="modal-detach-{{ entreprise.siren }}" class="fr-modal" role="dialog" >
+<dialog aria-labelledby="modal-detach-{{ entreprise.id_public }}-title" id="modal-detach-{{ entreprise.id_public }}" class="fr-modal" role="dialog" >
     <div class="fr-container fr-container--fluid fr-container-md">
         <div class="fr-grid-row fr-grid-row--center">
             <div class="fr-col-12 fr-col-md-8 fr-col-lg-6">
                 <div class="fr-modal__body">
                     <div class="fr-modal__header">
-                        <button class="fr-link--close fr-link" aria-controls="modal-detach-{{ entreprise.siren }}">Fermer</button>
+                        <button class="fr-link--close fr-link" aria-controls="modal-detach-{{ entreprise.id_public }}">Fermer</button>
                     </div>
                     <div class="fr-modal__content">
-                        <h1 id="modal-detach-{{ entreprise.siren }}-title" class="fr-modal__title">
+                        <h1 id="modal-detach-{{ entreprise.id_public }}-title" class="fr-modal__title">
                             <span class="fr-fi-arrow-right-line fr-fi--lg"></span>
                             Quitter cette entreprise
                         </h1>
@@ -17,13 +17,13 @@
                     <div class="fr-modal__footer">
                         <form action="{% url 'entreprises:entreprises' %}" method="post">
                             {% csrf_token %}
-                            <input type="hidden" name="siren" value="{{ entreprise.siren }}">
+                            <input type="hidden" name="id_public" value="{{ entreprise.id_public }}">
                             <ul class="fr-btns-group fr-btns-group--right fr-btns-group--inline-reverse fr-btns-group--inline-lg fr-btns-group--icon-left">
                                 <li>
                                     <button type="submit" name="action" value="detach" class="fr-btn fr-btn--icon-left fr-icon-close-circle-line">Quitter cette entreprise</button>
                                 </li>
                                 <li>
-                                    <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.siren }}">Annuler</button>
+                                    <button type="button" class="fr-btn fr-btn--secondary" aria-controls="modal-detach-{{ entreprise.id_public }}">Annuler</button>
                                 </li>
                             </ul>
                         </form>

@@ -47,10 +47,9 @@ def index(request):
         else:
             form = EntrepriseDetachForm(request.POST)
             if form.is_valid():
-                siren = form.cleaned_data["siren"]
                 try:
                     entreprise = Entreprise.objects.get(
-                        code_pays=CODE_PAYS_FRANCE, identifiant=siren
+                        id_public=form.cleaned_data["id_public"]
                     )
                     Habilitation.retirer(entreprise, request.user)
                     id_entreprise_en_session = request.session.get("entreprise")
@@ -85,13 +84,20 @@ def attach(request):
     form = EntrepriseAttachForm(request.POST)
     try:
         if form.is_valid():
-            siren = form.cleaned_data["siren"]
+            code_pays = form.cleaned_data["code_pays"]
+            identifiant = form.cleaned_data["identifiant"]
             if entreprises := Entreprise.objects.filter(
-                code_pays=CODE_PAYS_FRANCE, identifiant=siren
+                code_pays=code_pays, identifiant=identifiant
             ):
                 entreprise = entreprises[0]
+            elif code_pays == CODE_PAYS_FRANCE:
+                entreprise = Entreprise.search_and_create_entreprise(identifiant)
             else:
-                entreprise = Entreprise.search_and_create_entreprise(siren)
+                entreprise = Entreprise.objects.create(
+                    code_pays=code_pays,
+                    identifiant=identifiant,
+                    denomination=form.cleaned_data["denomination"],
+                )
             if habilitations := Habilitation.objects.filter(
                 entreprise=entreprise
             ).all():
@@ -241,6 +247,17 @@ def recherche_entreprise(request):
             "recherche": recherche,
             "htmx_fragment_view_name": request.GET.get("htmx_fragment_view_name"),
         },
+    )
+
+
+def identification_entreprise(request):
+    form = EntrepriseAttachForm(
+        initial={"code_pays": request.GET.get("code_pays", CODE_PAYS_FRANCE)}
+    )
+    return render(
+        request,
+        "fragments/identification_entreprise.html",
+        context={"form": form},
     )
 
 

@@ -4,15 +4,19 @@ from datetime import date
 from django import forms
 from django.core.exceptions import ValidationError
 from django.forms.fields import validators
+from django.urls import reverse_lazy
 from django.utils.timezone import datetime
 from django.utils.timezone import timezone
 
 from .models import ActualisationCaracteristiquesAnnuelles
 from .models import CaracteristiquesAnnuelles
+from .models import CODE_PAYS_FRANCE
+from .models import DENOMINATION_MAX_LENGTH
 from .models import Entreprise
 from utils.forms import DateInput
 from utils.forms import DsfrForm
 from utils.forms import sans_balise_html
+from utils.pays import CODES_PAYS_ISO_3166_1
 
 
 ERREUR_CHAMP_MANQUANT_GROUPE = (
@@ -37,6 +41,8 @@ class SirenField(forms.CharField):
 
     def validate(self, value):
         super().validate(value)
+        if value in self.empty_values:
+            return
         try:
             int(value)
         except ValueError:
@@ -49,15 +55,56 @@ class PreremplissageSirenForm(forms.Form):
 
 
 class EntrepriseAttachForm(DsfrForm):
-    siren = SirenField()
+    code_pays = forms.ChoiceField(
+        label="Pays de l'entreprise",
+        choices=CODES_PAYS_ISO_3166_1.items(),
+        initial=CODE_PAYS_FRANCE,
+        widget=forms.Select(
+            attrs={
+                "hx-get": reverse_lazy("entreprises:identification_entreprise"),
+                "hx-target": "#htmx-identification-entreprise",
+                "hx-swap": "outerHTML",
+            }
+        ),
+    )
+    siren = SirenField(required=False)
+    identifiant = forms.CharField(
+        label="Identifiant de l'entreprise",
+        help_text="Numéro d'immatriculation de l'entreprise dans son pays",
+        max_length=Entreprise.identifiant.field.max_length,
+        required=False,
+    )
+    denomination = forms.CharField(
+        label="Dénomination de l'entreprise",
+        max_length=DENOMINATION_MAX_LENGTH,
+        required=False,
+    )
     fonctions = forms.CharField(label="Fonction(s) dans la société")
+
+    def clean_identifiant(self):
+        return sans_balise_html(self.cleaned_data["identifiant"])
+
+    def clean_denomination(self):
+        return sans_balise_html(self.cleaned_data["denomination"])
 
     def clean_fonctions(self):
         return sans_balise_html(self.cleaned_data["fonctions"])
 
+    def clean(self):
+        super().clean()
+        if self.cleaned_data.get("code_pays") == CODE_PAYS_FRANCE:
+            champs_requis = ["siren"]
+            self.cleaned_data["identifiant"] = self.cleaned_data.get("siren")
+        else:
+            champs_requis = ["identifiant", "denomination"]
+        for champ in champs_requis:
+            if champ not in self.errors and not self.cleaned_data.get(champ):
+                self.add_error(champ, "Ce champ est obligatoire.")
+        return self.cleaned_data
+
 
 class EntrepriseDetachForm(DsfrForm):
-    siren = SirenField()
+    id_public = forms.UUIDField()
 
 
 class EntrepriseForm(DsfrForm):
