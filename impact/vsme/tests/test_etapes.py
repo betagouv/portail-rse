@@ -3,6 +3,9 @@ from django.contrib.messages import WARNING
 from django.urls import reverse
 from pytest_django.asserts import assertTemplateUsed
 
+from entreprises.models import Entreprise
+from habilitations.models import Habilitation
+
 
 def test_acces_vsme_autorise(client, entreprise_qualifiee, alice):
     client.force_login(alice)
@@ -39,6 +42,35 @@ def test_chargement_templates_des_etapes_vsme(
     assertTemplateUsed(response, "snippets/menu.html")
     assertTemplateUsed(response, f"etapes/{etape.replace("_","-")}.html")
 
+
+
+def test_fil_d_ariane_des_etapes_vsme_d_une_entreprise_francaise(
+    client, entreprise_qualifiee, alice
+):
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{entreprise_qualifiee.id_public}/introduction/")
+
+    content = response.content.decode("utf-8")
+    assert "Mes réglementations RSE" in content
+    assert "Gérer mes réglementations" in content
+
+
+def test_fil_d_ariane_des_etapes_vsme_d_une_entreprise_etrangere(client, alice):
+    entreprise = Entreprise.objects.create(
+        code_pays="MAR",
+        identifiant="001234567000089",
+        denomination="Entreprise marocaine",
+    )
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{entreprise.id_public}/introduction/")
+
+    assert response.status_code == 200
+    content = response.content.decode("utf-8")
+    assert "Mes réglementations RSE" not in content
+    assert "Gérer mes réglementations" not in content
 
 def test_etape_vsme_inexistante_retourne_une_404(client, entreprise_qualifiee, alice):
     client.force_login(alice)

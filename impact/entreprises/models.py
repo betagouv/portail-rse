@@ -273,8 +273,12 @@ class Entreprise(TimestampedModel):
         return f"{self.identifiant} {self.denomination}"
 
     @property
+    def est_francaise(self):
+        return self.code_pays == CODE_PAYS_FRANCE
+
+    @property
     def siren(self):
-        if self.code_pays == CODE_PAYS_FRANCE:
+        if self.est_francaise:
             return self.identifiant
 
     @property

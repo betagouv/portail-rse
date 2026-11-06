@@ -7,14 +7,17 @@ def calculer_metriques_entreprise(entreprise):
 
     Returns:
         dict: {
-            'nombre_reglementations_applicables': int | "?",
+            'nombre_reglementations_applicables': int | "?" | None,
             'pourcentage_vsme': int
         }
     """
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Calcul du nombre de reglementations applicables
-    if caracteristiques:
+    if not entreprise.est_francaise:
+        # une entreprise étrangère n'a accès qu'à la VSME
+        nombre_reglementations_applicables = None
+    elif caracteristiques:
         reglementations_applicables = [
             r for r in REGLEMENTATIONS if r.est_soumis(caracteristiques)
         ]

@@ -14,6 +14,16 @@ def test_metriques_entreprise_non_qualifiee(entreprise_non_qualifiee):
     }
 
 
+def test_metriques_entreprise_etrangere_sans_reglementations_applicables(
+    entreprise_factory,
+):
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001234567000089")
+
+    metriques = calculer_metriques_entreprise(entreprise)
+
+    assert metriques["nombre_reglementations_applicables"] is None
+
+
 @pytest.mark.parametrize("est_soumis", [True, False])
 def test_metriques_nombre_de_reglementations_applicables(
     est_soumis, entreprise_factory, mocker

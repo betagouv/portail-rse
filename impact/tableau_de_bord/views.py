@@ -53,9 +53,11 @@ def redirection_tableau_de_bord_par_siren(request, siren):
 @log_path("app:tableauDeBord")
 def resume(request, entreprise):
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
-
+    if not entreprise.est_francaise:
+        # une entreprise étrangère n'a accès qu'à la VSME : pas de qualification
+        nombre_reglementations_applicables = None
     # Afficher un avertissement si le profil est incomplet
-    if not caracteristiques:
+    elif not caracteristiques:
         url_qualification = reverse_lazy(
             "entreprises:qualification", args=[entreprise.id_public]
         )

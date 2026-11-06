@@ -262,6 +262,56 @@ def test_tableau_de_bord_resume_entreprise_qualifiee_dans_le_passe_affiche_un_av
     ), content
 
 
+
+def test_tableau_de_bord_resume_entreprise_francaise_affiche_les_reglementations_et_la_qualification(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    client.force_login(alice)
+
+    response = client.get(RESUME_URL.format(id_public=entreprise.id_public))
+
+    content = response.content.decode("utf-8")
+    assert reverse("tableau_de_bord:reglementations", args=[entreprise.id_public]) in content
+    assert reverse("entreprises:qualification", args=[entreprise.id_public]) in content
+    assert f"SIREN : {entreprise.siren}" in content
+
+
+def test_tableau_de_bord_resume_entreprise_etrangere_oriente_vers_la_vsme(
+    client, alice
+):
+    entreprise = Entreprise.objects.create(
+        code_pays="MAR",
+        identifiant="001234567000089",
+        denomination="Entreprise marocaine",
+    )
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(RESUME_URL.format(id_public=entreprise.id_public))
+
+    assert response.status_code == 200
+    assert response.context["nombre_reglementations_applicables"] is None
+    assert not list(response.context["messages"])
+    content = response.content.decode("utf-8")
+    assert reverse("tableau_de_bord:reglementations", args=[entreprise.id_public]) not in content
+    assert reverse("entreprises:qualification", args=[entreprise.id_public]) not in content
+    assert "SIREN" not in content
+    assert "Identifiant : 001234567000089" in content
+    assert "MAROC" in content
+    assert (
+        reverse(
+            "vsme:categories_vsme",
+            args=[
+                entreprise.id_public,
+                entreprise.dernier_exercice_clos.date_cloture.year,
+            ],
+        )
+        in content
+    )
+    assert reverse("analyseia:analyses") in content
+    assert f"modal-detach-{entreprise.id_public}" in content
+
 def test_tableau_de_bord_resume_n_affiche_pas_les_utilisateurs_non_confirmés(
     client, alice, bob, entreprise_factory
 ):

@@ -78,6 +78,16 @@ def test_pas_de_siren_pour_une_entreprise_etrangere(db):
     assert entreprise.siren is None
 
 
+
+def test_est_francaise(db):
+    entreprise_francaise = Entreprise.objects.create(identifiant="123456789")
+    entreprise_etrangere = Entreprise.objects.create(
+        code_pays="MAR", identifiant="001234567000089"
+    )
+
+    assert entreprise_francaise.est_francaise
+    assert not entreprise_etrangere.est_francaise
+
 def test_unicite_du_couple_code_pays_identifiant(db):
     Entreprise.objects.create(identifiant="123456789")
     Entreprise.objects.create(code_pays="MAR", identifiant="123456789")
