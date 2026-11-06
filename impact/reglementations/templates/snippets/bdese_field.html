@@ -19,7 +19,7 @@
                 </div>
             </div>
             <div class="fr-col-3">
-                <div class="svelte-external-field-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-external-fields-in-step-field-id="{{ field.form.external_fields_in_step.id_for_label }}"></div>
+                {% include 'snippets/champ_externe_toggle.html' %}
             </div>
         </div>
     {% endwith %}
@@ -34,7 +34,7 @@
                 </label>
             </div>
             <div class="fr-col-3">
-                <div class="svelte-external-field-toggle" data-toggle-id="{{ toggle_id }}" data-field-name="{{ field.name }}" data-field-container-id="{{ container_id }}" data-external-fields-in-step-field-id="{{ field.form.external_fields_in_step.id_for_label }}"></div>
+                {% include 'snippets/champ_externe_toggle.html' %}
             </div>
         </div>
         <div id="{{ container_id }}">
