@@ -336,6 +336,22 @@ def test_qualification_page_is_not_public(client, alice, entreprise_non_qualifie
     assert response.status_code == 403
 
 
+def test_page_de_qualification_affiche_certains_champs_selon_des_cases_a_cocher(
+    client, alice, entreprise_factory, mock_api_infos_entreprise
+):
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+
+    response = client.get(f"/entreprises/{entreprise.id_public}")
+
+    content = response.content.decode("utf-8")
+    assert "js/affiche-si.js" in content
+    assert 'id="svelte-est-cotee-field" data-affiche-si="id_est_interet_public"' in content
+    assert 'id="svelte-groupe-fields" class="fr-col-12" data-affiche-si="id_appartient_groupe"' in content
+    assert 'id="svelte-comptes-consolides-fields" data-affiche-si="id_comptes_consolides"' in content
+
+
 def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_champs_par_api(
     client,
     alice,
