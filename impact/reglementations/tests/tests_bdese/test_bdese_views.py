@@ -1,4 +1,5 @@
 import html
+import re
 
 import pytest
 from django.urls import reverse
@@ -190,6 +191,32 @@ def test_bdese_step_use_configured_categories_and_annees_a_remplir(
         content = response.content.decode("utf-8")
         for niveau in bdese.niveaux_hierarchiques:
             assert niveau in content
+
+
+def test_bdese_step_coche_la_bascule_des_champs_externes(
+    configured_bdese, habilitated_user, client
+):
+    bdese = configured_bdese
+    champ_externe = "effectif_total" if bdese.is_bdese_300 else "effectif_mensuel"
+    champ_interne = "effectif_homme"
+    bdese.external_fields = [champ_externe]
+    bdese.save()
+    client.force_login(habilitated_user)
+
+    response = client.get(bdese_step_url(bdese, 1))
+
+    content = response.content.decode("utf-8")
+    assert "js/champ-externe.js" in content
+    bascule_externe = re.search(
+        rf'<input[^>]*data-champ-externe="{champ_externe}"[^>]*>', content
+    ).group()
+    assert f'data-conteneur-id="svelte-container-id_{champ_externe}"' in bascule_externe
+    assert 'data-champs-externes-id="id_external_fields_in_step"' in bascule_externe
+    assert "checked" in bascule_externe
+    bascule_interne = re.search(
+        rf'<input[^>]*data-champ-externe="{champ_interne}"[^>]*>', content
+    ).group()
+    assert "checked" not in bascule_interne
 
 
 def test_bdese_step_fetch_data(configured_bdese, habilitated_user, client, mocker):

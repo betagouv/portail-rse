@@ -1,0 +1,4 @@
+<div class="fr-toggle fr-toggle--label-left fr-toggle--border-bottom">
+    <input type="checkbox" class="fr-toggle__input" id="{{ toggle_id }}" data-champ-externe="{{ field.name }}" data-conteneur-id="{{ container_id }}" data-champs-externes-id="{{ field.form.external_fields_in_step.id_for_label }}"{% if field.name in field.form.external_fields_in_step.value %} checked{% endif %}>
+    <label class="fr-toggle__label fr-text--sm" for="{{ toggle_id }}" data-fr-checked-label="Oui" data-fr-unchecked-label="Non">Information déjà fournie</label>
+</div>
