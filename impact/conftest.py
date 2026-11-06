@@ -7,6 +7,10 @@ from entreprises.models import ActualisationCaracteristiquesAnnuelles
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
+from reglementations.models import BDESE_300
+from reglementations.models import BDESE_50_300
+from reglementations.models import BDESEAvecAccord
+from reglementations.models import RapportCSRD
 
 CODE_SA = 5505
 CODE_SA_COOPERATIVE = 5551
@@ -201,6 +205,43 @@ def entreprise_unique_factory(entreprise_factory):
         return entreprise_factory(**kwargs)
 
     return create_entreprise_with_unique_identifiant
+
+
+@pytest.fixture
+def bdese_factory(entreprise_factory, date_cloture_dernier_exercice, alice):
+    def create_bdese(
+        bdese_class=BDESE_300,
+        entreprise=None,
+        annee=date_cloture_dernier_exercice.year,
+    ):
+        if not entreprise:
+            entreprise = entreprise_factory(
+                effectif=(
+                    CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249
+                    if bdese_class == BDESE_50_300
+                    else CaracteristiquesAnnuelles.EFFECTIF_ENTRE_300_ET_499
+                ),
+                bdese_accord=True if bdese_class == BDESEAvecAccord else False,
+            )
+        bdese = bdese_class.objects.create(entreprise=entreprise, annee=annee)
+        return bdese
+
+    return create_bdese
+
+
+@pytest.fixture
+def csrd(entreprise_factory, alice):
+    entreprise = entreprise_factory(
+        effectif=CaracteristiquesAnnuelles.EFFECTIF_10000_ET_PLUS,
+        tranche_bilan=CaracteristiquesAnnuelles.BILAN_100M_ET_PLUS,
+        tranche_chiffre_affaires=CaracteristiquesAnnuelles.CA_100M_ET_PLUS,
+    )
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    csrd = RapportCSRD.objects.create(
+        entreprise=entreprise,
+        annee=date.today().year,
+    )
+    return csrd
 
 
 # the following fixtures were defined in `api.test.fixtures`,

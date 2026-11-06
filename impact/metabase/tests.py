@@ -29,7 +29,6 @@ from metabase.models import VSME as MetabaseVSME
 from reglementations.models import BDESE_50_300
 from reglementations.models import derniere_annee_a_remplir_bdese
 from reglementations.models.csrd import RapportCSRD
-from reglementations.tests.conftest import bdese_factory  # noqa
 from vsme.models import EXIGENCES_DE_PUBLICATION
 from vsme.models import RapportVSME
 
