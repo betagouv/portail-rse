@@ -66,6 +66,7 @@ class Command(BaseCommand):
             },
         )
         utilisateur.set_password(mot_de_passe)
+        utilisateur.is_conseiller_rse = False
         utilisateur.save()
         return utilisateur
 

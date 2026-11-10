@@ -27,6 +27,7 @@ def test_cree_les_entreprises_et_l_utilisateur_de_demo(db, mot_de_passe):
         assert Habilitation.existe(entreprise, utilisateur)
         assert entreprise.dernieres_caracteristiques_qualifiantes is not None
     assert utilisateur.check_password(MOT_DE_PASSE)
+    assert not utilisateur.doit_choisir_type_utilisateur
 
 
 def test_peut_etre_relancee(db, mot_de_passe):
