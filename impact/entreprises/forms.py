@@ -16,7 +16,7 @@ from .models import Entreprise
 from utils.forms import DateInput
 from utils.forms import DsfrForm
 from utils.forms import sans_balise_html
-from utils.pays import CODES_PAYS_ISO_3166_1
+from utils.pays import CHOIX_PAYS_DISPONIBLES
 from utils.pays import PAYS_DISPONIBLES
 
 
@@ -55,11 +55,7 @@ class PreremplissageSirenForm(forms.Form):
 class EntrepriseAttachForm(DsfrForm):
     code_pays = forms.ChoiceField(
         label="Pays de l'entreprise",
-        choices=[
-            (code, nom)
-            for code, nom in CODES_PAYS_ISO_3166_1.items()
-            if code in PAYS_DISPONIBLES
-        ],
+        choices=CHOIX_PAYS_DISPONIBLES,
         initial=CODE_PAYS_FRANCE,
         widget=forms.Select(
             attrs={

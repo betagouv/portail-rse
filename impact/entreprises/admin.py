@@ -4,12 +4,14 @@ from django.contrib import admin
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
 from habilitations.admin import HabilitationInline
+from utils.pays import CHOIX_PAYS_DISPONIBLES
 
 
 class EntrepriseAdminForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields["date_cloture_exercice"].required = False
+        self.fields["code_pays"].choices = CHOIX_PAYS_DISPONIBLES
 
 
 class CaracteristiquesAdminForm(forms.ModelForm):

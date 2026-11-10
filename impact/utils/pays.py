@@ -632,3 +632,7 @@ PAYS_DISPONIBLES = {
         Pays(CODE_PAYS_MAROC, "ICE", "ICE", _valide_ice),
     ]
 }
+
+CHOIX_PAYS_DISPONIBLES = [
+    (code, nom) for code, nom in CODES_PAYS_ISO_3166_1.items() if code in PAYS_DISPONIBLES
+]
