@@ -8,7 +8,7 @@
 
 ## App principale
 
-L'application principale (`app.portail-rse.beta.gouv.fr`) est développée en Django+Svelte et constitue le cœur du système.
+L'application principale (`app.portail-rse.beta.gouv.fr`) est développée en Django et constitue le cœur du système.
 Elle permet aux entreprises de saisir et valider leurs obligations RSE.
 
 L'application s'appuie sur une base de données PostgreSQL pour stocker les données applicatives et s'intègre avec plusieurs services externes :
