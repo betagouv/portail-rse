@@ -8,6 +8,7 @@ JETON = "jeton-de-test"
 @pytest.fixture
 def poc_actif(settings):
     settings.POC_LEE_TOKEN = JETON
+    settings.DEBUG = True
 
 
 @pytest.fixture

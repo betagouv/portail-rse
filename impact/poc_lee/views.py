@@ -10,6 +10,7 @@ from django.views.decorators.http import require_POST
 from entreprises.models import Entreprise
 from poc_lee.apis_figees import apis_externes_figees
 from poc_lee.auth import token_lee_requis
+from poc_lee.demo import SIRENS_DEMO
 from poc_lee.models import PreremplissageLee
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.toutes_reglementations import calcule_reglementations
@@ -29,7 +30,11 @@ STATUTS = {
 
 
 def entreprise_qualifiee(siren):
-    entreprise = Entreprise.objects.filter(identifiant=siren).first()
+    entreprise = (
+        Entreprise.objects.filter(identifiant=siren).first()
+        if siren in SIRENS_DEMO
+        else None
+    )
     if not entreprise:
         return JsonResponse({"erreur": "entreprise-inconnue"}, status=404)
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes

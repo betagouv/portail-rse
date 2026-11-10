@@ -12,7 +12,7 @@ def token_lee_requis(function):
     @wraps(function)
     def wrap(request, *args, **kwargs):
         attendu = settings.POC_LEE_TOKEN
-        if not attendu:
+        if not attendu or not settings.DEBUG:
             raise Http404()
         entete = request.headers.get("Authorization", "")
         recu = entete.removeprefix("Bearer ") if entete.startswith("Bearer ") else ""

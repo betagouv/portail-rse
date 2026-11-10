@@ -1,11 +1,16 @@
+import threading
 from contextlib import contextmanager
 from contextlib import ExitStack
 from unittest.mock import patch
 
+# Le patch est global au process : le verrou empêche deux requêtes simultanées
+# de se restaurer mutuellement un mock à la place de la vraie fonction.
+_verrou = threading.Lock()
+
 
 @contextmanager
 def apis_externes_figees():
-    with ExitStack() as pile:
+    with _verrou, ExitStack() as pile:
         pile.enter_context(
             patch("api.egapro.is_index_egapro_published", return_value=False)
         )

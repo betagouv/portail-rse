@@ -78,3 +78,20 @@ def test_repond_404_pour_une_entreprise_non_qualifiee(
 
     assert response.status_code == 404
     assert response.json() == {"erreur": "entreprise-non-qualifiee"}
+
+
+def test_refuse_une_entreprise_hors_demo(client, poc_actif, entreprise_factory):
+    entreprise_factory(identifiant="000000001")
+
+    response = lit_les_obligations(client, siren="000000001")
+
+    assert response.status_code == 404
+    assert response.json() == {"erreur": "entreprise-inconnue"}
+
+
+def test_repond_404_hors_mode_debug(client, poc_actif, settings, pme_transport):
+    settings.DEBUG = False
+
+    response = lit_les_obligations(client)
+
+    assert response.status_code == 404

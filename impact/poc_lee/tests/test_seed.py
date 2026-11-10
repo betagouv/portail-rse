@@ -5,6 +5,8 @@ from django.core.management.base import CommandError
 
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
+from poc_lee.models import PreremplissageLee
+from vsme.models import RapportVSME
 
 MOT_DE_PASSE = "mot-de-passe-de-test"
 
@@ -34,7 +36,10 @@ def test_peut_etre_relancee(db, mot_de_passe):
     call_command("seed_poc_lee")
     call_command("seed_poc_lee")
 
-    assert Entreprise.objects.count() == 2
+    assert (
+        Entreprise.objects.filter(identifiant__in=["095680393", "045850617"]).count()
+        == 2
+    )
     assert get_user_model().objects.count() == 1
 
 
@@ -43,3 +48,22 @@ def test_echoue_sans_mot_de_passe(db, monkeypatch):
 
     with pytest.raises(CommandError):
         call_command("seed_poc_lee")
+
+
+def test_reinitialise_les_rapports_de_demo(db, mot_de_passe, entreprise_factory):
+    call_command("seed_poc_lee")
+    autre = entreprise_factory(identifiant="000000001")
+    RapportVSME.objects.create(entreprise=autre, annee=2025)
+    rapport_demo = RapportVSME.objects.create(
+        entreprise=Entreprise.objects.get(identifiant="045850617"), annee=2025
+    )
+    PreremplissageLee.objects.create(
+        rapport_vsme=rapport_demo, schema_id="B2-26", data={}
+    )
+
+    call_command("seed_poc_lee")
+
+    assert list(
+        RapportVSME.objects.values_list("entreprise__identifiant", flat=True)
+    ) == ["000000001"]
+    assert PreremplissageLee.objects.count() == 0
