@@ -1,5 +1,7 @@
 # Choix de Svelte + Vite pour le front
 
+Remplacé par l'ADR [Remplacement de Svelte + Vite par du JS vanilla](2026-11-10%20Remplacement%20Svelte+Vite.md).
+
 ## Problèmatique
 
 Jusqu'à maintenant tout le front était géré via le templating de django côté serveur et le design system de l'Etat (dsfr) pour les composants, qui suffisaient pour les besoins classiques (formulaires, affichage des pages statiques...).
