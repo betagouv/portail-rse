@@ -153,7 +153,7 @@ class Command(BaseCommand):
                     if entreprise.categorie_juridique
                     else None
                 ),
-                pays=entreprise.pays,
+                pays=entreprise.pays_sirene,
                 code_postal=entreprise.code_postal,
                 code_NAF=entreprise.code_NAF,
                 est_interet_public=entreprise.est_interet_public,

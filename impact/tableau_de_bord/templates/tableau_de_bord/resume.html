@@ -104,8 +104,8 @@
                                                 <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
                                             {% endif %}
                                         {% else %}
-                                            <li><p class="fr-tag">{{ entreprise.get_code_pays_display }}</p></li>
-                                            <li><p class="fr-tag">{{ entreprise.libelle_identifiant }} : {{ entreprise.identifiant }}</p></li>
+                                            <li><p class="fr-tag">{{ entreprise.pays.nom }}</p></li>
+                                            <li><p class="fr-tag">{{ entreprise.pays.libelle_identifiant }} : {{ entreprise.identifiant }}</p></li>
                                         {% endif %}
                                     </ul>
                                 </div>

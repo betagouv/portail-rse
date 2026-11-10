@@ -1,3 +1,11 @@
+from dataclasses import dataclass
+from functools import partial
+from typing import Callable
+
+from django.core.exceptions import ValidationError
+from stdnum.eu import vat
+from stdnum.ma import ice
+
 # https://www.insee.fr/fr/information/2028273
 
 CODES_PAYS_ETRANGER_SIRENE = {
@@ -560,4 +568,57 @@ CODES_PAYS_UNION_EUROPEENNE = {
     "SVK": "SK",  # Slovaquie
     "SVN": "SI",  # Slovénie
     "SWE": "SE",  # Suède
+}
+
+CODE_PAYS_FRANCE = "FRA"
+CODE_PAYS_MAROC = "MAR"
+
+
+def _valide_tva(prefixe, identifiant):
+    """Renvoie le numéro de TVA sous forme compacte ou lève une ValidationError"""
+    if not identifiant.upper().startswith(prefixe):
+        raise ValidationError(
+            f"Le numéro de TVA intracommunautaire doit commencer par {prefixe}."
+        )
+    if not vat.is_valid(identifiant):
+        raise ValidationError("Le numéro de TVA intracommunautaire est invalide.")
+    return vat.compact(identifiant)
+
+
+def _valide_ice(identifiant):
+    """Renvoie l'ICE sous forme compacte ou lève une ValidationError"""
+    if not ice.is_valid(identifiant):
+        raise ValidationError("Le numéro ICE est invalide.")
+    return ice.compact(identifiant)
+
+
+@dataclass(frozen=True)
+class Pays:
+    code: str
+    libelle_identifiant: str
+    libelle_identifiant_formulaire: str
+    # None pour la France dont le SIREN est vérifié via l'API
+    valide_identifiant: Callable[[str], str] | None = None
+
+    @property
+    def nom(self):
+        return CODES_PAYS_ISO_3166_1[self.code]
+
+
+PAYS_DISPONIBLES = {
+    pays.code: pays
+    for pays in [
+        Pays(CODE_PAYS_FRANCE, "SIREN", "SIREN"),
+        *(
+            Pays(
+                code,
+                "TVA intracommunautaire",
+                "Numéro de TVA intracommunautaire",
+                partial(_valide_tva, prefixe),
+            )
+            for code, prefixe in CODES_PAYS_UNION_EUROPEENNE.items()
+            if code != CODE_PAYS_FRANCE
+        ),
+        Pays(CODE_PAYS_MAROC, "ICE", "ICE", _valide_ice),
+    ]
 }

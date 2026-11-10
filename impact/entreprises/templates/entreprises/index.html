@@ -38,7 +38,7 @@
                                     {% for entreprise in user.entreprise_set.all %}
                                         <tr>
                                             <td class="fr-cell--multiline">{{ entreprise.denomination }}</td>
-                                            <td>{{ entreprise.libelle_identifiant }} : {{ entreprise.identifiant }}</td>
+                                            <td>{{ entreprise.pays.libelle_identifiant }} : {{ entreprise.identifiant }}</td>
                                             {% with habilitation=user|habilitation:entreprise %}
                                                 <td><span class="fr-badge fr-badge--info fr-badge--no-icon">{{ habilitation.get_role_display }}</span></td>
                                             {% endwith %}

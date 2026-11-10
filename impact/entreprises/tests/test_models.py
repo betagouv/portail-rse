@@ -89,7 +89,7 @@ def test_est_francaise(db):
     assert not entreprise_etrangere.est_francaise
 
 
-def test_libelle_identifiant(db):
+def test_pays(db):
     entreprise_francaise = Entreprise.objects.create(identifiant="123456789")
     entreprise_europeenne = Entreprise.objects.create(
         code_pays="DEU", identifiant="DE123456789"
@@ -98,9 +98,12 @@ def test_libelle_identifiant(db):
         code_pays="MAR", identifiant="001234567000089"
     )
 
-    assert entreprise_francaise.libelle_identifiant == "SIREN"
-    assert entreprise_europeenne.libelle_identifiant == "TVA intracommunautaire"
-    assert entreprise_marocaine.libelle_identifiant == "ICE"
+    assert entreprise_francaise.pays.nom == "FRANCE"
+    assert entreprise_francaise.pays.libelle_identifiant == "SIREN"
+    assert entreprise_europeenne.pays.nom == "ALLEMAGNE"
+    assert entreprise_europeenne.pays.libelle_identifiant == "TVA intracommunautaire"
+    assert entreprise_marocaine.pays.nom == "MAROC"
+    assert entreprise_marocaine.pays.libelle_identifiant == "ICE"
 
 def test_unicite_du_couple_code_pays_identifiant(db):
     Entreprise.objects.create(identifiant="123456789")
