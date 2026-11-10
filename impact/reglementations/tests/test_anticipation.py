@@ -251,6 +251,6 @@ def test_page_anticipation_affiche_certains_champs_selon_des_cases_a_cocher(
 
     content = response.content.decode("utf-8")
     assert "js/affiche-si.js" in content
-    assert 'id="svelte-est-cotee-field" data-affiche-si="id_est_interet_public"' in content
-    assert 'id="svelte-groupe-fields" class="fr-col-12" data-affiche-si="id_appartient_groupe"' in content
-    assert 'id="svelte-comptes-consolides-fields" data-affiche-si="id_comptes_consolides"' in content
+    assert 'id="est-cotee-field" data-affiche-si="id_est_interet_public"' in content
+    assert 'id="groupe-fields" class="fr-col-12" data-affiche-si="id_appartient_groupe"' in content
+    assert 'id="comptes-consolides-fields" data-affiche-si="id_comptes_consolides"' in content

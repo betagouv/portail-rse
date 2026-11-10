@@ -5,8 +5,8 @@ for (const bascule of document.querySelectorAll("[data-champ-externe]")) {
   const champsExternes = document.getElementById(bascule.dataset.champsExternesId)
   const nomChamp = bascule.dataset.champExterne
   const afficher = () => {
-    conteneur.querySelector(".svelte-external-field").style.display = bascule.checked ? "" : "none"
-    conteneur.querySelector(".svelte-internal-field").style.display = bascule.checked ? "none" : ""
+    conteneur.querySelector(".external-field").style.display = bascule.checked ? "" : "none"
+    conteneur.querySelector(".internal-field").style.display = bascule.checked ? "none" : ""
   }
   bascule.addEventListener("change", () => {
     const noms = (JSON.parse(champsExternes.value) || []).filter(nom => nom !== nomChamp)
