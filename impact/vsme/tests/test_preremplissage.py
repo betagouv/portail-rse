@@ -1,3 +1,5 @@
+import html
+
 from django.urls.base import reverse
 
 from conftest import CODE_SA
@@ -43,6 +45,40 @@ def test_preremplit_indicateur_forme_juridique_entreprise_sans_categorie_juridiq
     preremplissage = preremplit_indicateur(indicateur_schema_id, rapport_vsme)
 
     assert preremplissage == {}
+
+
+def test_preremplit_indicateur_forme_juridique_entreprise_etrangere(rapport_vsme):
+    rapport_vsme.entreprise.code_pays = "DEU"
+    indicateur_schema_id = "B1-24-e-i"
+
+    preremplissage = preremplit_indicateur(indicateur_schema_id, rapport_vsme)
+
+    assert preremplissage == {
+        "initial": {
+            "forme_juridique": "32",
+            "coopérative": False,
+        },
+        "source": {
+            "nom": "l'entreprise (pays)",
+            "url": reverse("entreprises:entreprises"),
+        },
+    }
+
+
+def test_indicateur_forme_juridique_prerempli_pour_une_entreprise_etrangere(
+    client, alice, rapport_vsme
+):
+    rapport_vsme.entreprise.code_pays = "DEU"
+    rapport_vsme.entreprise.save()
+    client.force_login(alice)
+
+    url = INDICATEURS_VSME_BASE_URL + f"{rapport_vsme.id}/indicateur/B1-24-e-i/"
+    response = client.get(url, headers={"HX-Request": "true"})
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "l'entreprise (pays)" in content
+    assert response.context["multiform"].forms[0]["forme_juridique"].value() == "32"
 
 
 def test_indicateur_prerempli_affiche_le_preremplissage(client, alice, rapport_vsme):
