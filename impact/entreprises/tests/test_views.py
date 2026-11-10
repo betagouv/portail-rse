@@ -1060,6 +1060,7 @@ def test_identification_entreprise_etrangere(client):
     content = response.content.decode("utf-8")
     assert 'name="identifiant"' in content
     assert 'name="denomination"' in content
+    assert "ICE" in content
 
 
 def test_page_entreprises_affiche_la_france_par_defaut(client, alice):
@@ -1070,3 +1071,19 @@ def test_page_entreprises_affiche_la_france_par_defaut(client, alice):
     content = response.content.decode("utf-8")
     assert '<option value="FRA" selected>' in content
     assertTemplateUsed(response, "fragments/siren_field.html")
+
+
+def test_page_entreprises_affiche_le_libelle_d_identifiant_selon_le_pays(
+    client, alice, entreprise_factory
+):
+    entreprise_factory(identifiant="123456789", utilisateur=alice)
+    entreprise_factory(
+        code_pays="MAR", identifiant="001234567000089", utilisateur=alice
+    )
+    client.force_login(alice)
+
+    response = client.get("/entreprises")
+
+    content = response.content.decode("utf-8")
+    assert "SIREN : 123456789" in content
+    assert "ICE : 001234567000089" in content

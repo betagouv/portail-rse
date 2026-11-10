@@ -105,7 +105,7 @@
                                             {% endif %}
                                         {% else %}
                                             <li><p class="fr-tag">{{ entreprise.get_code_pays_display }}</p></li>
-                                            <li><p class="fr-tag">Identifiant : {{ entreprise.identifiant }}</p></li>
+                                            <li><p class="fr-tag">{{ entreprise.libelle_identifiant }} : {{ entreprise.identifiant }}</p></li>
                                         {% endif %}
                                     </ul>
                                 </div>

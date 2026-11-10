@@ -412,3 +412,43 @@ def test_code_pays_inconnu_refuse():
 
     assert not form.is_valid()
     assert "code_pays" in form.errors
+
+
+@pytest.mark.parametrize("code_pays", ["DEU", "MAR"])
+def test_code_pays_disponible_accepte(code_pays):
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": code_pays,
+            "identifiant": "123",
+            "denomination": "Entreprise",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert form.is_valid(), form.errors
+
+
+def test_code_pays_non_disponible_refuse():
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": "USA",
+            "identifiant": "123",
+            "denomination": "Entreprise",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert not form.is_valid()
+    assert "code_pays" in form.errors
+
+
+@pytest.mark.parametrize(
+    "code_pays,libelle",
+    [("DEU", "TVA intracommunautaire"), ("MAR", "ICE")],
+)
+def test_libelle_identifiant_selon_le_pays(code_pays, libelle):
+    form_initial = EntrepriseAttachForm(initial={"code_pays": code_pays})
+    form_soumis = EntrepriseAttachForm(data={"code_pays": code_pays})
+
+    assert form_initial.fields["identifiant"].label == libelle
+    assert form_soumis.fields["identifiant"].label == libelle

@@ -13,6 +13,7 @@ from .models import CaracteristiquesAnnuelles
 from .models import CODE_PAYS_FRANCE
 from .models import DENOMINATION_MAX_LENGTH
 from .models import Entreprise
+from .models import LIBELLES_IDENTIFIANT
 from utils.forms import DateInput
 from utils.forms import DsfrForm
 from utils.forms import sans_balise_html
@@ -57,7 +58,11 @@ class PreremplissageSirenForm(forms.Form):
 class EntrepriseAttachForm(DsfrForm):
     code_pays = forms.ChoiceField(
         label="Pays de l'entreprise",
-        choices=CODES_PAYS_ISO_3166_1.items(),
+        choices=[
+            (code, nom)
+            for code, nom in CODES_PAYS_ISO_3166_1.items()
+            if code in LIBELLES_IDENTIFIANT
+        ],
         initial=CODE_PAYS_FRANCE,
         widget=forms.Select(
             attrs={
@@ -70,7 +75,6 @@ class EntrepriseAttachForm(DsfrForm):
     siren = SirenField(required=False)
     identifiant = forms.CharField(
         label="Identifiant de l'entreprise",
-        help_text="Numéro d'immatriculation de l'entreprise dans son pays",
         max_length=Entreprise.identifiant.field.max_length,
         required=False,
     )
@@ -80,6 +84,12 @@ class EntrepriseAttachForm(DsfrForm):
         required=False,
     )
     fonctions = forms.CharField(label="Fonction(s) dans la société")
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        code_pays = self["code_pays"].value()
+        if code_pays in LIBELLES_IDENTIFIANT:
+            self.fields["identifiant"].label = LIBELLES_IDENTIFIANT[code_pays]
 
     def clean_identifiant(self):
         return sans_balise_html(self.cleaned_data["identifiant"])

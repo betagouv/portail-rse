@@ -19,9 +19,17 @@ from utils.codes_naf import CODES_NAF
 from utils.models import TimestampedModel
 from utils.pays import CODES_PAYS_ETRANGER_SIRENE
 from utils.pays import CODES_PAYS_ISO_3166_1
+from utils.pays import CODES_PAYS_UNION_EUROPEENNE
 
 DENOMINATION_MAX_LENGTH = 250
 CODE_PAYS_FRANCE = "FRA"
+CODE_PAYS_MAROC = "MAR"
+# pays disponibles avec le libellé de leur identifiant
+LIBELLES_IDENTIFIANT = {
+    **{code: "TVA intracommunautaire" for code in CODES_PAYS_UNION_EUROPEENNE},
+    CODE_PAYS_FRANCE: "SIREN",
+    CODE_PAYS_MAROC: "ICE",
+}
 
 # Requalification de l'entreprise :
 # les données de l'entreprise doivent être vérifiées
@@ -280,6 +288,10 @@ class Entreprise(TimestampedModel):
     def siren(self):
         if self.est_francaise:
             return self.identifiant
+
+    @property
+    def libelle_identifiant(self):
+        return LIBELLES_IDENTIFIANT[self.code_pays]
 
     @property
     def dernier_exercice_clos(self):

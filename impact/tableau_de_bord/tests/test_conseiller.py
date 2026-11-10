@@ -26,6 +26,43 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     assert entreprise2.denomination in content
 
 
+def test_tableau_de_bord_conseiller_affiche_le_libelle_d_identifiant_selon_le_pays(
+    client, conseiller_rse, entreprise_factory
+):
+    entreprise_francaise = entreprise_factory(identifiant="123456789")
+    entreprise_etrangere = entreprise_factory(
+        code_pays="MAR", identifiant="001234567000089"
+    )
+    Habilitation.ajouter(entreprise_francaise, conseiller_rse, UserRole.CONTRIBUTEUR)
+    Habilitation.ajouter(entreprise_etrangere, conseiller_rse, UserRole.CONTRIBUTEUR)
+    client.force_login(conseiller_rse)
+
+    response = client.get(reverse("tableau_de_bord:conseiller"))
+
+    content = response.content.decode()
+    assert "SIREN : 123456789" in content
+    assert "ICE : 001234567000089" in content
+
+
+def test_rattachement_entreprise_existante_avec_administrateur(
+    client, conseiller_rse, alice, entreprise_factory
+):
+    """Un conseiller ne peut pas se rattacher à une entreprise avec un administrateur."""
+    entreprise = entreprise_factory(identifiant="123456789")
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
+
+    client.force_login(conseiller_rse)
+    response = client.post(
+        reverse("tableau_de_bord:conseiller"),
+        {"siren": "123456789", "fonctions": "Consultant CSRD"},
+    )
+
+    assert (
+        Habilitation.objects.filter(entreprise=entreprise, user=conseiller_rse).count()
+        == 0
+    )
+
+
 @pytest.mark.network
 def test_rattachement_entreprise_inexistante(
     client, conseiller_rse, mock_api_infos_entreprise

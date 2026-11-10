@@ -529,3 +529,34 @@ CODES_PAYS_ISO_3166_1 = {
     "ZMB": "ZAMBIE",
     "ZWE": "ZIMBABWE",
 }
+
+# codes alpha 3 des 27 États membres de l'Union européenne
+CODES_PAYS_UNION_EUROPEENNE = (
+    "DEU",  # Allemagne
+    "AUT",  # Autriche
+    "BEL",  # Belgique
+    "BGR",  # Bulgarie
+    "CYP",  # Chypre
+    "HRV",  # Croatie
+    "DNK",  # Danemark
+    "ESP",  # Espagne
+    "EST",  # Estonie
+    "FIN",  # Finlande
+    "FRA",  # France
+    "GRC",  # Grèce
+    "HUN",  # Hongrie
+    "IRL",  # Irlande
+    "ITA",  # Italie
+    "LVA",  # Lettonie
+    "LTU",  # Lituanie
+    "LUX",  # Luxembourg
+    "MLT",  # Malte
+    "NLD",  # Pays-Bas
+    "POL",  # Pologne
+    "PRT",  # Portugal
+    "CZE",  # Tchéquie
+    "ROU",  # Roumanie
+    "SVK",  # Slovaquie
+    "SVN",  # Slovénie
+    "SWE",  # Suède
+)

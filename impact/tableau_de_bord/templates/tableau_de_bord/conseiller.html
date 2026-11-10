@@ -67,7 +67,7 @@
                                         <thead>
                                             <tr>
                                                 <th scope="col">Dénomination</th>
-                                                <th scope="col">SIREN</th>
+                                                <th scope="col">Identifiant</th>
                                                 <th scope="col" class="fr-cell--multiline fr-cell--center">Réglementations applicables</th>
                                                 <th scope="col">Progression VSME</th>
                                                 <th scope="col">Actions</th>
@@ -77,7 +77,7 @@
                                             {% for item in habilitations_enrichies %}
                                                 <tr>
                                                     <td class="fr-cell--multiline">{{ item.entreprise.denomination }}</td>
-                                                    <td>{{ item.entreprise.siren }}</td>
+                                                    <td>{{ item.entreprise.libelle_identifiant }} : {{ item.entreprise.identifiant }}</td>
                                                     <td class="fr-cell--center">
                                                         <strong>{{ item.nombre_reglementations }}</strong>
                                                     </td>
