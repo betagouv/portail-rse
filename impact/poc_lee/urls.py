@@ -9,4 +9,9 @@ urlpatterns = [
         views.obligations,
         name="obligations",
     ),
+    path(
+        "poc-lee/entreprises/<str:siren>/vsme/preremplissages",
+        views.preremplissages,
+        name="preremplissages",
+    ),
 ]

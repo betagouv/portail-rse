@@ -1,11 +1,21 @@
+import json
+
+from django.core.exceptions import ValidationError
+from django.db import transaction
 from django.http import JsonResponse
+from django.urls import reverse
 from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_POST
 
 from entreprises.models import Entreprise
 from poc_lee.apis_figees import apis_externes_figees
 from poc_lee.auth import token_lee_requis
+from poc_lee.models import PreremplissageLee
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.toutes_reglementations import calcule_reglementations
+from vsme.forms.vsme import THEMATIQUES_DURABILITE
+from vsme.models import RapportVSME
+from vsme.models import validate_annee_rapport
 
 STATUTS = {
     ReglementationStatus.STATUS_A_ACTUALISER: "a-actualiser",
@@ -52,4 +62,82 @@ def obligations(request, siren):
                 for r in reglementations
             ],
         }
+    )
+
+
+def parse_pratiques(body):
+    if not isinstance(body, dict):
+        return None
+    annee = body.get("annee")
+    pratiques = body.get("pratiques")
+    if not isinstance(annee, int) or isinstance(annee, bool):
+        return None
+    try:
+        validate_annee_rapport(annee)
+    except ValidationError:
+        return None
+    if not isinstance(pratiques, list) or not 1 <= len(pratiques) <= 10:
+        return None
+    resultat = []
+    for pratique in pratiques:
+        if not isinstance(pratique, dict):
+            return None
+        thematique = pratique.get("thematique")
+        description = pratique.get("description")
+        if thematique not in THEMATIQUES_DURABILITE:
+            return None
+        if not isinstance(description, str):
+            return None
+        description = description.strip()
+        if not description or len(description) > 2000:
+            return None
+        resultat.append((thematique, description))
+    if len({thematique for thematique, _ in resultat}) != len(resultat):
+        return None
+    return annee, resultat
+
+
+@token_lee_requis
+@require_POST
+def preremplissages(request, siren):
+    resultat = entreprise_qualifiee(siren)
+    if isinstance(resultat, JsonResponse):
+        return resultat
+    entreprise, _ = resultat
+    try:
+        body = json.loads(request.body)
+    except json.JSONDecodeError:
+        body = None
+    parse = parse_pratiques(body)
+    if parse is None:
+        return JsonResponse({"erreur": "requete-invalide"}, status=400)
+    annee, pratiques = parse
+    with transaction.atomic():
+        rapport, _ = RapportVSME.objects.get_or_create(
+            entreprise=entreprise, annee=annee
+        )
+        donnees = {
+            "B2-26": {
+                "declaration_durabilite": {
+                    thematique: {"pratiques": True} for thematique, _ in pratiques
+                }
+            },
+            "C2-48": {
+                "description_durabilite": {
+                    thematique: {"description_pratiques": description}
+                    for thematique, description in pratiques
+                }
+            },
+        }
+        for schema_id, data in donnees.items():
+            PreremplissageLee.objects.update_or_create(
+                rapport_vsme=rapport, schema_id=schema_id, defaults={"data": data}
+            )
+    return JsonResponse(
+        {
+            "rapport_url": request.build_absolute_uri(
+                reverse("vsme:exigence_de_publication_vsme", args=[rapport.id, "B2"])
+            )
+        },
+        status=201,
     )

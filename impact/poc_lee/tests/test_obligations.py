@@ -1,32 +1,9 @@
 from unittest.mock import ANY
 
-import pytest
-
-from entreprises.models import CaracteristiquesAnnuelles
+from poc_lee.tests.conftest import JETON
 from reglementations.views.toutes_reglementations import REGLEMENTATIONS
 
-JETON = "jeton-de-test"
 URL = "/poc-lee/entreprises/{siren}/obligations"
-
-
-@pytest.fixture
-def poc_actif(settings):
-    settings.POC_LEE_TOKEN = JETON
-
-
-@pytest.fixture
-def sans_reseau(mocker):
-    mocker.patch("requests.get", side_effect=AssertionError("appel réseau"))
-    mocker.patch("requests.post", side_effect=AssertionError("appel réseau"))
-
-
-@pytest.fixture
-def pme_transport(entreprise_factory):
-    return entreprise_factory(
-        identifiant="095680393",
-        effectif=CaracteristiquesAnnuelles.EFFECTIF_ENTRE_50_ET_249,
-        effectif_securite_sociale=CaracteristiquesAnnuelles.EFFECTIF_SECURITE_SOCIALE_ENTRE_50_ET_249,
-    )
 
 
 def lit_les_obligations(client, siren="095680393", jeton=JETON):

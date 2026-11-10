@@ -425,6 +425,16 @@ def load_indicateur_schema(indicateur_schema_id):
 
 
 def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
+    if preremplissage_lee := rapport_vsme.preremplissages_lee.filter(
+        schema_id=indicateur_schema_id
+    ).first():
+        return {
+            "initial": preremplissage_lee.data,
+            "source": {
+                "nom": "votre espace Les entreprises s'engagent",
+                "url": "https://lesentreprises-sengagent.gouv.fr",
+            },
+        }
     infos_preremplissage = {}
     match indicateur_schema_id:
         case "B1-24-e-i":  # indicateur forme juridique
