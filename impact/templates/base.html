@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="fr" data-fr-scheme="system">
     {% load static %}
-    {% load django_vite %}
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -18,9 +17,6 @@
         <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}">
 
         <title>{% block title %}Portail RSE{% endblock %}</title>
-
-        {% vite_hmr_client %}
-        {% vite_asset 'src/main.js' %}
 
         <script type="text/javascript" src="{% static 'js/htmx.min.js' %}" nonce="{{ request.csp_nonce }}" defer></script>
         <script type="text/javascript" src="{% static 'js/idiomorph-ext.min.js' %}" nonce="{{ request.csp_nonce }}" defer></script>

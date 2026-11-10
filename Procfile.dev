@@ -1,3 +1,2 @@
 web: PYTHONUNBUFFERED=true python impact/manage.py runserver
-front: npm run dev
 sass: npm run compile:css:watch
