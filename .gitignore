@@ -154,7 +154,6 @@ Thumbs.db
 impact/static_collected/
 impact/static/css/
 impact/static/dsfr
-impact/static/svelte
 impact/media
 doc/dat/
 **/tmp/

@@ -56,7 +56,6 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.postgres",
-    "django_vite",
     "anymail",
     "corsheaders",
     "django_hosts",
@@ -200,17 +199,6 @@ COOKIE_DOMAIN = os.getenv("COOKIE_DOMAIN", "")
 # TO BE CONFIRMED ...
 # see: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#samesitesamesite-value
 # SESSION_COOKIE_SAMESITE = "Strict"
-
-# Django-vite configuration for static files build with vite
-# https://github.com/MrBin99/django-vite
-DJANGO_VITE = {
-    "default": {
-        "dev_mode": DEBUG,
-        "manifest_path": Path(BASE_DIR, "static/svelte/manifest.json"),
-        "dev_server_port": 5173,
-        "static_url_prefix": "svelte",
-    }
-}
 
 
 # Static files (CSS, JavaScript, Images)

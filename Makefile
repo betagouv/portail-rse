@@ -2,6 +2,7 @@ include .env
 export
 
 run:
+	npm run dsfr
 	uv run honcho --procfile Procfile.dev start
 
 web:
