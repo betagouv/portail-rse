@@ -169,7 +169,7 @@ def test_attach_to_an_existing_entreprise(client, alice, entreprise_factory):
     assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
 
 
-def _attach_data_entreprise_etrangere(code_pays="MAR", identifiant="001234567000089"):
+def _attach_data_entreprise_etrangere(code_pays="MAR", identifiant="001561191000066"):
     return {
         "code_pays": code_pays,
         "identifiant": identifiant,
@@ -191,7 +191,7 @@ def test_cree_et_rattache_une_entreprise_etrangere_sans_appel_api(
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     content = html.unescape(response.content.decode("utf-8"))
     assert "L'entreprise a été ajoutée." in content
-    entreprise = Entreprise.objects.get(code_pays="MAR", identifiant="001234567000089")
+    entreprise = Entreprise.objects.get(code_pays="MAR", identifiant="001561191000066")
     assert entreprise.denomination == "Entreprise marocaine"
     assert entreprise.siren is None
     assert Habilitation.objects.pour(entreprise, alice).fonctions == "Présidente"
@@ -202,7 +202,7 @@ def test_rattache_une_entreprise_etrangere_existante(
     client, alice, entreprise_factory, mock_api_infos_entreprise
 ):
     entreprise = entreprise_factory(
-        code_pays="MAR", identifiant="001234567000089", denomination="Nom existant"
+        code_pays="MAR", identifiant="001561191000066", denomination="Nom existant"
     )
     client.force_login(alice)
 
@@ -218,21 +218,35 @@ def test_rattache_une_entreprise_etrangere_existante(
 def test_meme_identifiant_dans_deux_pays_differents_cree_deux_entreprises(
     client, alice, entreprise_factory
 ):
-    entreprise_francaise = entreprise_factory(identifiant="123456789")
+    entreprise_francaise = entreprise_factory(identifiant="001561191000066")
     client.force_login(alice)
 
     client.post(
         "/entreprises",
-        data=_attach_data_entreprise_etrangere(identifiant="123456789"),
+        data=_attach_data_entreprise_etrangere(identifiant="001561191000066"),
         follow=True,
     )
 
     entreprise_etrangere = Entreprise.objects.get(
-        code_pays="MAR", identifiant="123456789"
+        code_pays="MAR", identifiant="001561191000066"
     )
     assert entreprise_etrangere != entreprise_francaise
     assert entreprise_etrangere in alice.entreprises
     assert entreprise_francaise not in alice.entreprises
+
+
+def test_echec_ajout_entreprise_etrangere_avec_identifiant_invalide(client, alice):
+    client.force_login(alice)
+
+    response = client.post(
+        "/entreprises",
+        data=_attach_data_entreprise_etrangere(identifiant="001561191000065"),
+        follow=True,
+    )
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "Le numéro ICE est invalide." in content
+    assert Entreprise.objects.count() == 0
 
 
 def test_echec_ajout_entreprise_etrangere_sans_denomination(client, alice):

@@ -7,10 +7,13 @@ from django.forms.fields import validators
 from django.urls import reverse_lazy
 from django.utils.timezone import datetime
 from django.utils.timezone import timezone
+from stdnum.eu import vat
+from stdnum.ma import ice
 
 from .models import ActualisationCaracteristiquesAnnuelles
 from .models import CaracteristiquesAnnuelles
 from .models import CODE_PAYS_FRANCE
+from .models import CODE_PAYS_MAROC
 from .models import DENOMINATION_MAX_LENGTH
 from .models import Entreprise
 from .models import LIBELLES_IDENTIFIANT
@@ -18,6 +21,7 @@ from utils.forms import DateInput
 from utils.forms import DsfrForm
 from utils.forms import sans_balise_html
 from utils.pays import CODES_PAYS_ISO_3166_1
+from utils.pays import CODES_PAYS_UNION_EUROPEENNE
 
 
 ERREUR_CHAMP_MANQUANT_GROUPE = (
@@ -48,6 +52,32 @@ class SirenField(forms.CharField):
             int(value)
         except ValueError:
             raise ValidationError("Le siren est incorrect")
+
+
+# libellés du champ identifiant pour une entreprise étrangère
+LIBELLES_IDENTIFIANT_FORMULAIRE = {
+    **{
+        code: "Numéro de TVA intracommunautaire"
+        for code in CODES_PAYS_UNION_EUROPEENNE
+    },
+    CODE_PAYS_MAROC: "ICE",
+}
+
+
+def valide_identifiant_etranger(code_pays, identifiant):
+    """Renvoie l'identifiant sous forme compacte ou lève une ValidationError"""
+    if code_pays == CODE_PAYS_MAROC:
+        if not ice.is_valid(identifiant):
+            raise ValidationError("Le numéro ICE est invalide.")
+        return ice.compact(identifiant)
+    prefixe = CODES_PAYS_UNION_EUROPEENNE[code_pays]
+    if not identifiant.upper().startswith(prefixe):
+        raise ValidationError(
+            f"Le numéro de TVA intracommunautaire doit commencer par {prefixe}."
+        )
+    if not vat.is_valid(identifiant):
+        raise ValidationError("Le numéro de TVA intracommunautaire est invalide.")
+    return vat.compact(identifiant)
 
 
 class PreremplissageSirenForm(forms.Form):
@@ -88,8 +118,8 @@ class EntrepriseAttachForm(DsfrForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         code_pays = self["code_pays"].value()
-        if code_pays in LIBELLES_IDENTIFIANT:
-            self.fields["identifiant"].label = LIBELLES_IDENTIFIANT[code_pays]
+        if code_pays in LIBELLES_IDENTIFIANT_FORMULAIRE:
+            self.fields["identifiant"].label = LIBELLES_IDENTIFIANT_FORMULAIRE[code_pays]
 
     def clean_identifiant(self):
         return sans_balise_html(self.cleaned_data["identifiant"])
@@ -102,11 +132,20 @@ class EntrepriseAttachForm(DsfrForm):
 
     def clean(self):
         super().clean()
-        if self.cleaned_data.get("code_pays") == CODE_PAYS_FRANCE:
+        code_pays = self.cleaned_data.get("code_pays")
+        if code_pays == CODE_PAYS_FRANCE:
             champs_requis = ["siren"]
             self.cleaned_data["identifiant"] = self.cleaned_data.get("siren")
         else:
             champs_requis = ["identifiant", "denomination"]
+            identifiant = self.cleaned_data.get("identifiant")
+            if code_pays and identifiant:
+                try:
+                    self.cleaned_data["identifiant"] = valide_identifiant_etranger(
+                        code_pays, identifiant
+                    )
+                except ValidationError as erreur:
+                    self.add_error("identifiant", erreur)
         for champ in champs_requis:
             if champ not in self.errors and not self.cleaned_data.get(champ):
                 self.add_error(champ, "Ce champ est obligatoire.")

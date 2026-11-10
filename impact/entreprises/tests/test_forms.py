@@ -375,21 +375,21 @@ def test_entreprise_etrangere_valide():
     form = EntrepriseAttachForm(
         data={
             "code_pays": "MAR",
-            "identifiant": "001234567000089",
+            "identifiant": "001561191000066",
             "denomination": "Entreprise marocaine",
             "fonctions": "Présidente",
         }
     )
 
     assert form.is_valid(), form.errors
-    assert form.cleaned_data["identifiant"] == "001234567000089"
+    assert form.cleaned_data["identifiant"] == "001561191000066"
 
 
 @pytest.mark.parametrize("champ", ["identifiant", "denomination"])
 def test_entreprise_etrangere_refuse_les_chevrons(champ):
     data = {
         "code_pays": "MAR",
-        "identifiant": "001234567000089",
+        "identifiant": "001561191000066",
         "denomination": "Entreprise marocaine",
         "fonctions": "Présidente",
     }
@@ -414,12 +414,14 @@ def test_code_pays_inconnu_refuse():
     assert "code_pays" in form.errors
 
 
-@pytest.mark.parametrize("code_pays", ["DEU", "MAR"])
-def test_code_pays_disponible_accepte(code_pays):
+@pytest.mark.parametrize(
+    "code_pays,identifiant", [("DEU", "DE136695976"), ("MAR", "001561191000066")]
+)
+def test_code_pays_disponible_accepte(code_pays, identifiant):
     form = EntrepriseAttachForm(
         data={
             "code_pays": code_pays,
-            "identifiant": "123",
+            "identifiant": identifiant,
             "denomination": "Entreprise",
             "fonctions": "Présidente",
         }
@@ -444,7 +446,7 @@ def test_code_pays_non_disponible_refuse():
 
 @pytest.mark.parametrize(
     "code_pays,libelle",
-    [("DEU", "TVA intracommunautaire"), ("MAR", "ICE")],
+    [("DEU", "Numéro de TVA intracommunautaire"), ("MAR", "ICE")],
 )
 def test_libelle_identifiant_selon_le_pays(code_pays, libelle):
     form_initial = EntrepriseAttachForm(initial={"code_pays": code_pays})
@@ -452,3 +454,49 @@ def test_libelle_identifiant_selon_le_pays(code_pays, libelle):
 
     assert form_initial.fields["identifiant"].label == libelle
     assert form_soumis.fields["identifiant"].label == libelle
+
+
+@pytest.mark.parametrize(
+    "code_pays,saisie,identifiant",
+    [
+        ("DEU", "de 136 695 976", "DE136695976"),
+        ("GRC", "EL094259216", "EL094259216"),
+        ("MAR", "00 1561 191 000 066", "001561191000066"),
+    ],
+)
+def test_identifiant_etranger_valide_est_compacte(code_pays, saisie, identifiant):
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": code_pays,
+            "identifiant": saisie,
+            "denomination": "Entreprise",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert form.is_valid(), form.errors
+    assert form.cleaned_data["identifiant"] == identifiant
+
+
+@pytest.mark.parametrize(
+    "code_pays,identifiant,erreur",
+    [
+        ("DEU", "DE136695978", "Le numéro de TVA intracommunautaire est invalide."),
+        ("DEU", "136695976", "Le numéro de TVA intracommunautaire doit commencer par DE."),
+        ("AUT", "DE136695976", "Le numéro de TVA intracommunautaire doit commencer par AT."),
+        ("MAR", "001561191000065", "Le numéro ICE est invalide."),
+        ("MAR", "12345", "Le numéro ICE est invalide."),
+    ],
+)
+def test_identifiant_etranger_invalide_refuse(code_pays, identifiant, erreur):
+    form = EntrepriseAttachForm(
+        data={
+            "code_pays": code_pays,
+            "identifiant": identifiant,
+            "denomination": "Entreprise",
+            "fonctions": "Présidente",
+        }
+    )
+
+    assert not form.is_valid()
+    assert form.errors["identifiant"] == [erreur]

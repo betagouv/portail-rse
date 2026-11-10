@@ -531,32 +531,33 @@ CODES_PAYS_ISO_3166_1 = {
 }
 
 # codes alpha 3 des 27 États membres de l'Union européenne
-CODES_PAYS_UNION_EUROPEENNE = (
-    "DEU",  # Allemagne
-    "AUT",  # Autriche
-    "BEL",  # Belgique
-    "BGR",  # Bulgarie
-    "CYP",  # Chypre
-    "HRV",  # Croatie
-    "DNK",  # Danemark
-    "ESP",  # Espagne
-    "EST",  # Estonie
-    "FIN",  # Finlande
-    "FRA",  # France
-    "GRC",  # Grèce
-    "HUN",  # Hongrie
-    "IRL",  # Irlande
-    "ITA",  # Italie
-    "LVA",  # Lettonie
-    "LTU",  # Lituanie
-    "LUX",  # Luxembourg
-    "MLT",  # Malte
-    "NLD",  # Pays-Bas
-    "POL",  # Pologne
-    "PRT",  # Portugal
-    "CZE",  # Tchéquie
-    "ROU",  # Roumanie
-    "SVK",  # Slovaquie
-    "SVN",  # Slovénie
-    "SWE",  # Suède
-)
+# et le préfixe de leur numéro de TVA intracommunautaire correspondant
+CODES_PAYS_UNION_EUROPEENNE = {
+    "DEU": "DE",  # Allemagne
+    "AUT": "AT",  # Autriche
+    "BEL": "BE",  # Belgique
+    "BGR": "BG",  # Bulgarie
+    "CYP": "CY",  # Chypre
+    "HRV": "HR",  # Croatie
+    "DNK": "DK",  # Danemark
+    "ESP": "ES",  # Espagne
+    "EST": "EE",  # Estonie
+    "FIN": "FI",  # Finlande
+    "FRA": "FR",  # France
+    "GRC": "EL",  # Grèce
+    "HUN": "HU",  # Hongrie
+    "IRL": "IE",  # Irlande
+    "ITA": "IT",  # Italie
+    "LVA": "LV",  # Lettonie
+    "LTU": "LT",  # Lituanie
+    "LUX": "LU",  # Luxembourg
+    "MLT": "MT",  # Malte
+    "NLD": "NL",  # Pays-Bas
+    "POL": "PL",  # Pologne
+    "PRT": "PT",  # Portugal
+    "CZE": "CZ",  # Tchéquie
+    "ROU": "RO",  # Roumanie
+    "SVK": "SK",  # Slovaquie
+    "SVN": "SI",  # Slovénie
+    "SWE": "SE",  # Suède
+}

@@ -23,6 +23,7 @@ dependencies = [
     "django-cors-headers~=4.7.0",
     "django-storages[s3]~=1.14.5",
     "filetype~=1.2",
+    "python-stdnum~=2.2",
     # tables de travail analytics / Metabase,
     "aiohttp~=3.14.3",
     "responses~=0.25.8",
