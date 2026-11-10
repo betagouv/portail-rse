@@ -18,6 +18,9 @@
                 <p class="fr-message fr-message--info" data-regle="majuscule">1 majuscule minimum</p>
                 <p class="fr-message fr-message--info" data-regle="chiffre">1 chiffre minimum</p>
                 <p class="fr-message fr-message--info" data-regle="special">1 caractère spécial minimum</p>
+                {% for error in password1.errors %}
+                    <p class="fr-message fr-message--error">{{ error }}</p>
+                {% endfor %}
             </div>
             <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
                 <input aria-label="Afficher le mot de passe" id="{{ password1.id_for_label }}-show" type="checkbox">
@@ -38,6 +41,9 @@
             </div>
             <div class="fr-messages-group" id="{{ password2.id_for_label }}-input-messages" aria-live="assertive">
                 <p class="fr-message fr-message--info" data-regle="identique">Les mots de passe doivent être identiques</p>
+                {% for error in password2.errors %}
+                    <p class="fr-message fr-message--error">{{ error }}</p>
+                {% endfor %}
             </div>
             <div class="fr-password__checkbox fr-checkbox-group fr-checkbox-group--sm">
                 <input aria-label="Afficher le mot de passe" id="{{ password2.id_for_label }}-show" type="checkbox">
