@@ -210,7 +210,7 @@ def test_bdese_step_coche_la_bascule_des_champs_externes(
     bascule_externe = re.search(
         rf'<input[^>]*data-champ-externe="{champ_externe}"[^>]*>', content
     ).group()
-    assert f'data-conteneur-id="svelte-container-id_{champ_externe}"' in bascule_externe
+    assert f'data-conteneur-id="container-id_{champ_externe}"' in bascule_externe
     assert 'data-champs-externes-id="id_external_fields_in_step"' in bascule_externe
     assert "checked" in bascule_externe
     bascule_interne = re.search(

@@ -2,16 +2,16 @@
 {% load filters %}
 
 {% block boolean_field %}
-    {% with toggle_id=field|svelte_toggle_id container_id=field|svelte_container_id%}
+    {% with toggle_id=field|toggle_id container_id=field|container_id%}
         <div id="{{ container_id }}" class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col">
-                <div class="fr-checkbox-group svelte-internal-field">
+                <div class="fr-checkbox-group internal-field">
                     {{ field }}
                     <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                         <span class="fr-hint-text">{{ field.help_text }}</span>
                     </label>
                 </div>
-                <div class="svelte-external-field" style="display: none">
+                <div class="external-field" style="display: none">
                     <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
                         <span class="fr-hint-text">{{ field.help_text }}</span>
                     </label>
@@ -26,7 +26,7 @@
 {% endblock %}
 
 {% block field %}
-    {% with toggle_id=field|svelte_toggle_id container_id=field|svelte_container_id%}
+    {% with toggle_id=field|toggle_id container_id=field|container_id%}
         <div class="fr-grid-row fr-grid-row--gutters fr-grid-row--middle">
             <div class="fr-col">
                 <label class="fr-label" for="{{ field.id_for_label }}">{{ field.label }}
@@ -38,11 +38,11 @@
             </div>
         </div>
         <div id="{{ container_id }}">
-            <div class="svelte-external-field" style="display: none">
+            <div class="external-field" style="display: none">
                 <span class="fr-hint-text">Cette information est remplie dans un autre document.</span>
             </div>
 
-            <div class="svelte-internal-field">
+            <div class="internal-field">
                 <div class="fr-col-12">
                     {{ field }}
                 </div>
