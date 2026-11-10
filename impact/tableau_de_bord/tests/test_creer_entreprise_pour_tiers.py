@@ -96,14 +96,14 @@ def test_rattachement_entreprise_sans_administrateur_avec_email_reussit(
     mock_email, client, conseiller_rse, entreprise_factory
 ):
     """Le rattachement reussit avec email si l'entreprise n'a pas d'administrateur."""
-    entreprise = entreprise_factory(identifiant="345678901")
+    entreprise = entreprise_factory(identifiant="345678908")
     # Pas d'administrateur ajoute
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "345678901",
+            "siren": "345678908",
             "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,
@@ -135,14 +135,14 @@ def test_creation_entreprise_reussie(
     mock_email, mock_search, client, conseiller_rse, entreprise_factory
 ):
     """Un conseiller peut creer une entreprise pour un tiers."""
-    entreprise = entreprise_factory(identifiant="111222333")
+    entreprise = entreprise_factory(identifiant="111222337")
     mock_search.return_value = entreprise
 
     client.force_login(conseiller_rse)
     response = client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "111222333",
+            "siren": "111222337",
             "email_futur_administrateur": "futur@entreprise.test",
         },
     )
@@ -172,14 +172,14 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """L'email d'invitation est envoyé avec les bonnes données (sans mock)."""
-    entreprise = entreprise_factory(identifiant="111000111")
+    entreprise = entreprise_factory(identifiant="111000113")
     # Pas d'administrateur
 
     client.force_login(conseiller_rse)
     client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "111000111",
+            "siren": "111000113",
             "email_futur_administrateur": "futur@entreprise.test",
             "fonctions": "Consultant CSRD",
         },
@@ -203,13 +203,13 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """L'URL dans l'email pointe vers la landing ProConnect pour un nouvel utilisateur."""
-    entreprise = entreprise_factory(identifiant="333000333")
+    entreprise = entreprise_factory(identifiant="333000339")
 
     client.force_login(conseiller_rse)
     client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "333000333",
+            "siren": "333000339",
             "email_futur_administrateur": "inconnu@nouveau.test",  # Email inexistant
             "fonctions": "Consultant",
         },
@@ -229,13 +229,13 @@ def test_contenu_email_variables_template(
     client, conseiller_rse, entreprise_factory, mailoutbox
 ):
     """Les variables du template email sont les mêmes que pour l'invitation standard."""
-    entreprise = entreprise_factory(identifiant="444000444")
+    entreprise = entreprise_factory(identifiant="444000442")
 
     client.force_login(conseiller_rse)
     client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "444000444",
+            "siren": "444000442",
             "email_futur_administrateur": "futur@entreprise.test",
         },
         follow=True,

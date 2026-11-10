@@ -94,7 +94,7 @@ def test_rattachement_entreprise_inexistante(
 
 def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_factory):
     """Un conseiller ne peut pas se rattacher deux fois à la même entreprise."""
-    entreprise = entreprise_factory(identifiant="123456789")
+    entreprise = entreprise_factory(identifiant="123456782")
     Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
     Habilitation.ajouter(entreprise, conseiller_rse, UserRole.CONTRIBUTEUR)
 
@@ -102,7 +102,7 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
     response = client.post(
         reverse("tableau_de_bord:conseiller"),
         {
-            "siren": "123456789",
+            "siren": "123456782",
             "email_futur_administrateur": "futur@proprietaire.test",
         },
         follow=True,

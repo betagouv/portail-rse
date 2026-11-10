@@ -2,8 +2,10 @@ from dataclasses import dataclass
 from functools import partial
 from typing import Callable
 
+from django.conf import settings
 from django.core.exceptions import ValidationError
 from stdnum.eu import vat
+from stdnum.fr import siren
 from stdnum.ma import ice
 
 # https://www.insee.fr/fr/information/2028273
@@ -574,6 +576,15 @@ CODE_PAYS_FRANCE = "FRA"
 CODE_PAYS_MAROC = "MAR"
 
 
+def _valide_siren(identifiant):
+    """Renvoie le SIREN sous forme compacte ou lève une ValidationError"""
+    if identifiant == settings.SIREN_ENTREPRISE_TEST:
+        return identifiant
+    if not siren.is_valid(identifiant):
+        raise ValidationError("Le siren est incorrect")
+    return siren.compact(identifiant)
+
+
 def _valide_tva(prefixe, identifiant):
     """Renvoie le numéro de TVA sous forme compacte ou lève une ValidationError"""
     if not identifiant.upper().startswith(prefixe):
@@ -597,8 +608,7 @@ class Pays:
     code: str
     libelle_identifiant: str
     libelle_identifiant_formulaire: str
-    # None pour la France dont le SIREN est vérifié via l'API
-    valide_identifiant: Callable[[str], str] | None = None
+    valide_identifiant: Callable[[str], str]
 
     @property
     def nom(self):
@@ -608,7 +618,7 @@ class Pays:
 PAYS_DISPONIBLES = {
     pays.code: pays
     for pays in [
-        Pays(CODE_PAYS_FRANCE, "SIREN", "SIREN"),
+        Pays(CODE_PAYS_FRANCE, "SIREN", "SIREN", _valide_siren),
         *(
             Pays(
                 code,

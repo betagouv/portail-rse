@@ -322,6 +322,19 @@ def test_erreur_si_siren_invalide():
     assert bound_form.errors["siren"] == ["Le siren est incorrect"]
 
 
+def test_erreur_si_cle_de_controle_du_siren_invalide():
+    bound_form = PreremplissageSirenForm({"siren": "123456789"})
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors["siren"] == ["Le siren est incorrect"]
+
+
+def test_siren_entreprise_test_accepte(settings):
+    bound_form = PreremplissageSirenForm({"siren": settings.SIREN_ENTREPRISE_TEST})
+
+    assert bound_form.is_valid(), bound_form.errors
+
+
 @pytest.mark.parametrize("fonctions", ["<script>", "Présidente>", "<b"])
 def test_fonctions_avec_chevrons_refusee(fonctions):
     form = EntrepriseAttachForm(
@@ -334,7 +347,7 @@ def test_fonctions_avec_chevrons_refusee(fonctions):
 
 def test_fonctions_sans_chevron_acceptee():
     form = EntrepriseAttachForm(
-        data={"code_pays": "FRA", "siren": "123456789", "fonctions": "Présidente"}
+        data={"code_pays": "FRA", "siren": "123456782", "fonctions": "Présidente"}
     )
 
     assert form.is_valid(), form.errors
@@ -352,14 +365,14 @@ def test_entreprise_francaise_utilise_le_siren_comme_identifiant():
     form = EntrepriseAttachForm(
         data={
             "code_pays": "FRA",
-            "siren": "123456789",
+            "siren": "123456782",
             "identifiant": "autre",
             "fonctions": "Présidente",
         }
     )
 
     assert form.is_valid(), form.errors
-    assert form.cleaned_data["identifiant"] == "123456789"
+    assert form.cleaned_data["identifiant"] == "123456782"
 
 
 def test_entreprise_etrangere_exige_identifiant_et_denomination():

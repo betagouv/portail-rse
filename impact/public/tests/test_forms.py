@@ -6,7 +6,7 @@ from public.forms import SimulationForm
 
 def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
     data = {
-        "siren": "123456789",
+        "siren": "123456782",
         "denomination": "Entreprise SAS",
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
@@ -31,7 +31,7 @@ def test_ignore_bilan_et_ca_consolides_lorsque_pas_de_comptes_consolides():
 
 def test_ignore_effectif_groupe_societe_mere_et_comptes_consolides_lorsque_pas_de_groupe():
     data = {
-        "siren": "123456789",
+        "siren": "123456782",
         "denomination": "Entreprise SAS",
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
@@ -59,7 +59,7 @@ def test_ignore_effectif_groupe_societe_mere_et_comptes_consolides_lorsque_pas_d
 
 def test_tronque_la_raison_sociale_si_trop_longue():
     data = {
-        "siren": "123456789",
+        "siren": "123456782",
         "denomination": "a" * (DENOMINATION_MAX_LENGTH + 1),
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
@@ -184,7 +184,7 @@ def test_erreur_si_effectif_superieur_a_effectif_groupe():
 
 def test_ok_si_effectif_egal_a_effectif_groupe():
     data = {
-        "siren": "123456789",
+        "siren": "123456782",
         "denomination": "Entreprise SAS",
         "categorie_juridique_sirene": 5710,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,

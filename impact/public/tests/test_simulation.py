@@ -229,7 +229,7 @@ def test_simulation_par_un_utilisateur_authentifie_sur_une_nouvelle_entreprise(
 
     data = {
         "denomination": "Une autre entreprise SAS",
-        "siren": "000000002",
+        "siren": "000000000",
         "categorie_juridique_sirene": 5200,
         "code_pays_etranger_sirene": CODE_PAYS_PORTUGAL,
         "code_NAF": "01.11Z",

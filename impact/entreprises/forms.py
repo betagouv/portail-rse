@@ -44,10 +44,7 @@ class SirenField(forms.CharField):
         super().validate(value)
         if value in self.empty_values:
             return
-        try:
-            int(value)
-        except ValueError:
-            raise ValidationError("Le siren est incorrect")
+        PAYS_DISPONIBLES[CODE_PAYS_FRANCE].valide_identifiant(value)
 
 
 class PreremplissageSirenForm(forms.Form):
