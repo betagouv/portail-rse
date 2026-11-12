@@ -16,6 +16,7 @@ from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 from reglementations.views import REGLEMENTATIONS
+from vsme.models import RapportVSME
 
 RESUME_URL = "/tableau-de-bord/{id_public}/"
 REGLEMENTATIONS_URL = "/tableau-de-bord/{id_public}/reglementations/"
@@ -196,6 +197,23 @@ def test_tableau_de_bord_resume(est_soumis, client, entreprise_factory, alice, m
     assert len(context["habilitations"]) == 1
     assert len(context["invitations"]) == 0
     assert context["nombre_analyses_ia"] == 2
+
+
+def test_tableau_de_bord_resume_affiche_le_pourcentage_vsme(
+    client, entreprise_factory, alice, mocker
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    RapportVSME.objects.create(
+        entreprise=entreprise,
+        annee=entreprise.dernier_exercice_clos.date_cloture.year,
+    )
+    mocker.patch.object(RapportVSME, "progression", return_value={"pourcent": 42})
+    client.force_login(alice)
+
+    response = client.get(RESUME_URL.format(id_public=entreprise.id_public))
+
+    assert response.status_code == 200
+    assert response.context["pourcentage_vsme"] == 42
 
 
 def test_tableau_de_bord_resume_entreprise_non_qualifiee_affiche_un_avertissement(
