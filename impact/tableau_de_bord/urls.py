@@ -7,7 +7,7 @@ app_name = "tableau_de_bord"
 urlpatterns = [
     path(
         "tableau-de-bord/",
-        views.tableau_de_bord,
+        views.resume,
         name="resume",
     ),
     path(
@@ -37,7 +37,7 @@ urlpatterns = [
     ),
     path(
         "tableau-de-bord/<uuid:id_public>/",
-        views.tableau_de_bord,
+        views.resume,
         name="resume",
     ),
     re_path(
@@ -66,7 +66,7 @@ urlpatterns = [
     ),
     path(
         "tableau-de-bord-conseiller",
-        views.tableau_de_bord_conseiller,
+        views.conseiller,
         name="conseiller",
     ),
 ]
