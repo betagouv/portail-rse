@@ -613,7 +613,7 @@ def gestion_csrd(request, id_public=None, id_etape="introduction"):
                     "Il n'y a pas encore de rapport CSRD créé pour cette année (possible uniquement en ayant le rôle administrateur).",
                 )
                 return redirect(
-                    "tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public
+                    "tableau_de_bord:resume", id_public=entreprise.id_public
                 )
 
             # on récupére le rapport officiel,

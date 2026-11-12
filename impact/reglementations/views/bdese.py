@@ -325,7 +325,7 @@ def bdese_step(request, id_public, annee, step):
                 "Aucune BDESE existante pour l'instant (création possible par un utilisateur administrateur)",
             )
             return redirect(
-                "tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public
+                "tableau_de_bord:resume", id_public=entreprise.id_public
             )
         bdese = bdese.first()
 
@@ -521,5 +521,5 @@ def toggle_bdese_completion(request, id_public, annee):
             success_message = "La BDESE a été marquée comme non actualisée"
         message_success_sans_html(request, success_message)
     return redirect(
-        "tableau_de_bord:tableau_de_bord", id_public=bdese.entreprise.id_public
+        "tableau_de_bord:resume", id_public=bdese.entreprise.id_public
     )

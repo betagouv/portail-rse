@@ -17,7 +17,7 @@ def test_index_avec_utilisateur_authentifie_redirige_vers_le_tableau_de_bord(
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "tableau_de_bord:tableau_de_bord",
+        "tableau_de_bord:resume",
         kwargs={
             "id_public": entreprise.id_public,
         },
@@ -36,7 +36,7 @@ def test_index_accessible_avec_entreprise_non_qualifiee_redirige_vers_le_tableau
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "tableau_de_bord:tableau_de_bord",
+        "tableau_de_bord:resume",
         kwargs={
             "id_public": entreprise_non_qualifiee.id_public,
         },

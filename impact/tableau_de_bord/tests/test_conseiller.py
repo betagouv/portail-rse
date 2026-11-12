@@ -11,7 +11,7 @@ def test_tableau_de_bord_conseiller_acces_refuse_non_conseiller(client, alice):
     """Un utilisateur non-conseiller ne peut pas accéder au tableau de bord conseiller."""
     client.force_login(alice)
 
-    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+    response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 302
 
@@ -20,7 +20,7 @@ def test_tableau_de_bord_conseiller_affiche_page(client, conseiller_rse):
     """Un conseiller RSE peut accéder au tableau de bord conseiller."""
     client.force_login(conseiller_rse)
 
-    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+    response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 200
     assert "Espace Conseiller RSE" in response.content.decode()
@@ -37,7 +37,7 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     Habilitation.ajouter(entreprise2, conseiller_rse, UserRole.CONTRIBUTEUR)
 
     client.force_login(conseiller_rse)
-    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+    response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 200
     content = response.content.decode()
@@ -54,7 +54,7 @@ def test_rattachement_entreprise_existante_avec_administrateur(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {"siren": "123456789", "fonctions": "Consultant CSRD"},
     )
 
@@ -73,7 +73,7 @@ def test_rattachement_entreprise_inexistante(
     SIREN = mock_api_infos_entreprise.return_value["siren"]
 
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": SIREN,
             "email_futur_administrateur": "futur@entreprise.test",
@@ -102,7 +102,7 @@ def test_rattachement_entreprise_sans_administrateur(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "123456789",
             "email_futur_administrateur": "futur@proprietaire.test",
@@ -129,7 +129,7 @@ def test_rattachement_deja_existant(client, conseiller_rse, alice, entreprise_fa
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "123456789",
             "email_futur_administrateur": "futur@proprietaire.test",
@@ -152,14 +152,14 @@ def test_lien_espace_conseiller_visible_pour_conseiller(
     client.force_login(conseiller_rse)
     response = client.get(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={"id_public": entreprise.id_public},
         )
     )
 
     content = response.content.decode()
     assert "Espace conseillers RSE" in content
-    assert reverse("tableau_de_bord:tableau_de_bord_conseiller") in content
+    assert reverse("tableau_de_bord:conseiller") in content
 
 
 def test_lien_espace_conseiller_invisible_pour_non_conseiller(
@@ -172,7 +172,7 @@ def test_lien_espace_conseiller_invisible_pour_non_conseiller(
     client.force_login(alice)
     response = client.get(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={"id_public": entreprise.id_public},
         )
     )

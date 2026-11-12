@@ -95,7 +95,7 @@ def invitation(request, id_invitation, code):
     if invitation.date_acceptation:
         message_warning_sans_html(request, "Cette invitation a déjà été acceptée.")
         return redirect(
-            "tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public
+            "tableau_de_bord:resume", invitation.entreprise.id_public
         )
 
     # Si utilisateur déjà connecté
@@ -238,10 +238,10 @@ def post_login_dispatch(request):
 
     # Si c'est un conseiller RSE, rediriger vers son tableau de bord
     if request.user.is_conseiller_rse:
-        return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+        return redirect("tableau_de_bord:conseiller")
 
     # Comportement par défaut : tableau de bord entreprise
-    return redirect("tableau_de_bord:tableau_de_bord")
+    return redirect("tableau_de_bord:resume")
 
 
 @login_required()
@@ -268,11 +268,11 @@ def choix_type_utilisateur(request):
                     request,
                     "Vous êtes maintenant identifié comme conseiller RSE.",
                 )
-                return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+                return redirect("tableau_de_bord:conseiller")
             else:
                 request.user.is_conseiller_rse = False
                 request.user.save()
-                return redirect("tableau_de_bord:tableau_de_bord")
+                return redirect("tableau_de_bord:resume")
 
     else:
         form = ChoixTypeUtilisateurForm()
@@ -315,7 +315,7 @@ def accepter_invitation(request, id_invitation, code):
             "Cette invitation a déjà été acceptée.",
         )
         return redirect(
-            "tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public
+            "tableau_de_bord:resume", invitation.entreprise.id_public
         )
 
     if request.user.is_conseiller_rse is None:
@@ -330,4 +330,4 @@ def accepter_invitation(request, id_invitation, code):
         request,
         f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
     )
-    return redirect("tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public)
+    return redirect("tableau_de_bord:resume", invitation.entreprise.id_public)

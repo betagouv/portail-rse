@@ -671,7 +671,7 @@ def test_toggle_bdese_completion(client, bdese_avec_accord, alice):
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("tableau_de_bord:tableau_de_bord", args=[entreprise.id_public]), 302)
+        (reverse("tableau_de_bord:resume", args=[entreprise.id_public]), 302)
     ]
     bdese_avec_accord.refresh_from_db()
     assert bdese_avec_accord.is_complete
@@ -710,7 +710,7 @@ def test_toggle_bdese_completion_sans_bdese_existante(
 
     assert response.status_code == 200
     assert response.redirect_chain == [
-        (reverse("tableau_de_bord:tableau_de_bord", args=[entreprise.id_public]), 302)
+        (reverse("tableau_de_bord:resume", args=[entreprise.id_public]), 302)
     ]
     bdese_avec_accord = BDESEAvecAccord.objects.get(entreprise=entreprise)
     assert bdese_avec_accord.is_complete

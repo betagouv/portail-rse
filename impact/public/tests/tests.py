@@ -25,7 +25,7 @@ def test_redirection_de_la_page_index_vers_tableau_de_bord_si_l_utilisateur_est_
 
     assert response.status_code == 200
     assert response.redirect_chain[0] == (
-        reverse("tableau_de_bord:tableau_de_bord"),
+        reverse("tableau_de_bord:resume"),
         302,
     )
 

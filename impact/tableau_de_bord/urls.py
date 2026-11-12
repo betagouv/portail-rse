@@ -8,7 +8,7 @@ urlpatterns = [
     path(
         "tableau-de-bord/",
         views.tableau_de_bord,
-        name="tableau_de_bord",
+        name="resume",
     ),
     path(
         "tableau-de-bord/reglementations/",
@@ -38,7 +38,7 @@ urlpatterns = [
     path(
         "tableau-de-bord/<uuid:id_public>/",
         views.tableau_de_bord,
-        name="tableau_de_bord",
+        name="resume",
     ),
     re_path(
         r"^tableau-de-bord/(?P<siren>\d{9})/$",
@@ -67,6 +67,6 @@ urlpatterns = [
     path(
         "tableau-de-bord-conseiller",
         views.tableau_de_bord_conseiller,
-        name="tableau_de_bord_conseiller",
+        name="conseiller",
     ),
 ]

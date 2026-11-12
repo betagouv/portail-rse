@@ -86,7 +86,7 @@
                                                         ({{ item.entreprise.dernier_exercice_clos }})
                                                     </td>
                                                     <td>
-                                                        <a href="{% url 'tableau_de_bord:tableau_de_bord' item.entreprise.id_public %}" class="fr-btn fr-btn--sm fr-icon-arrow-right-line fr-btn--icon-left">
+                                                        <a href="{% url 'tableau_de_bord:resume' item.entreprise.id_public %}" class="fr-btn fr-btn--sm fr-icon-arrow-right-line fr-btn--icon-left">
                                                             Accéder au tableau de bord
                                                         </a>
                                                     </td>
@@ -110,7 +110,7 @@
                 <h2>Accompagner une nouvelle entreprise</h2>
                 <p>Ajouter une entreprise pour créer son tableau de bord sur le Portail RSE.</p>
 
-                <form method="post" action="{% url 'tableau_de_bord:tableau_de_bord_conseiller' %}">
+                <form method="post" action="{% url 'tableau_de_bord:conseiller' %}">
                     {% csrf_token %}
 
                     {% include 'users/fragments/siren_field_conseiller.html' %}

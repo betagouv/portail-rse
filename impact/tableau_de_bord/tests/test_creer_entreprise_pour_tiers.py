@@ -19,7 +19,7 @@ def test_acces_refuse_non_conseiller(client, alice):
     """Un utilisateur non-conseiller ne peut pas acceder au tableau de bord conseiller."""
     client.force_login(alice)
 
-    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+    response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 302
 
@@ -29,7 +29,7 @@ def test_acces_autorise_conseiller(client, conseiller_rse):
     """Un conseiller RSE peut acceder au tableau de bord."""
     client.force_login(conseiller_rse)
 
-    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+    response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 200
     assert "Accompagner cette entreprise" in response.content.decode()
@@ -48,7 +48,7 @@ def test_rattachement_entreprise_existante_avec_administrateur(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "123456789",
             "email_futur_administrateur": "futur@entreprise.test",
@@ -76,7 +76,7 @@ def test_rattachement_entreprise_sans_administrateur_sans_email_echoue(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "234567890",
             "email_futur_administrateur": "",
@@ -99,7 +99,7 @@ def test_rattachement_entreprise_sans_administrateur_avec_email_reussit(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "345678901",
             "email_futur_administrateur": "futur@entreprise.test",
@@ -138,7 +138,7 @@ def test_creation_entreprise_reussie(
 
     client.force_login(conseiller_rse)
     response = client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "111222333",
             "email_futur_administrateur": "futur@entreprise.test",
@@ -175,7 +175,7 @@ def test_email_invitation_envoye_avec_bonnes_donnees(
 
     client.force_login(conseiller_rse)
     client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "111000111",
             "email_futur_administrateur": "futur@entreprise.test",
@@ -205,7 +205,7 @@ def test_email_invitation_nouvel_utilisateur_route_proconnect(
 
     client.force_login(conseiller_rse)
     client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "333000333",
             "email_futur_administrateur": "inconnu@nouveau.test",  # Email inexistant
@@ -231,7 +231,7 @@ def test_contenu_email_variables_template(
 
     client.force_login(conseiller_rse)
     client.post(
-        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        reverse("tableau_de_bord:conseiller"),
         {
             "siren": "444000444",
             "email_futur_administrateur": "futur@entreprise.test",

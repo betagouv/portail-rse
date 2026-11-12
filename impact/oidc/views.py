@@ -138,7 +138,7 @@ def _envoie_email_aux_administrateurs_actuels(request, entreprise):
     email.template_id = settings.BREVO_ARRIVEE_NOUVEAU_MEMBRE_TEMPLATE
     path = request.build_absolute_uri(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={
                 "id_public": entreprise.id_public,
             },

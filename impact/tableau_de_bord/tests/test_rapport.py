@@ -18,7 +18,7 @@ def test_page_intermediaire_de_rapport_avec_utilisateur_authentifie_redirige_ver
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "tableau_de_bord:tableau_de_bord",
+        "tableau_de_bord:resume",
         kwargs={
             "id_public": entreprise.id_public,
         },
@@ -37,7 +37,7 @@ def test_page_intermediaire_de_rapport_avec_entreprise_non_qualifiee_redirige_ve
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "tableau_de_bord:tableau_de_bord",
+        "tableau_de_bord:resume",
         kwargs={
             "id_public": entreprise_non_qualifiee.id_public,
         },
@@ -51,5 +51,5 @@ def test_page_de_rapport_generique_redirige_vers_le_tableau_de_bord_generique(
 
     assert response.status_code == 302
     assert response.url == reverse(
-        "tableau_de_bord:tableau_de_bord",
+        "tableau_de_bord:resume",
     )

@@ -62,7 +62,7 @@ def test_acceptation_cree_habilitation(client, utilisateur_invite, invitation):
     assert response.redirect_chain == [
         (
             reverse(
-                "tableau_de_bord:tableau_de_bord",
+                "tableau_de_bord:resume",
                 kwargs={"id_public": invitation.entreprise.id_public},
             ),
             302,
@@ -127,7 +127,7 @@ def test_invitation_deja_acceptee_redirige(client, utilisateur_invite, invitatio
     assert response.redirect_chain == [
         (
             reverse(
-                "tableau_de_bord:tableau_de_bord",
+                "tableau_de_bord:resume",
                 kwargs={"id_public": invitation.entreprise.id_public},
             ),
             302,
