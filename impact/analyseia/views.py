@@ -35,7 +35,7 @@ from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from reglementations.enums import ESRS
 from reglementations.views.csrd.csrd import contexte_d_etape
-from tableau_de_bord.views import tableau_de_bord_menu_context
+from tableau_de_bord.context import tableau_de_bord_menu_context
 from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 from utils.xlsx import xlsx_response
