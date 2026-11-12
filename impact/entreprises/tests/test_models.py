@@ -79,14 +79,16 @@ def test_pas_de_siren_pour_une_entreprise_etrangere(db):
 
 
 
-def test_est_francaise(db):
+def test_est_francaise_ou_etrangere(db):
     entreprise_francaise = Entreprise.objects.create(identifiant="123456789")
     entreprise_etrangere = Entreprise.objects.create(
         code_pays="MAR", identifiant="001234567000089"
     )
 
     assert entreprise_francaise.est_francaise
+    assert not entreprise_francaise.est_etrangere
     assert not entreprise_etrangere.est_francaise
+    assert entreprise_etrangere.est_etrangere
 
 
 def test_pays(db):

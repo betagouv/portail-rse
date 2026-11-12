@@ -14,7 +14,7 @@ def calculer_metriques_entreprise(entreprise):
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Calcul du nombre de reglementations applicables
-    if not entreprise.est_francaise:
+    if entreprise.est_etrangere:
         # une entreprise étrangère n'a accès qu'à la VSME
         nombre_reglementations_applicables = None
     elif caracteristiques:
