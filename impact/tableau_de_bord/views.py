@@ -45,7 +45,7 @@ def redirection_tableau_de_bord_par_siren(request, siren):
     )
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
-    return redirect("tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public)
+    return redirect("tableau_de_bord:resume", id_public=entreprise.id_public)
 
 
 @login_required
@@ -102,7 +102,7 @@ def index(request, entreprise):
     On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
     utilisateur viendrait sur cette page.
     """
-    return redirect("tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public)
+    return redirect("tableau_de_bord:resume", id_public=entreprise.id_public)
 
 
 @login_required
@@ -114,7 +114,7 @@ def rapport(request, entreprise):
     On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
     utilisateur viendrait sur cette page.
     """
-    return redirect("tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public)
+    return redirect("tableau_de_bord:resume", id_public=entreprise.id_public)
 
 
 def rapport_generique(request):
@@ -124,7 +124,7 @@ def rapport_generique(request):
     utilisateur viendrait sur cette page.
     Aucune vérification, la page suivante s'en charge.
     """
-    return redirect("tableau_de_bord:tableau_de_bord")
+    return redirect("tableau_de_bord:resume")
 
 
 @login_required
@@ -306,7 +306,7 @@ def tableau_de_bord_conseiller(request):
                             request,
                             f"Vous êtes déjà rattaché à l'entreprise {entreprise.denomination}.",
                         )
-                        return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+                        return redirect("tableau_de_bord:conseiller")
 
                     # CAS 1a : A un administrateur → pas de rattachement
                     if entreprise.administrateurs:
@@ -314,7 +314,7 @@ def tableau_de_bord_conseiller(request):
                             request,
                             f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
                         )
-                        return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+                        return redirect("tableau_de_bord:conseiller")
 
                     # CAS 1b : Pas d'administrateur → rattachement + invitation
                     else:
@@ -337,7 +337,7 @@ def tableau_de_bord_conseiller(request):
                             f"Vous avez été rattaché à l'entreprise {entreprise.denomination}. "
                             f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
                         )
-                        return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+                        return redirect("tableau_de_bord:conseiller")
 
                 # CAS 2 : Entreprise n'existe pas → création + rattachement + invitation
                 else:
@@ -361,7 +361,7 @@ def tableau_de_bord_conseiller(request):
                         f"L'entreprise {entreprise.denomination} a été créée. "
                         f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
                     )
-                    return redirect("tableau_de_bord:tableau_de_bord_conseiller")
+                    return redirect("tableau_de_bord:conseiller")
 
             except APIError as exception:
                 message_error_sans_html(request, str(exception))

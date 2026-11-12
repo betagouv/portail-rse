@@ -54,7 +54,7 @@ def invitation(request, id_public):
             )
             message_success_sans_html(request, "L'invitation a été envoyée.")
         return redirect(
-            reverse("tableau_de_bord:tableau_de_bord", args=[entreprise.id_public])
+            reverse("tableau_de_bord:resume", args=[entreprise.id_public])
         )
     else:
         request.session["invitation_form"] = request.POST
@@ -63,7 +63,7 @@ def invitation(request, id_public):
             "L'invitation a échoué car le formulaire contient des erreurs.",
         )
         return redirect(
-            reverse("tableau_de_bord:tableau_de_bord", args=[entreprise.id_public])
+            reverse("tableau_de_bord:resume", args=[entreprise.id_public])
         )
 
 
@@ -199,7 +199,7 @@ def gerer_habilitation(request, id: int):
     # 303 nécessaire (changement de méthode)
     return HttpResponseRedirectSeeOther(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             args=[habilitation.entreprise.id_public],
         )
     )

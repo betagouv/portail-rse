@@ -81,7 +81,7 @@ def test_administrateur_peut_inviter(
     # un simple login ne met pas l'entreprise courante en session
     client.get(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={"id_public": entreprise.id_public},
         )
     )
@@ -180,7 +180,7 @@ def test_attaque_reelle_avec_session_etablie(
     client.force_login(alice)
     response = client.get(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={"id_public": entreprise_alice.id_public},
         )
     )
@@ -226,7 +226,7 @@ def test_attaque_gerer_habilitation_autre_entreprise(
     client.force_login(alice)
     response = client.get(
         reverse(
-            "tableau_de_bord:tableau_de_bord",
+            "tableau_de_bord:resume",
             kwargs={"id_public": entreprise_alice.id_public},
         )
     )
