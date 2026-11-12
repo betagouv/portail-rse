@@ -1,6 +1,7 @@
 from django.conf import settings
-from django.core.exceptions import ObjectDoesNotExist
+from django.db.models import Prefetch
 
+from habilitations.models import Habilitation
 from users.models import User
 from utils.htmx import HttpResponseHXRedirect
 from utils.htmx import is_htmx
@@ -11,29 +12,18 @@ class ExtendUserMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        # en requête plutôt qu'en session :
-        # - overhead minime
-        # - pas de serialisation nécessaire
-        # - utilisation des habilitations omniprésente désormais
-        request.habilitations = []
-        request.entreprises = []
-
         if request.user.is_authenticated:
-            # on ajoute les habilitations et les entreprises de l'utilisateur
-            # pour éviter d'effectuer des requêtes supplementaires
+            # on précharge sur l'utilisateur ses entreprises et ses habilitations
+            # car elles sont utilisées presque partout :
+            # pour éviter des requêtes supplémentaires
             # dans les vues et les templates
             request.user = User.objects.prefetch_related(
-                "entreprise_set", "habilitation_set"
+                "entreprise_set",
+                Prefetch(
+                    "habilitation_set",
+                    queryset=Habilitation.objects.select_related("entreprise"),
+                ),
             ).get(pk=request.user.pk)
-            # on ajoute des raccourcis vers les habilitations et entreprises de l'utilisateur
-            request.habilitations = request.user.habilitation_set.all()
-            request.entreprises = request.user.entreprise_set.all()
-
-            if id_entreprise := request.session.get("entreprise"):
-                try:
-                    request.entreprise = request.entreprises.get(id=id_entreprise)
-                except ObjectDoesNotExist:
-                    pass
 
         response = self.get_response(request)
 
