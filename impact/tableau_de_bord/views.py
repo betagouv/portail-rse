@@ -10,6 +10,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse_lazy
 
+from .context import tableau_de_bord_menu_context
 from .forms import AjoutEntrepriseConseillerForm
 from .forms import AnticipationForm
 from .metriques import calculer_metriques_entreprise
@@ -34,13 +35,6 @@ from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 from utils.messages import message_warning_avec_html
 from utils.messages import message_warning_sans_html
-
-
-def tableau_de_bord_menu_context(entreprise, page_resume=False):
-    return {
-        "entreprise": entreprise,
-        "page_resume": page_resume,
-    }
 
 
 @login_required
