@@ -34,7 +34,6 @@ from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 from utils.messages import message_warning_avec_html
 from utils.messages import message_warning_sans_html
-from vsme.models import RapportVSME
 
 
 def tableau_de_bord_menu_context(entreprise, page_resume=False):
@@ -70,23 +69,15 @@ def tableau_de_bord(request, entreprise):
             request,
             t"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{url_qualification}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
         )
-        nombre_reglementations_applicables = "?"
-    else:
-        # Afficher un avertissement si les caractéristiques ne sont pas à jour
-        if caracteristiques != entreprise.caracteristiques_actuelles():
-            url_qualification = reverse_lazy(
-                "entreprises:qualification", args=[entreprise.id_public]
-            )
-            message_warning_avec_html(
-                request,
-                t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
-            )
-
-        # Calculer les réglementations applicables
-        reglementations_applicables = [
-            r for r in REGLEMENTATIONS if r.est_soumis(caracteristiques)
-        ]
-        nombre_reglementations_applicables = len(reglementations_applicables)
+    # Afficher un avertissement si les caractéristiques ne sont pas à jour
+    elif caracteristiques != entreprise.caracteristiques_actuelles():
+        url_qualification = reverse_lazy(
+            "entreprises:qualification", args=[entreprise.id_public]
+        )
+        message_warning_avec_html(
+            request,
+            t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
+        )
 
     # Calculer le nombre d'analyses IA réussies
     nombre_analyses_ia = (
@@ -94,22 +85,11 @@ def tableau_de_bord(request, entreprise):
         + entreprise.analyses_ia.v2_reussies().count()
     )
 
-    # Calculer le pourcentage de progression VSME
-    try:
-        rapport_vsme = RapportVSME.objects.get(
-            entreprise=entreprise,
-            annee=entreprise.dernier_exercice_clos.date_cloture.year,
-        )
-        pourcentage_vsme = rapport_vsme.progression()["pourcent"]
-    except RapportVSME.DoesNotExist:
-        pourcentage_vsme = 0
-
     context = tableau_de_bord_menu_context(entreprise, page_resume=True)
     context |= utilisateurs_context(request, entreprise)
+    context |= calculer_metriques_entreprise(entreprise)
     context |= {
-        "nombre_reglementations_applicables": nombre_reglementations_applicables,
         "nombre_analyses_ia": nombre_analyses_ia,
-        "pourcentage_vsme": pourcentage_vsme,
     }
 
     return render(
