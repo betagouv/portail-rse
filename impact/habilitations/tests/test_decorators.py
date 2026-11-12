@@ -20,7 +20,6 @@ def mock_request(entreprise_non_qualifiee, alice):
     request = Mock()
     request.user = alice
     request.session = {"entreprise": entreprise_non_qualifiee.id}
-    request.entreprises = [entreprise_non_qualifiee]
     Habilitation(user=alice, entreprise=entreprise_non_qualifiee).save()
     return request
 

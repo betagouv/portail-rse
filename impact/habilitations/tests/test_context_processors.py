@@ -5,6 +5,7 @@ import pytest
 from habilitations.context_processors import habilitation
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+from users.models import User
 
 
 @pytest.mark.django_db
@@ -18,7 +19,7 @@ def test_habilitation_sans_requete_supplementaire(
 
     request = Mock()
     request.session = {"entreprise": entreprise_2.id}
-    request.habilitations = list(alice.habilitation_set.all())
+    request.user = User.objects.prefetch_related("habilitation_set").get(pk=alice.pk)
 
     with django_assert_num_queries(0):
         ctx = habilitation(request)

@@ -5,12 +5,12 @@ def habilitation(request):
     ctx = {}
     id_entreprise = request.session.get("entreprise")
 
-    if not id_entreprise:
+    if not id_entreprise or not request.user.is_authenticated:
         return ctx
 
     # ajoute l'habilitation de l'utilisateur pour l'entreprise courante
     # au context sous une forme simplifiée
-    for h in request.habilitations:
+    for h in request.user.habilitation_set.all():
         if h.entreprise_id == id_entreprise:
             ctx |= {"role_utilisateur": h.role}
             for role in UserRole.values:
