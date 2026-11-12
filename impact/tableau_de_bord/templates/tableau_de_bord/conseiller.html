@@ -79,7 +79,9 @@
                                                     <td class="fr-cell--multiline">{{ item.entreprise.denomination }}</td>
                                                     <td>{{ item.entreprise.pays.libelle_identifiant }} : {{ item.entreprise.identifiant }}</td>
                                                     <td class="fr-cell--center">
-                                                        <strong>{{ item.nombre_reglementations }}</strong>
+                                                        {% if item.entreprise.est_francaise %}
+                                                            <strong>{{ item.nombre_reglementations }}</strong>
+                                                        {% endif %}
                                                     </td>
                                                     <td>
                                                         <strong>{{ item.pourcentage_vsme }}%</strong>
