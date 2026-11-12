@@ -1,5 +1,5 @@
 from entreprises.models import CaracteristiquesAnnuelles
-from reglementations.utils import VSMEReglementation
+from reglementations.views.vsme import VSMEReglementation
 from reglementations.views.audit_energetique import AuditEnergetiqueReglementation
 from reglementations.views.base import ReglementationStatus
 from reglementations.views.bdese import BDESEReglementation

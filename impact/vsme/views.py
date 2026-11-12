@@ -20,7 +20,7 @@ import utils.htmx as htmx
 from entreprises.decorators import entreprise_requise
 from habilitations.models import Habilitation
 from logs import event_logger
-from reglementations.utils import VSMEReglementation
+from reglementations.views.vsme import VSMEReglementation
 from reglementations.views import tableau_de_bord_menu_context
 from utils.messages import message_error_sans_html
 from utils.messages import message_info_sans_html

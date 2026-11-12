@@ -10,7 +10,7 @@ import reglementations.views  # noqa
 from entreprises.models import CaracteristiquesAnnuelles
 from habilitations.models import Habilitation
 from reglementations.models import RapportCSRD
-from reglementations.utils import VSMEReglementation
+from reglementations.views.vsme import VSMEReglementation
 from reglementations.views import REGLEMENTATIONS
 from reglementations.views.base import InsuffisammentQualifieeError
 from reglementations.views.base import ReglementationStatus

@@ -7,22 +7,6 @@ from reglementations.views.base import Reglementation
 from reglementations.views.base import ReglementationAction
 from reglementations.views.base import ReglementationStatus
 
-
-"""
-utils:
-- Module très mal nommé en attendant de réorganiser la structure de l'app `reglementations`
-- contient pour l'instant les différentes classes ou fonctions utilitaires pour les VSME
-"""
-
-# Modèles non-ORM :
-# Les modèles de traitement des réglementations (non-ORM),
-# devraient être situés "proches" des réglementations concernées.
-# Difficile dans le cas des VSME (import cyclique).
-# A moyen|long-terme, ces classes utilitaires devraient être placées ailleurs
-# que dans les vues (et probablement dans une autre app ou package).
-
-
-# TODO: à complèter et adapter après discussion
 class VSMEReglementation(Reglementation):
     id = "vsme"
     title = "Standard volontaire européen - VSME"
