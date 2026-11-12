@@ -530,13 +530,13 @@ def test_invitation_deja_acceptee_redirige_vers_le_tableau_de_bord(
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:tableau_de_bord",
+                "tableau_de_bord:tableau_de_bord",
                 kwargs={"id_public": entreprise.id_public},
             ),
             302,
         ),
         (
-            f"{reverse('users:login')}?next={reverse('reglementations:tableau_de_bord', kwargs={'id_public': entreprise.id_public})}",
+            f"{reverse('users:login')}?next={reverse('tableau_de_bord:tableau_de_bord', kwargs={'id_public': entreprise.id_public})}",
             302,
         ),
     ]

@@ -13,22 +13,13 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 from django.urls import reverse
 
-from .forms import AjoutEntrepriseConseillerForm
 from .forms import ChoixTypeUtilisateurForm
 from .forms import ProconnectUserEditionForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
 from .models import User
-from api.exceptions import APIError
-from entreprises.models import CODE_PAYS_FRANCE
-from entreprises.models import Entreprise
-from habilitations.enums import UserRole
-from habilitations.models import Habilitation
-from habilitations.models import HabilitationError
-from habilitations.views import cree_invitation
 from invitations.models import Invitation
 from logs import event_logger as logger
-from reglementations.views import calculer_metriques_entreprise
 from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 from utils.messages import message_warning_sans_html
@@ -104,7 +95,7 @@ def invitation(request, id_invitation, code):
     if invitation.date_acceptation:
         message_warning_sans_html(request, "Cette invitation a déjà été acceptée.")
         return redirect(
-            "reglementations:tableau_de_bord", invitation.entreprise.id_public
+            "tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public
         )
 
     # Si utilisateur déjà connecté
@@ -247,10 +238,10 @@ def post_login_dispatch(request):
 
     # Si c'est un conseiller RSE, rediriger vers son tableau de bord
     if request.user.is_conseiller_rse:
-        return redirect("users:tableau_de_bord_conseiller")
+        return redirect("tableau_de_bord:tableau_de_bord_conseiller")
 
     # Comportement par défaut : tableau de bord entreprise
-    return redirect("reglementations:tableau_de_bord")
+    return redirect("tableau_de_bord:tableau_de_bord")
 
 
 @login_required()
@@ -277,149 +268,16 @@ def choix_type_utilisateur(request):
                     request,
                     "Vous êtes maintenant identifié comme conseiller RSE.",
                 )
-                return redirect("users:tableau_de_bord_conseiller")
+                return redirect("tableau_de_bord:tableau_de_bord_conseiller")
             else:
                 request.user.is_conseiller_rse = False
                 request.user.save()
-                return redirect("reglementations:tableau_de_bord")
+                return redirect("tableau_de_bord:tableau_de_bord")
 
     else:
         form = ChoixTypeUtilisateurForm()
 
     return render(request, "users/choix_type_utilisateur.html", {"form": form})
-
-
-@login_required()
-def tableau_de_bord_conseiller(request):
-    """Tableau de bord pour les conseillers RSE.
-
-    Gère l'ajout d'entreprise avec logique unifiée :
-    - Entreprise existante avec administrateur : refus attachement
-    - Entreprise existante sans administrateur : rattachement + invitation administrateur
-    - Entreprise inexistante : création + rattachement + invitation administrateur
-    """
-    # Vérifier que l'utilisateur est bien un conseiller RSE
-    if not request.user.is_conseiller_rse:
-        message_error_sans_html(
-            request,
-            "Vous devez être identifié comme conseiller RSE pour accéder à cette page.",
-        )
-        return redirect("entreprises:entreprises")
-
-    # Récupérer les entreprises en gestion
-    habilitations = Habilitation.objects.filter(user=request.user).select_related(
-        "entreprise"
-    )
-
-    # Enrichir chaque habilitation avec les metriques
-    habilitations_enrichies = []
-    for habilitation in habilitations:
-        metriques = calculer_metriques_entreprise(habilitation.entreprise)
-        habilitations_enrichies.append(
-            {
-                "habilitation": habilitation,
-                "entreprise": habilitation.entreprise,
-                "nombre_reglementations": metriques[
-                    "nombre_reglementations_applicables"
-                ],
-                "pourcentage_vsme": metriques["pourcentage_vsme"],
-            }
-        )
-
-    if request.method == "POST":
-        form = AjoutEntrepriseConseillerForm(request.POST)
-        if form.is_valid():
-            try:
-                siren = form.cleaned_data["siren"]
-                email_administrateur = form.cleaned_data.get(
-                    "email_futur_administrateur"
-                )
-
-                # CAS 1 : Entreprise existe
-                if Entreprise.objects.filter(
-                    code_pays=CODE_PAYS_FRANCE, identifiant=siren
-                ).exists():
-                    entreprise = Entreprise.objects.get(
-                        code_pays=CODE_PAYS_FRANCE, identifiant=siren
-                    )
-
-                    # Vérifier si le conseiller n'est pas déjà rattaché
-                    if Habilitation.existe(entreprise, request.user):
-                        message_warning_sans_html(
-                            request,
-                            f"Vous êtes déjà rattaché à l'entreprise {entreprise.denomination}.",
-                        )
-                        return redirect("users:tableau_de_bord_conseiller")
-
-                    # CAS 1a : A un administrateur → pas de rattachement
-                    if entreprise.administrateurs:
-                        message_error_sans_html(
-                            request,
-                            f"Vous n'avez pas été rattaché à l'entreprise {entreprise.denomination} car un compte y est déjà attachée. Demandez à votre client de vous inviter sur l'entreprise.",
-                        )
-                        return redirect("users:tableau_de_bord_conseiller")
-
-                    # CAS 1b : Pas d'administrateur → rattachement + invitation
-                    else:
-                        Habilitation.ajouter(
-                            entreprise,
-                            request.user,
-                            UserRole.ADMINISTRATEUR,
-                            fonctions=form.cleaned_data.get("fonctions"),
-                            is_conseiller_rse=True,
-                        )
-                        cree_invitation(
-                            request,
-                            entreprise,
-                            email_administrateur,
-                            UserRole.ADMINISTRATEUR,
-                            template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
-                        )
-                        message_success_sans_html(
-                            request,
-                            f"Vous avez été rattaché à l'entreprise {entreprise.denomination}. "
-                            f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
-                        )
-                        return redirect("users:tableau_de_bord_conseiller")
-
-                # CAS 2 : Entreprise n'existe pas → création + rattachement + invitation
-                else:
-                    entreprise = Entreprise.search_and_create_entreprise(siren)
-                    Habilitation.ajouter(
-                        entreprise,
-                        request.user,
-                        UserRole.ADMINISTRATEUR,
-                        fonctions=form.cleaned_data.get("fonctions"),
-                        is_conseiller_rse=True,
-                    )
-                    cree_invitation(
-                        request,
-                        entreprise,
-                        email_administrateur,
-                        UserRole.ADMINISTRATEUR,
-                        template_id=settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE,
-                    )
-                    message_success_sans_html(
-                        request,
-                        f"L'entreprise {entreprise.denomination} a été créée. "
-                        f"Une invitation a été envoyée à {email_administrateur} pour devenir administrateur.",
-                    )
-                    return redirect("users:tableau_de_bord_conseiller")
-
-            except APIError as exception:
-                message_error_sans_html(request, str(exception))
-            except HabilitationError as exception:
-                message_error_sans_html(request, str(exception))
-        else:
-            message_error_sans_html(request, "Le formulaire est incomplet.")
-    else:
-        form = AjoutEntrepriseConseillerForm()
-
-    return render(
-        request,
-        "users/tableau_de_bord_conseiller.html",
-        {"habilitations_enrichies": habilitations_enrichies, "form": form},
-    )
 
 
 @login_required()
@@ -457,7 +315,7 @@ def accepter_invitation(request, id_invitation, code):
             "Cette invitation a déjà été acceptée.",
         )
         return redirect(
-            "reglementations:tableau_de_bord", invitation.entreprise.id_public
+            "tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public
         )
 
     if request.user.is_conseiller_rse is None:
@@ -472,4 +330,4 @@ def accepter_invitation(request, id_invitation, code):
         request,
         f"Vous êtes maintenant ajouté à l'entreprise {invitation.entreprise.denomination}.",
     )
-    return redirect("reglementations:tableau_de_bord", invitation.entreprise.id_public)
+    return redirect("tableau_de_bord:tableau_de_bord", invitation.entreprise.id_public)

@@ -69,7 +69,7 @@ def index(request):
                 "HTTP_REFERER"
             ) and "tableau-de-bord" in request.META.get("HTTP_REFERER")
             return (
-                redirect("reglementations:tableau_de_bord")
+                redirect("tableau_de_bord:tableau_de_bord")
                 if en_provenance_du_tableau_de_bord
                 else redirect("entreprises:entreprises")
             )
@@ -148,7 +148,7 @@ def qualification(request, entreprise):
                 request, "Les informations de l'entreprise ont été mises à jour."
             )
             return redirect(
-                "reglementations:tableau_de_bord", id_public=entreprise.id_public
+                "tableau_de_bord:tableau_de_bord", id_public=entreprise.id_public
             )
         else:
             message_error_sans_html(

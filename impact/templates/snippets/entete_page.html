@@ -68,19 +68,19 @@
                 </ul>
                 <ul class="fr-nav__list">
                     {% if user.is_conseiller_rse %}
-                        {% absolute_url 'users:tableau_de_bord_conseiller' as url_conseiller %}
+                        {% absolute_url 'tableau_de_bord:tableau_de_bord_conseiller' as url_conseiller %}
                         <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_conseiller }}" target="_self"{% if request.path == url_conseiller %} aria-current="page"{% endif %}>Espace conseillers RSE</a></li>
                     {% endif %}
                     {% if user.entreprise_set.count >= 2 %}
                         <li class="fr-nav__item">
-                            {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.id_public as url_page %}
+                            {% absolute_url 'tableau_de_bord:tableau_de_bord' current_entreprise.id_public as url_page %}
                             <button class="fr-nav__btn" aria-expanded="false" aria-controls="menu-1" {% if request.path == url_page %} aria-current="page"{% endif %}>
                                 Tableau de bord
                             </button>
                             <div class="fr-collapse fr-menu" id="menu-1">
                                 <ul class="fr-menu__list">
                                     {% for habilitation in user.habilitation_set.all %}
-                                        {% absolute_url 'reglementations:tableau_de_bord' habilitation.entreprise.id_public as url_page %}
+                                        {% absolute_url 'tableau_de_bord:tableau_de_bord' habilitation.entreprise.id_public as url_page %}
                                         <li>
                                             <a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>
                                                 {{ habilitation.entreprise.denomination }}
@@ -94,10 +94,10 @@
                             </div>
                         </li>
                     {% elif current_entreprise %}
-                        {% absolute_url 'reglementations:tableau_de_bord' current_entreprise.id_public as url_page %}
+                        {% absolute_url 'tableau_de_bord:tableau_de_bord' current_entreprise.id_public as url_page %}
                         <li class="fr-nav__item"><a class="fr-nav__link" href="{{ url_page }}" target="_self"{% if request.path == url_page %} aria-current="page"{% endif %}>Tableau de bord</a></li>
                     {% else %}
-                        <li class="fr-nav__item"><a class="fr-nav__link" href="{% absolute_url 'reglementations:tableau_de_bord' %}">Tableau de bord</a></li>
+                        <li class="fr-nav__item"><a class="fr-nav__link" href="{% absolute_url 'tableau_de_bord:tableau_de_bord' %}">Tableau de bord</a></li>
                     {% endif %}
 
                     {% if not user.is_conseiller_rse %}

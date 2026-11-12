@@ -155,7 +155,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
         assert reglementation.title in content
     assert "<!-- page resultats simulation -->" in content
     assert (
-        reverse("reglementations:reglementations", args=[entreprise.id_public])
+        reverse("tableau_de_bord:reglementations", args=[entreprise.id_public])
         in content
     )
 

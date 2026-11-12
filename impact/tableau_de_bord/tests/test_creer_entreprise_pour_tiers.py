@@ -1,0 +1,266 @@
+"""Tests pour le formulaire unifie d'ajout d'entreprise conseiller RSE."""
+
+from unittest.mock import patch
+
+import pytest
+from django.conf import settings
+from django.urls import reverse
+
+from habilitations.enums import UserRole
+from habilitations.models import Habilitation
+from invitations.models import Invitation
+
+
+# Tests d'acces au tableau de bord conseiller
+
+
+@pytest.mark.django_db
+def test_acces_refuse_non_conseiller(client, alice):
+    """Un utilisateur non-conseiller ne peut pas acceder au tableau de bord conseiller."""
+    client.force_login(alice)
+
+    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+
+    assert response.status_code == 302
+
+
+@pytest.mark.django_db
+def test_acces_autorise_conseiller(client, conseiller_rse):
+    """Un conseiller RSE peut acceder au tableau de bord."""
+    client.force_login(conseiller_rse)
+
+    response = client.get(reverse("tableau_de_bord:tableau_de_bord_conseiller"))
+
+    assert response.status_code == 200
+    assert "Accompagner cette entreprise" in response.content.decode()
+
+
+# Tests du formulaire unifie : CAS 1a - Entreprise existante avec administrateur
+
+
+@pytest.mark.django_db
+def test_rattachement_entreprise_existante_avec_administrateur(
+    client, conseiller_rse, alice, entreprise_factory
+):
+    """Un conseiller ne peut pas se rattacher a une entreprise existante avec administrateur."""
+    entreprise = entreprise_factory(identifiant="123456789")
+    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
+
+    client.force_login(conseiller_rse)
+    response = client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "123456789",
+            "email_futur_administrateur": "futur@entreprise.test",
+        },
+        follow=True,
+    )
+
+    # Verifier que le conseiller n'a pas été rattaché
+    assert not Habilitation.existe(entreprise, conseiller_rse)
+
+    # Pas d'invitation creee car il y a deja un administrateur
+    assert not Invitation.objects.filter(entreprise=entreprise).exists()
+
+
+# Tests du formulaire unifie : CAS 1b - Entreprise existante sans administrateur
+
+
+@pytest.mark.django_db
+def test_rattachement_entreprise_sans_administrateur_sans_email_echoue(
+    client, conseiller_rse, entreprise_factory
+):
+    """Le rattachement sans email echoue si l'entreprise n'a pas d'administrateur."""
+    entreprise = entreprise_factory(identifiant="234567890")
+    # Pas d'administrateur ajoute
+
+    client.force_login(conseiller_rse)
+    response = client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "234567890",
+            "email_futur_administrateur": "",
+        },
+    )
+
+    # Le formulaire doit afficher une erreur
+    assert "email_futur_administrateur" in response.context["form"].errors
+    assert not Habilitation.existe(entreprise, conseiller_rse)
+
+
+@pytest.mark.django_db
+@patch("habilitations.views._envoie_email_d_invitation")
+def test_rattachement_entreprise_sans_administrateur_avec_email_reussit(
+    mock_email, client, conseiller_rse, entreprise_factory
+):
+    """Le rattachement reussit avec email si l'entreprise n'a pas d'administrateur."""
+    entreprise = entreprise_factory(identifiant="345678901")
+    # Pas d'administrateur ajoute
+
+    client.force_login(conseiller_rse)
+    response = client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "345678901",
+            "email_futur_administrateur": "futur@entreprise.test",
+        },
+        follow=True,
+    )
+
+    # Verifier le rattachement
+    assert Habilitation.existe(entreprise, conseiller_rse)
+    habilitation = Habilitation.pour(entreprise, conseiller_rse)
+    assert habilitation.is_conseiller_rse
+    assert habilitation.role == UserRole.ADMINISTRATEUR
+
+    # Verifier l'invitation creee
+    invitation = Invitation.objects.get(entreprise=entreprise)
+    assert invitation.email == "futur@entreprise.test"
+    assert invitation.role == UserRole.ADMINISTRATEUR
+    assert invitation.inviteur == conseiller_rse
+
+    # Verifier que l'email a ete envoye
+    mock_email.assert_called_once()
+
+
+# Tests du formulaire unifie : CAS 2 - Entreprise inexistante
+
+
+@pytest.mark.django_db
+@patch("tableau_de_bord.views.Entreprise.search_and_create_entreprise")
+@patch("habilitations.views._envoie_email_d_invitation")
+def test_creation_entreprise_reussie(
+    mock_email, mock_search, client, conseiller_rse, entreprise_factory
+):
+    """Un conseiller peut creer une entreprise pour un tiers."""
+    entreprise = entreprise_factory(identifiant="111222333")
+    mock_search.return_value = entreprise
+
+    client.force_login(conseiller_rse)
+    response = client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "111222333",
+            "email_futur_administrateur": "futur@entreprise.test",
+        },
+    )
+
+    assert Habilitation.existe(entreprise, conseiller_rse)
+    habilitation = Habilitation.pour(entreprise, conseiller_rse)
+    assert habilitation.role == UserRole.ADMINISTRATEUR
+    assert not habilitation.fonctions
+
+    # Verifier que l'invitation a ete creee
+    invitation = Invitation.objects.get(entreprise=entreprise)
+    assert invitation.email == "futur@entreprise.test"
+    assert invitation.role == UserRole.ADMINISTRATEUR
+    assert invitation.inviteur == conseiller_rse
+
+    # Verifier que l'email a ete envoye
+    mock_email.assert_called_once()
+
+
+# =============================================================================
+# Phase A : Tests d'envoi d'email d'invitation
+# =============================================================================
+
+
+@pytest.mark.django_db
+def test_email_invitation_envoye_avec_bonnes_donnees(
+    client, conseiller_rse, entreprise_factory, mailoutbox
+):
+    """L'email d'invitation est envoyé avec les bonnes données (sans mock)."""
+    entreprise = entreprise_factory(identifiant="111000111")
+    # Pas d'administrateur
+
+    client.force_login(conseiller_rse)
+    client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "111000111",
+            "email_futur_administrateur": "futur@entreprise.test",
+            "fonctions": "Consultant CSRD",
+        },
+        follow=True,
+    )
+
+    # Vérifier qu'un email a été envoyé
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+
+    # Vérifier les destinataires et expéditeur
+    assert list(mail.to) == ["futur@entreprise.test"]
+    assert mail.from_email == settings.DEFAULT_FROM_EMAIL
+
+    # Vérifier le template utilisé (template dédié, différent de l'invitation standard)
+    assert mail.template_id == settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE
+
+
+@pytest.mark.django_db
+def test_email_invitation_nouvel_utilisateur_route_proconnect(
+    client, conseiller_rse, entreprise_factory, mailoutbox
+):
+    """L'URL dans l'email pointe vers la landing ProConnect pour un nouvel utilisateur."""
+    entreprise = entreprise_factory(identifiant="333000333")
+
+    client.force_login(conseiller_rse)
+    client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "333000333",
+            "email_futur_administrateur": "inconnu@nouveau.test",  # Email inexistant
+            "fonctions": "Consultant",
+        },
+        follow=True,
+    )
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+
+    # L'URL doit pointer vers la vue invitation unifiée
+    invitation_url = mail.merge_global_data.get("invitation_url", "")
+    assert "/invitation/" in invitation_url
+
+
+@pytest.mark.django_db
+def test_contenu_email_variables_template(
+    client, conseiller_rse, entreprise_factory, mailoutbox
+):
+    """Les variables du template email sont les mêmes que pour l'invitation standard."""
+    entreprise = entreprise_factory(identifiant="444000444")
+
+    client.force_login(conseiller_rse)
+    client.post(
+        reverse("tableau_de_bord:tableau_de_bord_conseiller"),
+        {
+            "siren": "444000444",
+            "email_futur_administrateur": "futur@entreprise.test",
+        },
+        follow=True,
+    )
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+
+    # Vérifier que le template dédié est utilisé
+    assert mail.template_id == settings.BREVO_INVITATION_CONSEILLER_RSE_TEMPLATE
+
+    # Vérifier les variables du template (mêmes que l'invitation standard)
+    merge_data = mail.merge_global_data
+
+    # Dénomination de l'entreprise
+    assert "denomination_entreprise" in merge_data
+    assert merge_data["denomination_entreprise"] == entreprise.denomination
+
+    # Nom de l'inviteur (même variable que l'invitation standard)
+    assert "inviteur" in merge_data
+    assert conseiller_rse.prenom in merge_data["inviteur"]
+    assert conseiller_rse.nom in merge_data["inviteur"]
+
+    # Rôle (même variable que l'invitation standard)
+    assert "role" in merge_data
+    assert merge_data["role"] == "Administrateur"
+
+    # URL d'invitation (doit être une URL absolue)
+    assert "invitation_url" in merge_data
+    assert merge_data["invitation_url"].startswith("http")

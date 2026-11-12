@@ -34,6 +34,7 @@ urlpatterns = (
         path("", include("entreprises.urls")),
         path("", include("habilitations.urls")),
         path("", include("reglementations.urls")),
+        path("", include("tableau_de_bord.urls")),
         path("", include("users.urls")),
         path("", include("vsme.urls")),
         path("", include("analyseia.urls")),

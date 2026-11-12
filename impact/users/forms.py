@@ -6,7 +6,6 @@ from django.contrib.auth.forms import SetPasswordForm as BaseSetPasswordForm
 from django.core.exceptions import ValidationError
 
 from .models import User
-from entreprises.forms import PreremplissageSirenForm
 from utils.anonymisation import cache_partiellement_un_email
 from utils.forms import DsfrForm
 from utils.forms import SafeEmailField
@@ -161,20 +160,4 @@ class ChoixTypeUtilisateurForm(DsfrForm, forms.Form):
         label="Fonction(s) dans l'accompagnement",
         choices=User._meta.get_field("fonction_rse").choices,
         required=False,
-    )
-
-
-class AjoutEntrepriseConseillerForm(DsfrForm, PreremplissageSirenForm):
-    """Formulaire unifié pour qu'un conseiller RSE ajoute une entreprise accompagnée.
-
-    Gère tous les cas :
-    - Entreprise existante avec administrateur : pas de rattachement
-    - Entreprise existante sans administrateur : rattachement + invitation administrateur
-    - Entreprise inexistante : création + rattachement + invitation administrateur
-    """
-
-    email_futur_administrateur = SafeEmailField(
-        label="Adresse e-mail du contact principal de l’entreprise accompagnée",
-        required=True,
-        help_text="Une invitation lui sera envoyée afin qu’elle puisse accéder au tableau de bord de son entreprise.",
     )

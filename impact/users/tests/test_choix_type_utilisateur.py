@@ -79,4 +79,4 @@ def test_choix_conseiller_rse_met_a_jour_utilisateur__choix_membre(
     assert utilisateur.is_conseiller_rse is False
     assert not utilisateur.fonction_rse
     assert response.status_code == 302
-    assert response.url == reverse("reglementations:tableau_de_bord")
+    assert response.url == reverse("tableau_de_bord:tableau_de_bord")
