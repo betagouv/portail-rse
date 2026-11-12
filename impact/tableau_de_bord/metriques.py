@@ -11,7 +11,6 @@ def calculer_metriques_entreprise(entreprise):
             'pourcentage_vsme': int
         }
     """
-    # Recuperer les caracteristiques actuelles
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Calcul du nombre de reglementations applicables
