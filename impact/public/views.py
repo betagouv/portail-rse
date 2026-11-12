@@ -21,7 +21,7 @@ from utils.messages import message_success_sans_html
 
 def index(request):
     if request.user.is_authenticated:
-        return redirect("reglementations:tableau_de_bord")
+        return redirect("tableau_de_bord:tableau_de_bord")
     return redirect("users:login")
 
 

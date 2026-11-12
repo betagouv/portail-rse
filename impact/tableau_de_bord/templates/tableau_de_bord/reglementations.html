@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block title %}Tableau de bord - Portail RSE{% endblock %}
+
+{% block content %}
+<!-- page tableau de bord -->
+
+    <div class="fr-container fr-my-4w">
+        <div class="fr-grid-row">
+            {% include "snippets/tableau_de_bord_menu.html" %}
+
+            <div class="fr-col">
+                <nav role="navigation" class="fr-breadcrumb" aria-label="vous êtes ici :">
+                    <button class="fr-breadcrumb__button" aria-expanded="false" aria-controls="breadcrumb-1">
+                        Voir le fil d’Ariane
+                    </button>
+                    <div class="fr-collapse" id="breadcrumb-1">
+                        <ol class="fr-breadcrumb__list">
+                            <li>
+                                <a class="fr-breadcrumb__link" href="{% url 'tableau_de_bord:tableau_de_bord' entreprise.id_public %}">Tableau de bord</a>
+                            </li>
+                            <li>
+                                <a class="fr-breadcrumb__link" aria-current="page">
+                                    {% if anticipation %}
+                                        Anticiper vos futures réglementations
+                                    {% else %}
+                                        Gérer mes réglementations
+                                    {% endif %}
+                                </a>
+                            </li>
+                        </ol>
+                    </div>
+                </nav>
+
+                {% if anticipation %}
+                    <h1>Anticiper vos futures réglementations</h1>
+                {% else %}
+                    <h1>Gérer mes réglementations</h1>
+                {% endif %}
+
+                <p>
+                    Découvrez les réglementations auxquelles votre entreprise {% if anticipation %}serait{% else %}est{% endif %} soumise.
+                </p>
+
+                {% if reglementations_a_actualiser %}
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-actualiser">
+                        <h2>À mettre à jour</h2>
+                        <div class="fr-grid-row fr-grid-row--gutters">
+                            {% for reglementation in reglementations_a_actualiser %}
+                                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if reglementations_en_cours %}
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--en-cours">
+                        <h2>En cours</h2>
+                        <div class="fr-grid-row fr-grid-row--gutters">
+                            {% for reglementation in reglementations_en_cours %}
+                                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                {% if reglementations_a_jour %}
+                    <div class="fr-container fr-mb-2w dashboard dashboard-category dashboard--a-jour">
+                        <h2>À jour</h2>
+                        <div class="fr-grid-row fr-grid-row--gutters">
+                            {% for reglementation in reglementations_a_jour %}
+                                {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <div class="fr-container fr-mb-2w dashboard">
+                    <div class="fr-grid-row fr-grid-row--gutters">
+                        {% for reglementation in autres_reglementations %}
+                            {% include "snippets/reglementation_card.html" with reglementation=reglementation.reglementation status=reglementation.status %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

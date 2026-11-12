@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     "metabase",
     "public",
     "reglementations",
+    "tableau_de_bord",
     "vsme",
     "users",
     "utils",

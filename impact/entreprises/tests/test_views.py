@@ -313,12 +313,12 @@ def test_echec_quitter_entreprise_redirige_vers_tableau_de_bord_si_l_utilisateur
         data=data,
         follow=True,
         HTTP_REFERER=reverse(
-            "reglementations:tableau_de_bord", args=[entreprise.id_public]
+            "tableau_de_bord:tableau_de_bord", args=[entreprise.id_public]
         ),
     )
 
     assert response.status_code == 200
-    assert (reverse("reglementations:tableau_de_bord"), 302) in response.redirect_chain
+    assert (reverse("tableau_de_bord:tableau_de_bord"), 302) in response.redirect_chain
     assert Habilitation.pour(entreprise, alice)
 
 
@@ -593,7 +593,7 @@ def test_qualifie_entreprise_appartenant_a_un_groupe(
     assert response.redirect_chain == [
         (
             reverse(
-                "reglementations:tableau_de_bord",
+                "tableau_de_bord:tableau_de_bord",
                 args=[entreprise_non_qualifiee.id_public],
             ),
             302,

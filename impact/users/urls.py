@@ -15,7 +15,6 @@ from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from .views import post_login_dispatch
 from .views import preremplissage_formulaire_compte
-from .views import tableau_de_bord_conseiller
 from users.views import confirm_email
 
 app_name = "users"
@@ -69,11 +68,6 @@ urlpatterns = [
         "choix-type-utilisateur",
         choix_type_utilisateur,
         name="choix_type_utilisateur",
-    ),
-    path(
-        "tableau-de-bord-conseiller",
-        tableau_de_bord_conseiller,
-        name="tableau_de_bord_conseiller",
     ),
     path(
         "accepter-invitation/<int:id_invitation>/<str:code>",

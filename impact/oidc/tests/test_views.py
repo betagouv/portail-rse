@@ -104,7 +104,7 @@ def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_adminis
         "email_nouveau_membre": alice_sur_proconnect.email,
         "url_administration_entreprise": response.wsgi_request.build_absolute_uri(
             reverse(
-                "reglementations:tableau_de_bord",
+                "tableau_de_bord:tableau_de_bord",
                 kwargs={
                     "id_public": entreprise.id_public,
                 },
