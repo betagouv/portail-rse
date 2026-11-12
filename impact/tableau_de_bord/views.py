@@ -51,7 +51,7 @@ def redirection_tableau_de_bord_par_siren(request, siren):
 @login_required
 @entreprise_requise
 @log_path("app:tableauDeBord")
-def tableau_de_bord(request, entreprise):
+def resume(request, entreprise):
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Afficher un avertissement si le profil est incomplet
@@ -247,7 +247,7 @@ def anticiper(request, entreprise):
 
 
 @login_required()
-def tableau_de_bord_conseiller(request):
+def conseiller(request):
     """Tableau de bord pour les conseillers RSE.
 
     Gère l'ajout d'entreprise avec logique unifiée :
