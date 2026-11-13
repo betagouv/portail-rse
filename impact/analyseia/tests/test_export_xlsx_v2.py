@@ -252,3 +252,37 @@ def test_telechargement_de_la_synthese_des_resultats_IA_redirige_vers_la_connexi
     )
 
     assert response.status_code == 302
+
+
+def test_telechargement_des_resultats_IA_d_un_document_avec_des_caracteres_interdits_au_format_xlsx(
+    client, entreprise_factory, alice
+):
+    entreprise = entreprise_factory(utilisateur=alice)
+    document = entreprise.analyses_ia.create(
+        nom="NOM.pdf",
+        etat_v2="success",
+        resultat_json_v2={
+            "B3-30-p1": [
+                {
+                    "unite": "tonne",
+                    "valeur": "12\x02",
+                    "paragraphe": "Emission de 12\x01 tonnes environ",
+                    "champ_id": "estimation_emissions_GES",
+                    "colonne_id": "scope_1",
+                },
+            ]
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(
+        reverse("analyseia:resultat_v2", args=[document.id]),
+    )
+
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["Informations VSME"]
+    assert onglet["C2"].value == "NOM.pdf"
+    assert onglet["F2"].value == "12"
+    assert onglet["G2"].value == "tonne"
+    assert onglet["H2"].value == "Emission de 12 tonnes environ"
+    assert onglet["A3"].value is None
