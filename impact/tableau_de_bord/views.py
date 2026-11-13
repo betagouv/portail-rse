@@ -118,7 +118,7 @@ def rapport(request, entreprise):
 
 
 def rapport_generique(request):
-    """Cette page n'est plus utilisée maus l'URL pourrait être dans le site vitrine.
+    """Cette page n'est plus utilisée mais l'URL pourrait être dans le site vitrine.
 
     On renvoie vers la page principale du tableau de bord plutôt qu'une 404 à un
     utilisateur viendrait sur cette page.
