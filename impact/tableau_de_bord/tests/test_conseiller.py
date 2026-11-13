@@ -7,25 +7,6 @@ from habilitations.models import Habilitation
 from invitations.models import Invitation
 
 
-def test_tableau_de_bord_conseiller_acces_refuse_non_conseiller(client, alice):
-    """Un utilisateur non-conseiller ne peut pas accéder au tableau de bord conseiller."""
-    client.force_login(alice)
-
-    response = client.get(reverse("tableau_de_bord:conseiller"))
-
-    assert response.status_code == 302
-
-
-def test_tableau_de_bord_conseiller_affiche_page(client, conseiller_rse):
-    """Un conseiller RSE peut accéder au tableau de bord conseiller."""
-    client.force_login(conseiller_rse)
-
-    response = client.get(reverse("tableau_de_bord:conseiller"))
-
-    assert response.status_code == 200
-    assert "Espace Conseiller RSE" in response.content.decode()
-
-
 def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     client, conseiller_rse, entreprise_factory
 ):
@@ -43,25 +24,6 @@ def test_tableau_de_bord_conseiller_affiche_entreprises_en_gestion(
     content = response.content.decode()
     assert entreprise1.denomination in content
     assert entreprise2.denomination in content
-
-
-def test_rattachement_entreprise_existante_avec_administrateur(
-    client, conseiller_rse, alice, entreprise_factory
-):
-    """Un conseiller ne peut pas se rattacher à une entreprise avec un administrateur."""
-    entreprise = entreprise_factory(identifiant="123456789")
-    Habilitation.ajouter(entreprise, alice, UserRole.ADMINISTRATEUR)
-
-    client.force_login(conseiller_rse)
-    response = client.post(
-        reverse("tableau_de_bord:conseiller"),
-        {"siren": "123456789", "fonctions": "Consultant CSRD"},
-    )
-
-    assert (
-        Habilitation.objects.filter(entreprise=entreprise, user=conseiller_rse).count()
-        == 0
-    )
 
 
 @pytest.mark.network
@@ -89,34 +51,6 @@ def test_rattachement_entreprise_inexistante(
     assert not habilitation.fonctions
     invitation = Invitation.objects.get(
         entreprise=entreprise, email="futur@entreprise.test"
-    )
-    assert invitation.role == UserRole.ADMINISTRATEUR
-
-
-def test_rattachement_entreprise_sans_administrateur(
-    client, conseiller_rse, entreprise_factory
-):
-    """Un conseiller peut se rattacher à une entreprise sans administrateur."""
-    entreprise = entreprise_factory(identifiant="123456789")
-    # Aucun administrateur ajouté
-
-    client.force_login(conseiller_rse)
-    response = client.post(
-        reverse("tableau_de_bord:conseiller"),
-        {
-            "siren": "123456789",
-            "email_futur_administrateur": "futur@proprietaire.test",
-        },
-        follow=True,
-    )
-
-    assert Habilitation.existe(entreprise, conseiller_rse)
-    habilitation = Habilitation.pour(entreprise, conseiller_rse)
-    assert habilitation.role == UserRole.ADMINISTRATEUR
-    assert habilitation.is_conseiller_rse
-    assert not habilitation.fonctions
-    invitation = Invitation.objects.get(
-        entreprise=entreprise, email="futur@proprietaire.test"
     )
     assert invitation.role == UserRole.ADMINISTRATEUR
 

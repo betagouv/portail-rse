@@ -32,7 +32,9 @@ def test_acces_autorise_conseiller(client, conseiller_rse):
     response = client.get(reverse("tableau_de_bord:conseiller"))
 
     assert response.status_code == 200
-    assert "Accompagner cette entreprise" in response.content.decode()
+    content = response.content.decode()
+    assert "Espace Conseiller RSE" in content
+    assert "Accompagner cette entreprise" in content
 
 
 # Tests du formulaire unifie : CAS 1a - Entreprise existante avec administrateur
