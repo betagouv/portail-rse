@@ -38,6 +38,7 @@ urlpatterns = (
         path("", include("users.urls")),
         path("", include("vsme.urls")),
         path("", include("analyseia.urls")),
+        path("", include("poc_lee.urls")),
         path("oidc/", include("oidc.urls")),
         path("trigger-error-for-sentry-debug/", trigger_error),
     ]

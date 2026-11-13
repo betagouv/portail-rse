@@ -242,3 +242,22 @@ def test_ne_preremplit_pas_un_indicateur_si_déjà_rempli_dans_le_futur(
     preremplissage = preremplit_indicateur(schema_id, rapport_vsme)
 
     assert preremplissage == {}
+
+
+def test_preremplit_indicateur_depuis_lee(rapport_vsme):
+    from poc_lee.models import PreremplissageLee
+
+    data = {"declaration_durabilite": {"personnel": {"pratiques": True}}}
+    PreremplissageLee.objects.create(
+        rapport_vsme=rapport_vsme, schema_id="B2-26", data=data
+    )
+
+    preremplissage = preremplit_indicateur("B2-26", rapport_vsme)
+
+    assert preremplissage == {
+        "initial": data,
+        "source": {
+            "nom": "votre espace Les entreprises s'engagent",
+            "url": "https://lesentreprises-sengagent.gouv.fr",
+        },
+    }

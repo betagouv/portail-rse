@@ -26,6 +26,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = os.environ["SECRET_KEY"]
+POC_LEE_TOKEN = os.getenv("POC_LEE_TOKEN", "")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv("DJANGO_DEBUG", "False") == "True"
@@ -50,6 +51,7 @@ INSTALLED_APPS = [
     "logs",
     "analyseia",
     "security",
+    "poc_lee",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
