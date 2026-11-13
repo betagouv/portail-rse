@@ -434,7 +434,12 @@ def _ajoute_lignes_resultat_ia_v2(worksheet, document):
             try:
                 worksheet.append(ligne)
             except IllegalCharacterError:
-                ligne[-1] = ILLEGAL_CHARACTERS_RE.sub("", contenu["TEXTS"])
+                ligne = [
+                    ILLEGAL_CHARACTERS_RE.sub("", valeur)
+                    if isinstance(valeur, str)
+                    else valeur
+                    for valeur in ligne
+                ]
                 worksheet.append(ligne)
 
 
