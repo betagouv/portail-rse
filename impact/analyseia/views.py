@@ -39,6 +39,7 @@ from tableau_de_bord.context import tableau_de_bord_menu_context
 from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 from utils.xlsx import xlsx_response
+from vsme.models import ExigenceDePublication
 from vsme.models import Indicateur
 
 
@@ -407,6 +408,7 @@ def _ajoute_lignes_resultat_ia_v2(worksheet, document):
             schema_indicateur = Indicateur.get_schema(code_indicateur)
         except KeyError:  # l'indicateur n'existe pas ou plus
             continue
+        exigence = ExigenceDePublication.par_indicateur_schema_id(code_indicateur)
         schema_champs = schema_indicateur["champs"]
         for contenu in contenus:
             for schema_champ in schema_champs:
@@ -420,6 +422,7 @@ def _ajoute_lignes_resultat_ia_v2(worksheet, document):
                                 break
                     break
             ligne = [
+                f"{exigence.code} - {exigence.nom}",
                 schema_indicateur["titre"],
                 document.nom,
                 label_champ,
