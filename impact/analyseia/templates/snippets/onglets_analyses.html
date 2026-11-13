@@ -464,14 +464,14 @@
                         </div>
                     </div>
 
+                    <p>
+                        Retrouvez directement les suggestions de données ajoutées dans la <a href="{% url 'vsme:categories_vsme' entreprise.id_public entreprise.dernier_exercice_clos.date_cloture.year %}">page de saisie du rapport VSME</a> pour renseigner plus rapidement vos indicateurs.
+                    </p>
                     <div class="fr-grid-row fr-grid-row--center fr-pb-4w">
                         <a class="fr-btn fr-btn--icon-left fr-icon-download-line"
                            href="{{ synthese_resultat_v2_url }}">Télécharger la
                             synthèse de tous les résultats (xlsx)</a>
                     </div>
-                    <p>
-                        Retrouvez directement les suggestions de données ajoutées dans la <a href="{% url 'vsme:categories_vsme' entreprise.id_public entreprise.dernier_exercice_clos.date_cloture.year %}">page de saisie du rapport VSME</a> pour renseigner plus rapidement vos indicateurs.
-                    </p>
                 {% else %}
                     <p>Aucun document analysé.</p>
                     <p>Pour réaliser la VSME (Volontary Sustainability Reporting Standard for non-listed SMEs), une entreprise doit fournir des indicateurs concernant les critères ESG (Environnement, Social et Gouvernance). L'analyse VSME permet de rechercher dans les documents PDF que vous avez ajouté des informations susceptibles de faire des informations à fournir.</p>
