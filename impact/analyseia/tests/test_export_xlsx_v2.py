@@ -44,42 +44,45 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
-    assert onglet["A1"].value == "Indicateur"
-    assert onglet["B1"].value == "Fichier"
-    assert onglet["C1"].value == "Champ"
-    assert onglet["D1"].value == "Colonne"
-    assert onglet["E1"].value == "Valeur"
-    assert onglet["F1"].value == "Unité"
-    assert onglet["G1"].value == "Paragraphe"
+    assert onglet["A1"].value == "Exigence de publication"
+    assert onglet["B1"].value == "Indicateur"
+    assert onglet["C1"].value == "Fichier"
+    assert onglet["D1"].value == "Champ"
+    assert onglet["E1"].value == "Colonne"
+    assert onglet["F1"].value == "Valeur"
+    assert onglet["G1"].value == "Unité"
+    assert onglet["H1"].value == "Paragraphe"
+    assert onglet["A2"].value == "B3 - Énergie et émissions de gaz à effet de serre"
     assert (
-        onglet["A2"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+        onglet["B2"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
     )  # "B3-30-p1" / "titre"
-    assert onglet["B2"].value == "NOM.pdf"
+    assert onglet["C2"].value == "NOM.pdf"
     assert (
-        onglet["C2"].value
+        onglet["D2"].value
         == "Estimation des émissions brutes de gaz à effet de serre des scopes 1 et 2"
     )  # "B3-30-p1" / premier champ
     assert (
-        onglet["D2"].value == "Scope 1"
+        onglet["E2"].value == "Scope 1"
     )  # "B3-30-p1" / premier champ / colonne scope_1 / "label"
-    assert onglet["E2"].value == "12"
-    assert onglet["F2"].value == "tonne"
-    assert onglet["G2"].value == "Emission de 12 tonnes environ"
+    assert onglet["F2"].value == "12"
+    assert onglet["G2"].value == "tonne"
+    assert onglet["H2"].value == "Emission de 12 tonnes environ"
+    assert onglet["A3"].value == "B3 - Énergie et émissions de gaz à effet de serre"
     assert (
-        onglet["A3"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+        onglet["B3"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
     )  # "B3-30-p1" / "titre"
-    assert onglet["B3"].value == "NOM.pdf"
+    assert onglet["C3"].value == "NOM.pdf"
     assert (
-        onglet["C3"].value
+        onglet["D3"].value
         == "Estimation des émissions brutes de gaz à effet de serre des scopes 1 et 2"
     )
-    assert not onglet["D3"].value
-    assert onglet["E3"].value == "1234"
-    assert not onglet["F3"].value
-    assert onglet["G3"].value == "PARAGRAPHE"
+    assert not onglet["E3"].value
+    assert onglet["F3"].value == "1234"
+    assert not onglet["G3"].value
+    assert onglet["H3"].value == "PARAGRAPHE"
 
 
-def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
+def test_telechargement_des_resultats_IA_d_un_document_avec_un_indicateur_disparu_au_format_xlsx(
     client, entreprise_factory, alice
 ):
     """L'indicateur B3-30 n'existe pas dans les schémas actuels VSME mais a existé par le passé.
@@ -115,13 +118,14 @@ def test_telechargement_des_resultats_IA_d_un_document_au_format_xlsx(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
-    assert onglet["A1"].value == "Indicateur"
-    assert onglet["B1"].value == "Fichier"
-    assert onglet["C1"].value == "Champ"
-    assert onglet["D1"].value == "Colonne"
-    assert onglet["E1"].value == "Valeur"
-    assert onglet["F1"].value == "Unité"
-    assert onglet["G1"].value == "Paragraphe"
+    assert onglet["A1"].value == "Exigence de publication"
+    assert onglet["B1"].value == "Indicateur"
+    assert onglet["C1"].value == "Fichier"
+    assert onglet["D1"].value == "Champ"
+    assert onglet["E1"].value == "Colonne"
+    assert onglet["F1"].value == "Valeur"
+    assert onglet["G1"].value == "Unité"
+    assert onglet["H1"].value == "Paragraphe"
 
 
 def test_telechargement_des_resultats_IA_d_une_analyse_non_terminee(
@@ -221,18 +225,21 @@ def test_telechargement_de_la_synthese_des_resultats_IA_de_l_ensemble_des_docume
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["Informations VSME"]
-    assert onglet["A1"].value == "Indicateur"
-    assert onglet["B1"].value == "Fichier"
+    assert onglet["A1"].value == "Exigence de publication"
+    assert onglet["B1"].value == "Indicateur"
+    assert onglet["C1"].value == "Fichier"
+    assert onglet["A2"].value == "B3 - Énergie et émissions de gaz à effet de serre"
     assert (
-        onglet["A2"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+        onglet["B2"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
     )
-    assert onglet["B2"].value == "NOM1.pdf"
-    assert onglet["E2"].value == "12"
+    assert onglet["C2"].value == "NOM1.pdf"
+    assert onglet["F2"].value == "12"
+    assert onglet["A3"].value == "B3 - Énergie et émissions de gaz à effet de serre"
     assert (
-        onglet["A3"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
+        onglet["B3"].value == "Estimation des émissions brutes de GES des scopes 1 et 2"
     )
-    assert onglet["B3"].value == "NOM2.pdf"
-    assert onglet["E3"].value == "1234"
+    assert onglet["C3"].value == "NOM2.pdf"
+    assert onglet["F3"].value == "1234"
 
 
 def test_telechargement_de_la_synthese_des_resultats_IA_redirige_vers_la_connexion_si_non_connecté(
