@@ -94,6 +94,10 @@ class EntrepriseAttachForm(DsfrForm):
                 code_pays
             ].libelle_identifiant_formulaire
 
+    @property
+    def est_francaise(self):
+        return self["code_pays"].value() == CODE_PAYS_FRANCE
+
     def clean_identifiant(self):
         return sans_balise_html(self.cleaned_data["identifiant"])
 
