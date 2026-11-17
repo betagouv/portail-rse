@@ -13,9 +13,7 @@ from utils.forms import sans_balise_html
 
 
 class LoginForm(DsfrForm, AuthenticationForm):
-    username = SafeEmailField(
-        label="Adresse e-mail", widget=forms.TextInput(attrs={"autofocus": True})
-    )
+    username = SafeEmailField(label="Adresse e-mail", widget=forms.TextInput())
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
