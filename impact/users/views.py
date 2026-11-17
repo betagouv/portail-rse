@@ -2,6 +2,7 @@ import django.utils.http
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.views import redirect_to_login
 from django.contrib.auth.views import (
     PasswordResetConfirmView as BasePasswordResetConfirmView,
 )
@@ -95,7 +96,8 @@ def confirm_email(request, uidb64, token):
 def invitation(request, id_invitation, code):
     """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu.
 
-    Valide l'invitation puis redirige vers ProConnect pour authentification.
+    Valide l'invitation puis redirige vers ProConnect pour authentification,
+    ou vers la page de connexion pour une entreprise étrangère.
     """
     try:
         invitation = Invitation.objects.get(id=id_invitation)
@@ -125,11 +127,15 @@ def invitation(request, id_invitation, code):
         # Rediriger vers acceptation directe
         return redirect("users:accepter_invitation", id_invitation, code)
 
-    # Rediriger vers ProConnect
-    request.session["page_suivante"] = reverse(
-        "users:accepter_invitation", args=[id_invitation, code]
-    )
+    url_acceptation = reverse("users:accepter_invitation", args=[id_invitation, code])
+    # utilisée au retour de ProConnect
+    request.session["page_suivante"] = url_acceptation
     request.session.save()
+
+    if invitation.entreprise.est_etrangere:
+        # l'invité peut avoir un compte étranger : connexion par e-mail et mot de passe
+        # ou ProConnect au choix
+        return redirect_to_login(url_acceptation)
 
     return redirect("oidc_authentication_init")
 

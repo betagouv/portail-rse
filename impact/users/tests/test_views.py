@@ -12,6 +12,7 @@ from django.utils.http import urlsafe_base64_encode
 from freezegun import freeze_time
 from pytest_django.asserts import assertTemplateUsed
 
+from habilitations.enums import UserRole
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 from users.models import User
@@ -503,6 +504,51 @@ def test_page_invitation_redirige_vers_proconnect(client, entreprise_factory):
 
     assert response.status_code == 302
     assert response.url == reverse("oidc_authentication_init")
+
+
+def test_page_invitation_sur_une_entreprise_etrangere_redirige_vers_la_connexion(
+    client, entreprise_factory
+):
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001561191000066")
+    invitation = Invitation.objects.create(
+        entreprise=entreprise, email="alice@portail.example"
+    )
+    CODE = make_token(invitation, "invitation")
+    url_acceptation = reverse("users:accepter_invitation", args=[invitation.id, CODE])
+
+    response = client.get(f"/invitation/{invitation.id}/{CODE}")
+
+    assert response.status_code == 302
+    assert response.url == f"{reverse('users:login')}?next={url_acceptation}"
+    assert client.session["page_suivante"] == url_acceptation
+
+
+def test_invitation_sur_une_entreprise_etrangere_acceptee_apres_connexion_par_mot_de_passe(
+    client, alice_with_password, entreprise_factory, bob
+):
+    alice = alice_with_password
+    alice.est_francais = False
+    alice.save()
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001561191000066")
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email=alice.email,
+        role=UserRole.CONTRIBUTEUR,
+        inviteur=bob,
+    )
+    CODE = make_token(invitation, "invitation")
+    response = client.get(f"/invitation/{invitation.id}/{CODE}", follow=True)
+    next_url = response.context["next"]
+
+    client.post(
+        "/connexion",
+        {"username": alice.email, "password": "Passw0rd!123", "next": next_url},
+        follow=True,
+    )
+
+    assert Habilitation.existe(entreprise, alice)
+    invitation.refresh_from_db()
+    assert invitation.date_acceptation
 
 
 def test_erreur_page_invitation_car_invitation_n_existe_pas(client, entreprise_factory):
