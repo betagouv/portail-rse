@@ -53,28 +53,26 @@ def redirection_tableau_de_bord_par_siren(request, siren):
 @entreprise_requise
 @log_path("app:tableauDeBord")
 def resume(request, entreprise):
-    caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
-    if entreprise.est_etrangere:
-        # une entreprise étrangère n'a accès qu'à la VSME : pas de qualification
-        nombre_reglementations_applicables = None
-    # Afficher un avertissement si le profil est incomplet
-    elif not caracteristiques:
-        url_qualification = reverse_lazy(
-            "entreprises:qualification", args=[entreprise.id_public]
-        )
-        message_warning_avec_html(
-            request,
-            t"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{url_qualification}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
-        )
-    # Afficher un avertissement si les caractéristiques ne sont pas à jour
-    elif caracteristiques != entreprise.caracteristiques_actuelles():
-        url_qualification = reverse_lazy(
-            "entreprises:qualification", args=[entreprise.id_public]
-        )
-        message_warning_avec_html(
-            request,
-            t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
-        )
+    if entreprise.est_francaise:
+        caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
+        # Afficher un avertissement si le profil est incomplet
+        if not caracteristiques:
+            url_qualification = reverse_lazy(
+                "entreprises:qualification", args=[entreprise.id_public]
+            )
+            message_warning_avec_html(
+                request,
+                t"Votre profil entreprise est incomplet ou doit être mis à jour suite à l'évolution d'une réglementation. <a href='{url_qualification}'>Complétez-le pour avoir accès à toutes les fonctionnalités de votre tableau de bord.</a>",
+            )
+        # Afficher un avertissement si les caractéristiques ne sont pas à jour
+        elif caracteristiques != entreprise.caracteristiques_actuelles():
+            url_qualification = reverse_lazy(
+                "entreprises:qualification", args=[entreprise.id_public]
+            )
+            message_warning_avec_html(
+                request,
+                t"Les informations affichées sont basées sur l'exercice comptable {caracteristiques.annee}. <a href='{url_qualification}'>Mettre à jour le profil de l'entreprise.</a>",
+            )
 
     # Calculer le nombre d'analyses IA réussies
     nombre_analyses_ia = (
