@@ -10,10 +10,8 @@ from django.urls import reverse
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 from freezegun import freeze_time
+from pytest_django.asserts import assertTemplateUsed
 
-from entreprises.models import Entreprise
-from habilitations.models import FONCTIONS_MAX_LENGTH
-from habilitations.models import FONCTIONS_MIN_LENGTH
 from habilitations.models import Habilitation
 from invitations.models import Invitation
 from users.models import User
@@ -22,10 +20,104 @@ from utils.tokens import uidb64
 
 
 def test_page_creation(client):
-    response = client.get("/creation", follow=True)
+    response = client.get("/creation")
+
+    assert response.status_code == 200
+    assertTemplateUsed(response, "users/creation.html")
+    assert "data-validation-mot-de-passe" in response.content.decode("utf-8")
+
+
+def test_page_connexion_propose_la_creation_de_compte(client):
+    response = client.get("/connexion")
+
+    content = response.content.decode("utf-8")
+    assert f'href="{reverse("users:creation")}"' in content
+
+
+def test_creation_compte_etranger(client, db, mailoutbox):
+    data = {
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Alice",
+        "nom": "User",
+        "acceptation_cgu": "checked",
+        "reception_actualites": "checked",
+    }
+
+    response = client.post("/creation", data=data, follow=True)
 
     assert response.status_code == 200
     assert response.redirect_chain == [(reverse("users:login"), 302)]
+    assert not response.context["user"].is_authenticated
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à user@domaine.test."
+        in content
+    )
+
+    user = User.objects.get(email="user@domaine.test")
+    assert not user.est_francais
+    assert user.is_conseiller_rse is False
+    assert not user.is_email_confirmed
+    assert user.acceptation_cgu
+    assert user.reception_actualites
+    assert user.check_password("Passw0rd!123")
+
+    assert len(mailoutbox) == 1
+    mail = mailoutbox[0]
+    assert list(mail.to) == ["user@domaine.test"]
+    assert mail.template_id == settings.BREVO_CONFIRMATION_EMAIL_TEMPLATE
+    assert mail.merge_global_data == {
+        "confirm_email_url": response.wsgi_request.build_absolute_uri(
+            reverse(
+                "users:confirm_email",
+                kwargs={
+                    "uidb64": uidb64(user),
+                    "token": make_token(user, "confirm_email"),
+                },
+            )
+        )
+    }
+
+
+def test_echec_de_creation_compte_etranger_sans_acceptation_des_cgu(
+    client, db, mailoutbox
+):
+    data = {
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Alice",
+        "nom": "User",
+    }
+
+    response = client.post("/creation", data=data)
+
+    assert response.status_code == 200
+    assert not User.objects.filter(email="user@domaine.test")
+    assert not mailoutbox
+
+
+def test_echec_de_creation_compte_etranger_si_email_deja_utilise(
+    client, alice, mailoutbox
+):
+    data = {
+        "email": alice.email,
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Alice",
+        "nom": "User",
+        "acceptation_cgu": "checked",
+    }
+
+    response = client.post("/creation", data=data)
+
+    assert response.status_code == 200
+    assert User.objects.filter(email=alice.email).count() == 1
+    alice.refresh_from_db()
+    assert alice.est_francais
+    assert not mailoutbox
 
 
 def test_confirm_email(client, alice):
@@ -79,46 +171,6 @@ def test_fail_to_confirm_email_due_to_invalid_user(client, alice):
 
     alice.refresh_from_db()
     assert not alice.is_email_confirmed
-
-
-def test_echec_de_creation_car_fonctions_trop_courte(client, db):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password2": "Passw0rd!123",
-        "password1": "Passw0rd!123",
-        "siren": "130025265",  #  Dinum
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "A" * (FONCTIONS_MIN_LENGTH - 1),
-    }
-
-    response = client.post("/creation", data=data, follow=True)
-
-    assert response.status_code == 200
-    assert not User.objects.filter(email="user@domaine.test")
-    assert not Entreprise.objects.filter(code_pays="FRA", identifiant="123456789")
-
-
-def test_echec_de_creation_car_fonctions_trop_longue(client, db):
-    data = {
-        "prenom": "Alice",
-        "nom": "User",
-        "email": "user@domaine.test",
-        "password2": "Passw0rd!123",
-        "password1": "Passw0rd!123",
-        "siren": "130025265",  #  Dinum
-        "acceptation_cgu": "checked",
-        "reception_actualites": "checked",
-        "fonctions": "A" * (FONCTIONS_MAX_LENGTH + 1),
-    }
-
-    response = client.post("/creation", data=data, follow=True)
-
-    assert response.status_code == 200
-    assert not User.objects.filter(email="user@domaine.test")
-    assert not Entreprise.objects.filter(code_pays="FRA", identifiant="123456789")
 
 
 def test_la_déconnexion_renvoie_vers_le_site_vitrine(client, alice):

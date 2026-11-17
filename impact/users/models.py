@@ -68,6 +68,12 @@ class User(AbstractBaseUser, TimestampedModel):
         default=False,
     )
 
+    est_francais = models.BooleanField(
+        verbose_name="est français",
+        default=True,
+        help_text="Faux si le compte a été créé par e-mail et mot de passe pour une entreprise étrangère",
+    )
+
     oidc_sub_id = models.UUIDField(
         verbose_name="identifiant interne ProConnect",
         null=True,

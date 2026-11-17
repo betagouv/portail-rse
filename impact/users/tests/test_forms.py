@@ -1,5 +1,6 @@
 import pytest
 
+from users.forms import CreationCompteEtrangerForm
 from users.forms import message_erreur_administrateurs
 from users.forms import ProconnectUserEditionForm
 from users.forms import UserEditionForm
@@ -68,3 +69,40 @@ def test_echec_si_balise_html_dans_email(db, alice):
     assert bound_form.errors["email"] == [
         "Les caractères < et > ne sont pas autorisés."
     ]
+
+
+def test_creation_compte_etranger_marque_l_utilisateur_comme_non_francais(db):
+    data = {
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Alice",
+        "nom": "User",
+        "acceptation_cgu": "checked",
+    }
+
+    bound_form = CreationCompteEtrangerForm(data)
+
+    assert bound_form.is_valid(), bound_form.errors
+    user = bound_form.save()
+    assert not user.est_francais
+    assert user.is_conseiller_rse is False
+    assert not user.reception_actualites
+
+
+@pytest.mark.parametrize("champ", ["prenom", "nom"])
+def test_creation_compte_etranger_echec_si_balise_html_dans_prenom_ou_nom(db, champ):
+    data = {
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Alice",
+        "nom": "User",
+        "acceptation_cgu": "checked",
+    }
+    data[champ] = "<script>alert(1)</script>"
+
+    bound_form = CreationCompteEtrangerForm(data)
+
+    assert not bound_form.is_valid()
+    assert bound_form.errors[champ] == ["Les caractères < et > ne sont pas autorisés."]

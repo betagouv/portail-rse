@@ -73,6 +73,40 @@ class UserPasswordForm(DsfrForm, forms.ModelForm):
         return user
 
 
+class CreationCompteEtrangerForm(UserPasswordForm):
+    """Création de compte par e-mail et mot de passe, réservée aux entreprises étrangères.
+
+    Les utilisateurs français passent par ProConnect.
+    """
+
+    acceptation_cgu = forms.BooleanField(
+        label="J’ai lu et j’accepte les CGU (Conditions Générales d'utilisation)",
+        required=True,
+    )
+
+    class Meta:
+        model = User
+        fields = ("email", "prenom", "nom", "acceptation_cgu", "reception_actualites")
+        labels = {
+            "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
+        }
+        field_classes = {"email": SafeEmailField}
+
+    def clean_prenom(self):
+        return sans_balise_html(self.cleaned_data["prenom"])
+
+    def clean_nom(self):
+        return sans_balise_html(self.cleaned_data["nom"])
+
+    def save(self, commit=True):
+        user = super().save(commit=False)
+        user.est_francais = False
+        user.is_conseiller_rse = False
+        if commit:
+            user.save()
+        return user
+
+
 def message_erreur_administrateurs(administrateurs_presents):
     if len(administrateurs_presents) == 1:
         email_cache = cache_partiellement_un_email(administrateurs_presents[0].email)

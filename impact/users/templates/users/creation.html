@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}S'inscrire - Portail RSE{% endblock %}
+
+{% block content %}
+    <div class="fr-container fr-my-12w">
+        <div class="fr-grid-row fr-grid-row--top">
+            <div class="fr-col-lg-7 fr-col-12">
+                <h1>Création de compte pour une entreprise étrangère</h1>
+                <p>
+                    Si votre entreprise est française, vous devez <a href="{% url 'users:login' %}">vous connecter avec ProConnect</a>.
+                </p>
+                <p>
+                    Les comptes étrangers sont limités à la création d'entreprises étrangères et ne peuvent pas être rattachés à une entreprise française.
+                </p>
+                <p>
+                    Après la création de votre compte, un e-mail de confirmation vous sera envoyé. Vous devrez cliquer sur le lien qu'il contient pour pouvoir vous connecter.
+                </p>
+                <p>Sauf mention contraire “(optionnel)” dans le label, tous les champs sont obligatoires.</p>
+                <form action="{% url 'users:creation' %}" method="post">
+                    {% csrf_token %}
+                    {% include 'snippets/field.html' with field=form.email %}
+                    {% include 'includes/validation_mot_de_passe.html' with password1=form.password1 password2=form.password2 %}
+                    {% include 'snippets/field.html' with field=form.prenom %}
+                    {% include 'snippets/field.html' with field=form.nom %}
+                    <div class="fr-form-group">
+                        <fieldset class="fr-fieldset">
+                            <div class="fr-fieldset__content">
+                                {% include 'snippets/field.html' with field=form.acceptation_cgu %}
+                                {% include 'snippets/field.html' with field=form.reception_actualites %}
+                            </div>
+                        </fieldset>
+                    </div>
+                    <button type="submit" class="fr-btn fr-mt-2w">Créer mon compte</button>
+                </form>
+            </div>
+            <div class="fr-col-lg-5 fr-col-12">
+                <img class="fr-responsive-img" src="{% static 'img/dashboard.png' %}" alt="" />
+            </div>
+        </div>
+    </div>
+<!-- page creation compte -->
+{% endblock %}

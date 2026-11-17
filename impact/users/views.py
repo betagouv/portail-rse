@@ -14,6 +14,7 @@ from django.shortcuts import render
 from django.urls import reverse
 
 from .forms import ChoixTypeUtilisateurForm
+from .forms import CreationCompteEtrangerForm
 from .forms import ProconnectUserEditionForm
 from .forms import UserEditionForm
 from .forms import UserPasswordForm
@@ -29,11 +30,28 @@ from utils.tokens import uidb64
 
 
 def creation(request):
-    """Fin des créations de compte sur le service. Fait uniquement avec ProConnect
+    """Création de compte par e-mail et mot de passe pour les entreprises étrangères
 
-    Redirection pour éviter des 404 aux utilisateurs et pour le SEO
+    Les utilisateurs français passent par ProConnect.
     """
-    return redirect(reverse("users:login"))
+    if request.method == "POST":
+        form = CreationCompteEtrangerForm(request.POST)
+        if form.is_valid():
+            user = form.save()
+            if _send_confirm_email(request, user):
+                message_success_sans_html(
+                    request,
+                    f"Votre compte a bien été créé. Un e-mail de confirmation a été envoyé à {user.email}. Confirmez votre adresse e-mail en cliquant sur le lien reçu avant de vous connecter.",
+                )
+            else:
+                message_error_sans_html(
+                    request,
+                    f"L'e-mail de confirmation n'a pas pu être envoyé à {user.email}. Contactez-nous si cette adresse est légitime.",
+                )
+            return redirect("users:login")
+    else:
+        form = CreationCompteEtrangerForm()
+    return render(request, "users/creation.html", {"form": form})
 
 
 def _send_confirm_email(request, user):
