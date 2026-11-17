@@ -327,6 +327,11 @@ def accepter_invitation(request, id_invitation, code):
     if invitation.email != request.user.email:
         raise BadRequest("Cette invitation ne correspond pas à votre adresse e-mail.")
 
+    if not request.user.peut_etre_membre(invitation.entreprise):
+        raise BadRequest(
+            "Un compte étranger ne peut pas être membre d'une entreprise française."
+        )
+
     if invitation.date_acceptation:
         message_warning_sans_html(
             request,

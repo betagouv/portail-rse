@@ -133,6 +133,10 @@ class User(AbstractBaseUser, TimestampedModel):
     def est_etranger(self):
         return not self.est_francais
 
+    def peut_etre_membre(self, entreprise):
+        # un compte étranger ne peut pas être membre d'une entreprise française
+        return not (self.est_etranger and entreprise.est_francaise)
+
     @property
     def created_with_oidc(self):
         # l'utilisateur a été créé via OIDC

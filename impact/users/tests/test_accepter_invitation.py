@@ -150,3 +150,48 @@ def test_invitation_inexistante_erreur(client, utilisateur_invite):
     )
 
     assert response.status_code == 400
+
+
+@pytest.mark.django_db
+def test_un_compte_etranger_ne_peut_pas_accepter_une_invitation_sur_une_entreprise_francaise(
+    client, utilisateur_invite, invitation
+):
+    utilisateur_invite.est_francais = False
+    utilisateur_invite.save()
+    client.force_login(utilisateur_invite)
+    code = make_token(invitation, "invitation")
+
+    response = client.get(
+        reverse("users:accepter_invitation", args=[invitation.id, code])
+    )
+
+    assert response.status_code == 400
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Un compte étranger ne peut pas être membre d'une entreprise française."
+        in content
+    )
+    assert not Habilitation.existe(invitation.entreprise, utilisateur_invite)
+    invitation.refresh_from_db()
+    assert invitation.date_acceptation is None
+
+
+@pytest.mark.django_db
+def test_un_compte_etranger_peut_accepter_une_invitation_sur_une_entreprise_etrangere(
+    client, utilisateur_invite, entreprise_factory, conseiller_rse
+):
+    utilisateur_invite.est_francais = False
+    utilisateur_invite.save()
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001561191000066")
+    invitation = Invitation.objects.create(
+        entreprise=entreprise,
+        email=utilisateur_invite.email,
+        role=UserRole.CONTRIBUTEUR,
+        inviteur=conseiller_rse,
+    )
+    client.force_login(utilisateur_invite)
+    code = make_token(invitation, "invitation")
+
+    client.get(reverse("users:accepter_invitation", args=[invitation.id, code]))
+
+    assert Habilitation.existe(entreprise, utilisateur_invite)

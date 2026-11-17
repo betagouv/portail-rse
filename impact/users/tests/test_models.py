@@ -44,3 +44,24 @@ def test_est_etranger_est_l_inverse_de_est_francais(django_user_model, est_franc
     )
 
     assert utilisateur.est_etranger is not est_francais
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "est_francais,code_pays,peut_etre_membre",
+    [
+        (True, "FRA", True),
+        (True, "MAR", True),
+        (False, "MAR", True),
+        (False, "FRA", False),
+    ],
+)
+def test_peut_etre_membre_d_une_entreprise(
+    django_user_model, entreprise_factory, est_francais, code_pays, peut_etre_membre
+):
+    utilisateur = django_user_model.objects.create(
+        email="nouveau@test.fr", est_francais=est_francais
+    )
+    entreprise = entreprise_factory(code_pays=code_pays, identifiant="001561191000066")
+
+    assert utilisateur.peut_etre_membre(entreprise) is peut_etre_membre

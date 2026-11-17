@@ -224,3 +224,50 @@ def test_le_message_de_modification_d_habilitation_echappe_le_prenom_et_le_nom(
     content = response.content.decode("utf-8")
     assert "&lt;script&gt;alert(1)&lt;/script&gt; &lt;b&gt;User&lt;/b&gt;" in content
     assert "<script>alert(1)</script>" not in content
+
+
+def test_erreur_invitation_d_un_compte_etranger_sur_une_entreprise_francaise(
+    client, alice, bob, entreprise_factory, mailoutbox
+):
+    bob.est_francais = False
+    bob.save()
+    entreprise = entreprise_factory()
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+    redirect_url = reverse("tableau_de_bord:resume", args=[entreprise.id_public])
+    client.get(redirect_url)
+
+    response = client.post(
+        f"/invitation/{entreprise.id_public}",
+        data={"email": bob.email, "role": UserRole.CONTRIBUTEUR},
+        follow=True,
+    )
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "L'invitation a échoué car un compte étranger ne peut pas être membre d'une entreprise française."
+        in content
+    )
+    assert not Habilitation.existe(entreprise, bob)
+    assert not Invitation.objects.filter(entreprise=entreprise, email=bob.email)
+    assert not mailoutbox
+
+
+def test_invitation_d_un_compte_etranger_sur_une_entreprise_etrangere(
+    client, alice, bob, entreprise_factory
+):
+    bob.est_francais = False
+    bob.save()
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001561191000066")
+    Habilitation.ajouter(entreprise, alice, fonctions="Présidente")
+    client.force_login(alice)
+    redirect_url = reverse("tableau_de_bord:resume", args=[entreprise.id_public])
+    client.get(redirect_url)
+
+    client.post(
+        f"/invitation/{entreprise.id_public}",
+        data={"email": bob.email, "role": UserRole.CONTRIBUTEUR},
+        follow=True,
+    )
+
+    assert Habilitation.existe(entreprise, bob)
