@@ -153,7 +153,7 @@ def test_premiere_simulation_sur_entreprise_inexistante_en_bdd(
     content = response.content.decode("utf-8")
     for reglementation in reglementations_applicables:
         assert reglementation.title in content
-    assert "<!-- page resultats simulation -->" in content
+    assertTemplateUsed(response, "public/resultats_simulation.html")
     assert (
         reverse("tableau_de_bord:reglementations", args=[entreprise.id_public])
         in content
@@ -687,8 +687,7 @@ def test_pas_de_résultats_de_la_simulation_après_une_déconnexion(client):
 
     assert response.status_code == 200
 
-    content = response.content.decode("utf-8")
-    assert "<!-- page simulation -->" in content
+    assertTemplateUsed(response, "public/simulation.html")
 
 
 def test_preremplissage_simulation(client, mock_api_infos_entreprise):

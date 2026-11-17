@@ -34,16 +34,14 @@ def test_page_simulation(client):
     response = client.get("/simulation")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page simulation -->" in content
+    assertTemplateUsed(response, "public/simulation.html")
 
 
 def test_page_contact(client):
     response = client.get("/contact")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page contact -->" in content
+    assertTemplateUsed(response, "public/contact.html")
 
 
 @pytest.mark.parametrize(
@@ -127,8 +125,7 @@ def test_page_stats(client):
     response = client.get("/stats")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page stats -->" in content
+    assertTemplateUsed(response, "public/stats.html")
 
 
 def test_fragments_entete_de_page_si_visiteur_non_connecté(client):

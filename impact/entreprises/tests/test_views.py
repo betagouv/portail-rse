@@ -493,8 +493,7 @@ def test_page_de_qualification_d_une_entreprise_non_qualifiee_pre_remplit_les_ch
     response = client.get(f"/entreprises/{entreprise_non_qualifiee.id_public}")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page qualification entreprise -->" in content
+    assertTemplateUsed(response, "entreprises/qualification.html")
     mock_api_infos_entreprise.assert_called_once_with(
         entreprise_non_qualifiee.siren, donnees_financieres=True
     )
@@ -578,8 +577,7 @@ def test_page_de_qualification_avec_entreprise_qualifiee_initialise_les_champs_s
         response = client.get(f"/entreprises/{entreprise.id_public}")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page qualification entreprise -->" in content
+    assertTemplateUsed(response, "entreprises/qualification.html")
     mock_api_infos_entreprise.assert_not_called()
     context = response.context
 

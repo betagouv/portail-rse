@@ -204,8 +204,7 @@ def test_account_page_when_logged_in(client, alice):
     response = client.get("/mon-compte")
 
     assert response.status_code == 200
-    content = response.content.decode("utf-8")
-    assert "<!-- page mon compte -->" in content, content
+    assertTemplateUsed(response, "users/account.html")
 
 
 @pytest.fixture
