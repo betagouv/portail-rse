@@ -15,6 +15,7 @@ from .forms import AjoutEntrepriseConseillerForm
 from .forms import AnticipationForm
 from .metriques import calculer_metriques_entreprise
 from api.exceptions import APIError
+from entreprises.decorators import entreprise_francaise_requise
 from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.decorators import entreprise_requise
 from entreprises.models import CODE_PAYS_FRANCE
@@ -130,7 +131,7 @@ def rapport_generique(request):
 
 
 @login_required
-@entreprise_requise
+@entreprise_francaise_requise
 @log_path("app:tableauDeBord:rapport:analyse_double_materialite")
 def analyse_double_materialite(request, entreprise):
     context = tableau_de_bord_menu_context(entreprise)
@@ -204,7 +205,7 @@ def reglementation(request, entreprise, id_reglementation):
 
 
 @login_required
-@entreprise_requise
+@entreprise_francaise_requise
 @log_path("app:tableauDeBord:anticiper")
 def anticiper(request, entreprise):
     if request.POST:

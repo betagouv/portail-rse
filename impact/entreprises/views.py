@@ -8,7 +8,7 @@ from django.shortcuts import redirect
 from django.shortcuts import render
 
 import api.infos_entreprise
-from .decorators import entreprise_requise
+from .decorators import entreprise_francaise_requise
 from .models import CODE_PAYS_FRANCE
 from .models import Entreprise
 from api.exceptions import APIError
@@ -145,9 +145,9 @@ def attach(request):
 
 
 @login_required
-@entreprise_requise
+@entreprise_francaise_requise
 def qualification(request, entreprise):
-    # Le décorateur @entreprise_requise fournit déjà l'entreprise et vérifie l'habilitation
+    # Le décorateur @entreprise_francaise_requise fournit déjà l'entreprise et vérifie l'habilitation
 
     if request.POST:
         form = EntrepriseQualificationForm(data=request.POST, entreprise=entreprise)

@@ -13,6 +13,7 @@ from weasyprint import HTML
 from api import egapro
 from api.exceptions import APIError
 from entreprises.decorators import entreprise_qualifiee_required
+from entreprises.decorators import redirection_entreprise_etrangere
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -253,6 +254,8 @@ class BDESEReglementation(Reglementation):
 @entreprise_qualifiee_required
 def bdese_pdf(request, id_public, annee):
     entreprise = Entreprise.objects.get(id_public=id_public)
+    if entreprise.est_etrangere:
+        return redirection_entreprise_etrangere(request, entreprise)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
@@ -308,6 +311,8 @@ def _pdf_template_path_from_bdese(bdese):
 @entreprise_qualifiee_required
 def bdese_step(request, id_public, annee, step):
     entreprise = Entreprise.objects.get(id_public=id_public)
+    if entreprise.est_etrangere:
+        return redirection_entreprise_etrangere(request, entreprise)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 
@@ -507,6 +512,8 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
 @entreprise_qualifiee_required
 def toggle_bdese_completion(request, id_public, annee):
     entreprise = Entreprise.objects.get(id_public=id_public)
+    if entreprise.est_etrangere:
+        return redirection_entreprise_etrangere(request, entreprise)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 

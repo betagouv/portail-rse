@@ -64,8 +64,28 @@ def entreprise_requise(function):
     return wrap
 
 
-def entreprise_qualifiee_requise(function):
+def redirection_entreprise_etrangere(request, entreprise):
+    message_warning_sans_html(
+        request,
+        "Cette fonctionnalité n'est pas disponible pour une entreprise étrangère.",
+    )
+    return redirect("tableau_de_bord:resume", id_public=entreprise.id_public)
+
+
+def entreprise_francaise_requise(function):
+    # une entreprise étrangère n'a accès qu'à la VSME et aux analyses IA
     @entreprise_requise
+    @wraps(function)
+    def wrap(request, entreprise, *args, **kwargs):
+        if entreprise.est_etrangere:
+            return redirection_entreprise_etrangere(request, entreprise)
+        return function(request, entreprise, *args, **kwargs)
+
+    return wrap
+
+
+def entreprise_qualifiee_requise(function):
+    @entreprise_francaise_requise
     @wraps(function)
     def wrap(request, entreprise, **kwargs):
         if caracteristiques := entreprise.dernieres_caracteristiques_qualifiantes:

@@ -1147,3 +1147,56 @@ def test_ajout_entreprise_etrangere_pour_un_utilisateur_etranger(
     assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
     entreprise = Entreprise.objects.get(code_pays="MAR", identifiant="001561191000066")
     assert entreprise in alice.entreprises
+
+
+@pytest.mark.parametrize(
+    "nom_url,args",
+    [
+        ("entreprises:qualification", []),
+        ("tableau_de_bord:reglementations", []),
+        ("tableau_de_bord:reglementation", ["bdese"]),
+        ("tableau_de_bord:anticipation", []),
+        ("tableau_de_bord:analyse_double_materialite", []),
+        ("reglementations:gestion_csrd", ["introduction"]),
+        ("reglementations:bdese_step", [2024, 1]),
+        ("reglementations:bdese_pdf", [2024]),
+        ("reglementations:toggle_bdese_completion", [2024]),
+    ],
+)
+def test_fonctionnalite_reservee_aux_entreprises_francaises(
+    client, alice, entreprise_factory, nom_url, args
+):
+    entreprise = entreprise_factory(
+        code_pays="MAR", identifiant="001561191000066", utilisateur=alice
+    )
+    client.force_login(alice)
+
+    response = client.get(reverse(nom_url, args=[entreprise.id_public, *args]))
+
+    assert response.status_code == 302
+    assert response.url == reverse("tableau_de_bord:resume", args=[entreprise.id_public])
+    response = client.get(response.url)
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Cette fonctionnalité n'est pas disponible pour une entreprise étrangère."
+        in content
+    )
+
+
+@pytest.mark.parametrize(
+    "nom_url",
+    ["tableau_de_bord:resume", "analyseia:analyses", "vsme:categories_vsme"],
+)
+def test_fonctionnalite_accessible_aux_entreprises_etrangeres(
+    client, alice, entreprise_factory, nom_url
+):
+    entreprise = entreprise_factory(
+        code_pays="MAR", identifiant="001561191000066", utilisateur=alice
+    )
+    client.force_login(alice)
+
+    response = client.get(reverse(nom_url, args=[entreprise.id_public]), follow=True)
+
+    assert response.status_code == 200
+    content = html.unescape(response.content.decode("utf-8"))
+    assert "n'est pas disponible pour une entreprise étrangère" not in content
