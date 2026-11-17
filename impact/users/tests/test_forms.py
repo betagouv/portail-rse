@@ -85,7 +85,7 @@ def test_creation_compte_etranger_marque_l_utilisateur_comme_non_francais(db):
 
     assert bound_form.is_valid(), bound_form.errors
     user = bound_form.save()
-    assert not user.est_francais
+    assert user.est_etranger
     assert user.is_conseiller_rse is False
     assert not user.reception_actualites
 

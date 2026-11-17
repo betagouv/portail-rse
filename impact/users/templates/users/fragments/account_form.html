@@ -9,7 +9,7 @@
     {% csrf_token %}
     <h2 class="fr-h6">Informations personnelles</h2>
     <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
-        {% if not user.est_francais %}
+        {% if user.est_etranger %}
             <div class="fr-fieldset__element">
                 Type de compte : compte étranger
             </div>

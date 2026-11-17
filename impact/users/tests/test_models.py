@@ -34,3 +34,13 @@ def test_utilisateur_etranger_n_a_pas_a_choisir_son_type(django_user_model):
     )
 
     assert not utilisateur.doit_choisir_type_utilisateur
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("est_francais", [True, False])
+def test_est_etranger_est_l_inverse_de_est_francais(django_user_model, est_francais):
+    utilisateur = django_user_model.objects.create(
+        email="nouveau@test.fr", est_francais=est_francais
+    )
+
+    assert utilisateur.est_etranger is not est_francais

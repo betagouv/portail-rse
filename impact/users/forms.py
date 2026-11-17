@@ -147,7 +147,7 @@ class _AbstractUserEditionForm(DsfrForm, forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        if not self.instance.est_francais:
+        if self.instance.est_etranger:
             # un compte étranger ne peut pas devenir conseiller RSE
             del self.fields["is_conseiller_rse"]
             del self.fields["fonction_rse"]

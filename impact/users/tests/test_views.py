@@ -57,7 +57,7 @@ def test_creation_compte_etranger(client, db, mailoutbox):
     )
 
     user = User.objects.get(email="user@domaine.test")
-    assert not user.est_francais
+    assert user.est_etranger
     assert user.is_conseiller_rse is False
     assert not user.is_email_confirmed
     assert user.acceptation_cgu
@@ -652,7 +652,7 @@ def test_le_compte_etranger_n_est_pas_modifiable(client, alice_with_password):
     client.post("/mon-compte", data=data, follow=True)
 
     alice.refresh_from_db()
-    assert not alice.est_francais
+    assert alice.est_etranger
 
 
 def test_page_mon_compte_sans_choix_conseiller_rse_pour_un_compte_etranger(
