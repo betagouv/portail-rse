@@ -1101,3 +1101,49 @@ def test_page_entreprises_affiche_le_libelle_d_identifiant_selon_le_pays(
     content = response.content.decode("utf-8")
     assert "SIREN : 123456789" in content
     assert "ICE : 001234567000089" in content
+
+
+def test_page_entreprises_sans_la_france_pour_un_utilisateur_etranger(client, alice):
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+
+    response = client.get("/entreprises")
+
+    content = response.content.decode("utf-8")
+    assert 'value="FRA"' not in content
+    assertTemplateNotUsed(response, "fragments/siren_field.html")
+
+
+def test_echec_ajout_entreprise_francaise_pour_un_utilisateur_etranger(
+    client, alice, entreprise_factory
+):
+    entreprise = entreprise_factory()
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+
+    response = client.post("/entreprises", data=_attach_data(entreprise.siren), follow=True)
+
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Impossible d'ajouter cette entreprise car les données sont incorrectes."
+        in content
+    )
+    assert entreprise not in alice.entreprises
+
+
+def test_ajout_entreprise_etrangere_pour_un_utilisateur_etranger(
+    client, alice, mock_api_infos_entreprise
+):
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+
+    response = client.post(
+        "/entreprises", data=_attach_data_entreprise_etrangere(), follow=True
+    )
+
+    assert response.redirect_chain == [(reverse("entreprises:entreprises"), 302)]
+    entreprise = Entreprise.objects.get(code_pays="MAR", identifiant="001561191000066")
+    assert entreprise in alice.entreprises

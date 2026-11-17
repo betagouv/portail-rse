@@ -513,3 +513,27 @@ def test_identifiant_etranger_invalide_refuse(code_pays, identifiant, erreur):
 
     assert not form.is_valid()
     assert form.errors["identifiant"] == [erreur]
+
+
+def test_la_france_fait_partie_des_choix_de_pays_par_defaut():
+    form = EntrepriseAttachForm()
+
+    assert "FRA" in dict(form.fields["code_pays"].choices)
+    assert form["code_pays"].value() == "FRA"
+
+
+def test_la_france_ne_fait_pas_partie_des_choix_de_pays_pour_un_utilisateur_etranger():
+    form = EntrepriseAttachForm(est_francais=False)
+
+    assert "FRA" not in dict(form.fields["code_pays"].choices)
+    assert form["code_pays"].value() != "FRA"
+
+
+def test_entreprise_francaise_refusee_pour_un_utilisateur_etranger():
+    form = EntrepriseAttachForm(
+        data={"code_pays": "FRA", "siren": "123456782", "fonctions": "Présidente"},
+        est_francais=False,
+    )
+
+    assert not form.is_valid()
+    assert "code_pays" in form.errors

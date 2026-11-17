@@ -78,8 +78,16 @@ class EntrepriseAttachForm(DsfrForm):
     )
     fonctions = forms.CharField(label="Fonction(s) dans la société")
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, est_francais=True, **kwargs):
         super().__init__(*args, **kwargs)
+        if not est_francais:
+            choix_pays = [
+                (code, nom)
+                for code, nom in CHOIX_PAYS_DISPONIBLES
+                if code != CODE_PAYS_FRANCE
+            ]
+            self.fields["code_pays"].choices = choix_pays
+            self.fields["code_pays"].initial = choix_pays[0][0]
         code_pays = self["code_pays"].value()
         if code_pays in PAYS_DISPONIBLES:
             self.fields["identifiant"].label = PAYS_DISPONIBLES[

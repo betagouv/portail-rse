@@ -73,7 +73,11 @@ def index(request):
                 else redirect("entreprises:entreprises")
             )
 
-    return render(request, "entreprises/index.html", {"form": EntrepriseAttachForm()})
+    return render(
+        request,
+        "entreprises/index.html",
+        {"form": EntrepriseAttachForm(est_francais=request.user.est_francais)},
+    )
 
 
 class _InvalidRequest(Exception):
@@ -81,7 +85,7 @@ class _InvalidRequest(Exception):
 
 
 def attach(request):
-    form = EntrepriseAttachForm(request.POST)
+    form = EntrepriseAttachForm(request.POST, est_francais=request.user.est_francais)
     try:
         if form.is_valid():
             code_pays = form.cleaned_data["code_pays"]
