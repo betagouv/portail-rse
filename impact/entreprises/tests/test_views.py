@@ -1051,7 +1051,9 @@ def test_preremplissage_siren(client):
     assert preremplissage_form["denomination"].value() == denomination
 
 
-def test_identification_entreprise_francaise(client):
+def test_identification_entreprise_francaise(client, alice):
+    client.force_login(alice)
+
     response = client.get(
         "/entreprises/fragments/identification-entreprise",
         query_params={"code_pays": "FRA"},
@@ -1063,7 +1065,9 @@ def test_identification_entreprise_francaise(client):
     assert 'name="identifiant"' not in response.content.decode("utf-8")
 
 
-def test_identification_entreprise_etrangere(client):
+def test_identification_entreprise_etrangere(client, alice):
+    client.force_login(alice)
+
     response = client.get(
         "/entreprises/fragments/identification-entreprise",
         query_params={"code_pays": "MAR"},
@@ -1075,6 +1079,29 @@ def test_identification_entreprise_etrangere(client):
     assert 'name="identifiant"' in content
     assert 'name="denomination"' in content
     assert "ICE" in content
+
+
+def test_identification_entreprise_requiert_une_connexion(client):
+    response = client.get(
+        "/entreprises/fragments/identification-entreprise",
+        query_params={"code_pays": "MAR"},
+    )
+
+    assert response.status_code == 302
+    assert response.url.startswith(reverse("users:login"))
+
+
+def test_identification_entreprise_sans_siren_par_defaut_pour_un_compte_etranger(
+    client, alice
+):
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+
+    response = client.get("/entreprises/fragments/identification-entreprise")
+
+    assert response.status_code == 200
+    assertTemplateNotUsed(response, "fragments/siren_field.html")
 
 
 def test_page_entreprises_affiche_la_france_par_defaut(client, alice):

@@ -254,10 +254,12 @@ def recherche_entreprise(request):
     )
 
 
+@login_required
 def identification_entreprise(request):
-    form = EntrepriseAttachForm(
-        initial={"code_pays": request.GET.get("code_pays", CODE_PAYS_FRANCE)}
-    )
+    initial = {}
+    if code_pays := request.GET.get("code_pays"):
+        initial["code_pays"] = code_pays
+    form = EntrepriseAttachForm(initial=initial, est_francais=request.user.est_francais)
     return render(
         request,
         "fragments/identification_entreprise.html",
