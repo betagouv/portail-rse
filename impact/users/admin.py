@@ -37,6 +37,7 @@ class UserAdmin(BaseUserAdmin):
                 "fields": (
                     "email",
                     "is_email_confirmed",
+                    "est_francais",
                     "password",
                     "prenom",
                     "nom",
