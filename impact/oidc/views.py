@@ -1,5 +1,6 @@
 import sentry_sdk
 from django.conf import settings
+from django.contrib.auth import update_session_auth_hash
 from django.core.exceptions import SuspiciousOperation
 from django.core.mail import EmailMessage
 from django.http.response import HttpResponseBadRequest
@@ -59,6 +60,17 @@ def proconnect_dispatch_view(request):
 
     oidc_siren = request.session["oidc_user_claims"]["siren"]
     entreprise = None
+
+    utilisateur = request.user
+    if utilisateur.est_etranger and not utilisateur.is_email_confirmed:
+        # le compte étranger a pu être créé par un tiers avec cet e-mail :
+        # ProConnect prouve que l'utilisateur possède l'adresse,
+        # le compte redevient français et le mot de passe du tiers est invalidé
+        utilisateur.est_francais = True
+        utilisateur.is_email_confirmed = True
+        utilisateur.set_unusable_password()
+        utilisateur.save()
+        update_session_auth_hash(request, utilisateur)
 
     logger.info(
         "oidc:login",
