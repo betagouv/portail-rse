@@ -13,25 +13,20 @@
                                 <button type="button" class="fr-accordion__btn" aria-expanded="false" aria-controls="accordion-ia-{{ accordion_id_suffix }}-{{ forloop.counter }}">dans le fichier {{ analyse.nom }}</button>
                             </h4>
                             <div class="fr-collapse" id="accordion-ia-{{ accordion_id_suffix }}-{{ forloop.counter }}">
-                                <ul>
+                                <ul class="fr-raw-list resultats-ia">
                                     {% for resultat in resultats %}
-                                        <li>
-                                            {% if est_tableau %}
-                                                {% if resultat.colonne_label %}{{ resultat.colonne_label }} :<p />{% endif %}
-                                                <div class="fr-highlight">
-                                                    <p>{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.</p>
-                                                </div>
-                                            {% else %}
-                                                {{ resultat.champ_label }} :<p />
-                                                {{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}.
-                                                <p />
-                                            {% endif %}
-                                            Information trouvée dans ce paragraphe :
-                                            <figure class="fr-quote">
-                                                <blockquote>
-                                                    <p class="fr-text--md">{{ resultat.paragraphe }}</p>
-                                                </blockquote>
-                                            </figure>
+                                        <li class="fr-p-2v">
+                                            <p class="fr-mb-1v">
+                                                {% if est_tableau %}
+                                                    {% if resultat.colonne_label %}{{ resultat.colonne_label }} :{% endif %}
+                                                {% else %}
+                                                    {{ resultat.champ_label }} :
+                                                {% endif %}
+                                                <strong>{{ resultat.valeur }}{% if resultat.unite %} {{ resultat.unite }}{% endif %}</strong>
+                                            </p>
+                                            <div class="fr-highlight fr-ml-0">
+                                                <p class="fr-text--sm">« {{ resultat.paragraphe }} »</p>
+                                            </div>
                                         </li>
                                     {% endfor %}
                                 </ul>
