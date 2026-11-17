@@ -318,6 +318,7 @@ def test_synchronise_une_entreprise_avec_un_utilisateur(
     assert metabase_utilisateur.reception_actualites is False
     assert metabase_utilisateur.email_confirme is True
     assert metabase_utilisateur.conseiller_rse is True
+    assert metabase_utilisateur.est_francais is True
     assert metabase_utilisateur.nombre_entreprises == 1
 
     assert MetabaseHabilitation.objects.count() == 1
@@ -977,3 +978,15 @@ def test_synchronise_les_analyses_ia(entreprise_factory, alice):
     assert metabase_analyse_erronee.message_v1 == "Une erreur est survenue"
     assert metabase_analyse_erronee.etat_v2 == "error"
     assert metabase_analyse_erronee.message_v2 == "Une erreur est survenue"
+
+
+@pytest.mark.django_db(transaction=True, databases=["default", METABASE_DATABASE_NAME])
+def test_synchronise_un_utilisateur_etranger(django_user_model):
+    django_user_model.objects.create(
+        email="alice@portail-rse.test",
+        est_francais=False,
+    )
+
+    call_command("sync_metabase")
+
+    assert MetabaseUtilisateur.objects.get().est_francais is False

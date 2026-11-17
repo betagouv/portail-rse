@@ -232,6 +232,7 @@ class Command(BaseCommand):
                 reception_actualites=utilisateur.reception_actualites,
                 email_confirme=utilisateur.is_email_confirmed,
                 conseiller_rse=utilisateur.is_conseiller_rse,
+                est_francais=utilisateur.est_francais,
                 nombre_entreprises=utilisateur.nombre_entreprises,
             )
             bulk.append(mb_utilisateur)

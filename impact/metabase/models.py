@@ -13,6 +13,7 @@ class Utilisateur(models.Model):
     reception_actualites = models.BooleanField()
     email_confirme = models.BooleanField()
     conseiller_rse = models.BooleanField(null=True)
+    est_francais = models.BooleanField()
 
     nombre_entreprises = models.IntegerField()
 
