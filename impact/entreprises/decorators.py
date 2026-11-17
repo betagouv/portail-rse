@@ -5,28 +5,10 @@ from django.shortcuts import get_object_or_404
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 
-from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import Entreprise
 from habilitations.models import Habilitation
 from utils.messages import message_warning_avec_html
 from utils.messages import message_warning_sans_html
-
-
-def entreprise_qualifiee_required(function):
-    @wraps(function)
-    def wrap(request, *args, **kwargs):
-        try:
-            return function(request, *args, **kwargs)
-        except EntrepriseNonQualifieeError as e:
-            message_warning_sans_html(
-                request,
-                e.message,
-            )
-            return redirect(
-                "entreprises:qualification", id_public=e.entreprise.id_public
-            )
-
-    return wrap
 
 
 def entreprise_requise(function):

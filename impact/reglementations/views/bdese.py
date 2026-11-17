@@ -1,5 +1,4 @@
 from django.contrib.auth.decorators import login_required
-from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.shortcuts import HttpResponse
@@ -12,8 +11,7 @@ from weasyprint import HTML
 
 from api import egapro
 from api.exceptions import APIError
-from entreprises.decorators import entreprise_qualifiee_required
-from entreprises.decorators import redirection_entreprise_etrangere
+from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.exceptions import EntrepriseNonQualifieeError
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import Entreprise
@@ -251,14 +249,8 @@ class BDESEReglementation(Reglementation):
 
 
 @login_required
-@entreprise_qualifiee_required
-def bdese_pdf(request, id_public, annee):
-    entreprise = Entreprise.objects.get(id_public=id_public)
-    if entreprise.est_etrangere:
-        return redirection_entreprise_etrangere(request, entreprise)
-    if not Habilitation.existe(entreprise, request.user):
-        raise PermissionDenied
-
+@entreprise_qualifiee_requise
+def bdese_pdf(request, entreprise, annee):
     # à cette étape, on ne peut réutiliser qu'une BDESE principale
     bdese = get_object_or_404(
         BDESEReglementation.classe_entreprise(entreprise),
@@ -308,14 +300,8 @@ def _pdf_template_path_from_bdese(bdese):
 
 
 @login_required
-@entreprise_qualifiee_required
-def bdese_step(request, id_public, annee, step):
-    entreprise = Entreprise.objects.get(id_public=id_public)
-    if entreprise.est_etrangere:
-        return redirection_entreprise_etrangere(request, entreprise)
-    if not Habilitation.existe(entreprise, request.user):
-        raise PermissionDenied
-
+@entreprise_qualifiee_requise
+def bdese_step(request, entreprise, annee, step):
     role = Habilitation.role_pour(entreprise, request.user)
     classe_bdese = BDESEReglementation.classe_entreprise(entreprise)
 
@@ -339,7 +325,7 @@ def bdese_step(request, id_public, annee, step):
     if not bdese.is_configured and step != 0:
         message_warning_sans_html(request, f"Commencez par configurer votre BDESE {annee}")
         return redirect(
-            "reglementations:bdese_step", id_public=id_public, annee=annee, step=0
+            "reglementations:bdese_step", id_public=entreprise.id_public, annee=annee, step=0
         )
 
     if request.method == "POST":
@@ -348,7 +334,7 @@ def bdese_step(request, id_public, annee, step):
             bdese.save()
             return redirect(
                 "reglementations:bdese_step",
-                id_public=id_public,
+                id_public=entreprise.id_public,
                 annee=annee,
                 step=step,
             )
@@ -371,7 +357,7 @@ def bdese_step(request, id_public, annee, step):
                         step += 1
                 return redirect(
                     "reglementations:bdese_step",
-                    id_public=id_public,
+                    id_public=entreprise.id_public,
                     annee=annee,
                     step=step,
                 )
@@ -509,14 +495,8 @@ def initialize_bdese_configuration(bdese: BDESE_300 | BDESE_50_300) -> dict:
 
 
 @login_required
-@entreprise_qualifiee_required
-def toggle_bdese_completion(request, id_public, annee):
-    entreprise = Entreprise.objects.get(id_public=id_public)
-    if entreprise.est_etrangere:
-        return redirection_entreprise_etrangere(request, entreprise)
-    if not Habilitation.existe(entreprise, request.user):
-        raise PermissionDenied
-
+@entreprise_qualifiee_requise
+def toggle_bdese_completion(request, entreprise, annee):
     bdese = get_or_create_bdese(entreprise, annee)
 
     if bdese.is_bdese_avec_accord:

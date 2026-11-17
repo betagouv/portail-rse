@@ -1,5 +1,6 @@
 import html
 import re
+import uuid
 
 import pytest
 from django.urls import reverse
@@ -721,3 +722,19 @@ def test_get_or_create_bdese_avec_une_entreprise_non_qualifiee(
 ):
     with pytest.raises(EntrepriseNonQualifieeError):
         get_or_create_bdese(entreprise_non_qualifiee, 2023)
+
+
+@pytest.mark.parametrize(
+    "nom_url,args",
+    [
+        ("reglementations:bdese_step", [2024, 1]),
+        ("reglementations:bdese_pdf", [2024]),
+        ("reglementations:toggle_bdese_completion", [2024]),
+    ],
+)
+def test_bdese_introuvable_si_entreprise_inconnue(client, alice, nom_url, args):
+    client.force_login(alice)
+
+    response = client.get(reverse(nom_url, args=[uuid.uuid4(), *args]))
+
+    assert response.status_code == 404
