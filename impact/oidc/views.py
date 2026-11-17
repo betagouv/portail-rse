@@ -14,8 +14,10 @@ from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
+from habilitations.models import HabilitationError
 from logs import event_logger as logger
 from utils.anonymisation import cache_partiellement_un_email
+from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 
 
@@ -81,6 +83,9 @@ def proconnect_dispatch_view(request):
     if not entreprise:
         try:
             entreprise = _creation_entreprise(oidc_siren, request.user)
+        except HabilitationError as ex:
+            message_error_sans_html(request, str(ex))
+            return redirect(settings.LOGIN_REDIRECT_URL)
         except APIError as ex:
             logger.error(f"Impossible de contacter l'API entreprise : {ex}")
             return HttpResponseBadRequest(
@@ -93,20 +98,24 @@ def proconnect_dispatch_view(request):
 
     # l'entreprise existe en base.
     # l'utilisateur connecté en est-il membre ?
-    if Habilitation.existe(entreprise, request.user):
-        # on peut directement rediriger vers le tableau de bord
-        request.session["entreprise"] = entreprise.id
-        request.session.save()
-        message_success_sans_html(
-            request,
-            f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
-        )
-    elif Habilitation.objects.filter(entreprise=entreprise).count():
-        # d'autres utilisateurs sont membres de l'entreprise
-        Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
-        _envoie_email_aux_administrateurs_actuels(request, entreprise)
-    else:
-        Habilitation.ajouter(entreprise, request.user, role=UserRole.ADMINISTRATEUR)
+    try:
+        if Habilitation.existe(entreprise, request.user):
+            # on peut directement rediriger vers le tableau de bord
+            request.session["entreprise"] = entreprise.id
+            request.session.save()
+            message_success_sans_html(
+                request,
+                f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
+            )
+        elif Habilitation.objects.filter(entreprise=entreprise).count():
+            # d'autres utilisateurs sont membres de l'entreprise
+            Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
+            _envoie_email_aux_administrateurs_actuels(request, entreprise)
+        else:
+            Habilitation.ajouter(entreprise, request.user, role=UserRole.ADMINISTRATEUR)
+    except HabilitationError as ex:
+        message_error_sans_html(request, str(ex))
+        return redirect(settings.LOGIN_REDIRECT_URL)
 
     if request.session.get("page_suivante"):
         # cas d'une invitation faite par un conseiller

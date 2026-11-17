@@ -133,7 +133,7 @@ def attach(request):
             raise _InvalidRequest(
                 "Impossible d'ajouter cette entreprise car les données sont incorrectes."
             )
-    except (_InvalidRequest, APIError) as exception:
+    except (_InvalidRequest, APIError, HabilitationError) as exception:
         message_error_sans_html(
             request,
             exception,

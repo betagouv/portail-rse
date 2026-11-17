@@ -151,6 +151,10 @@ class Habilitation(TimestampedModel):
         is_conseiller_rse=False,
         invitation=None,
     ):
+        if not utilisateur.peut_etre_membre(entreprise):
+            raise HabilitationError(
+                "Un compte étranger ne peut pas être membre d'une entreprise française."
+            )
         h = cls(
             user=utilisateur,
             entreprise=entreprise,

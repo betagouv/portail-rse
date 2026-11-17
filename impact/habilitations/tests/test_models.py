@@ -78,3 +78,34 @@ def test_etat_conseiller_rse_est_independant_des_droits(
 
     habilitation = Habilitation.objects.pour(entreprise, alice)
     assert habilitation.role == role
+
+
+@pytest.mark.django_db
+def test_un_compte_etranger_ne_peut_pas_etre_ajoute_a_une_entreprise_francaise(
+    alice, entreprise_factory
+):
+    alice.est_francais = False
+    alice.save()
+    entreprise = entreprise_factory()
+
+    with pytest.raises(HabilitationError) as erreur:
+        Habilitation.ajouter(entreprise, alice)
+
+    assert (
+        str(erreur.value)
+        == "Un compte étranger ne peut pas être membre d'une entreprise française."
+    )
+    assert not Habilitation.existe(entreprise, alice)
+
+
+@pytest.mark.django_db
+def test_un_compte_etranger_peut_etre_ajoute_a_une_entreprise_etrangere(
+    alice, entreprise_factory
+):
+    alice.est_francais = False
+    alice.save()
+    entreprise = entreprise_factory(code_pays="MAR", identifiant="001561191000066")
+
+    Habilitation.ajouter(entreprise, alice)
+
+    assert Habilitation.existe(entreprise, alice)

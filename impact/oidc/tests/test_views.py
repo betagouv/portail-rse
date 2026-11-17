@@ -1,3 +1,5 @@
+import html
+
 import pytest
 from django.conf import settings
 from django.urls import reverse
@@ -113,3 +115,54 @@ def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_adminis
     }
     assert response.status_code == 200
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
+
+
+def test_proconnect_dispatch_view_n_ajoute_pas_un_compte_etranger_a_une_entreprise_francaise_existante(
+    client, entreprise_factory, alice_sur_proconnect
+):
+    alice_sur_proconnect.est_francais = False
+    alice_sur_proconnect.save()
+    siren = "123456789"
+    entreprise = entreprise_factory(identifiant=siren)
+    session = client.session
+    session["oidc_user_claims"] = {
+        "sub": alice_sur_proconnect.oidc_sub_id,
+        "siren": siren,
+    }
+    session.save()
+    client.force_login(alice_sur_proconnect)
+
+    response = client.get("/oidc/dispatch/", follow=True)
+
+    assert not Habilitation.existe(entreprise, alice_sur_proconnect)
+    assert response.redirect_chain[0] == (settings.LOGIN_REDIRECT_URL, 302)
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Un compte étranger ne peut pas être membre d'une entreprise française."
+        in content
+    )
+
+
+def test_proconnect_dispatch_view_n_ajoute_pas_un_compte_etranger_a_une_nouvelle_entreprise_francaise(
+    client, alice_sur_proconnect, mock_api_infos_entreprise
+):
+    alice_sur_proconnect.est_francais = False
+    alice_sur_proconnect.save()
+    siren = mock_api_infos_entreprise.return_value["siren"]
+    session = client.session
+    session["oidc_user_claims"] = {
+        "sub": alice_sur_proconnect.oidc_sub_id,
+        "siren": siren,
+    }
+    session.save()
+    client.force_login(alice_sur_proconnect)
+
+    response = client.get("/oidc/dispatch/", follow=True)
+
+    assert not alice_sur_proconnect.entreprises
+    assert response.redirect_chain[0] == (settings.LOGIN_REDIRECT_URL, 302)
+    content = html.unescape(response.content.decode("utf-8"))
+    assert (
+        "Un compte étranger ne peut pas être membre d'une entreprise française."
+        in content
+    )
