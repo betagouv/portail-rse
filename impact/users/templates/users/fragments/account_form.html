@@ -9,6 +9,11 @@
     {% csrf_token %}
     <h2 class="fr-h6">Informations personnelles</h2>
     <fieldset class="fr-fieldset" aria-label="Modification des informations personnelles">
+        {% if not user.est_francais %}
+            <div class="fr-fieldset__element">
+                Type de compte : compte étranger
+            </div>
+        {% endif %}
         <div class="fr-fieldset__element">
             {% include 'snippets/field.html' with field=account_form.prenom %}
         </div>
@@ -22,13 +27,15 @@
                 {% include 'snippets/field.html' with field=account_form.email %}
             {% endif %}
         </div>
-        <div class="fr-fieldset__element">
-            {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
+        {% if user.est_francais %}
+            <div class="fr-fieldset__element">
+                {% include 'snippets/field.html' with field=account_form.is_conseiller_rse %}
 
-            {% if account_form.is_conseiller_rse.value %}
-                {% include 'snippets/field.html' with field=account_form.fonction_rse %}
-            {% endif %}
-        </div>
+                {% if account_form.is_conseiller_rse.value %}
+                    {% include 'snippets/field.html' with field=account_form.fonction_rse %}
+                {% endif %}
+            </div>
+        {% endif %}
 
         <div class="fr-fieldset__element">
             {% include 'snippets/field.html' with field=account_form.reception_actualites %}

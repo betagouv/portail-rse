@@ -139,5 +139,6 @@ class User(AbstractBaseUser, TimestampedModel):
         """L'utilisateur doit-il choisir entre membre d'entreprise ou conseiller RSE ?
 
         Retourne True si l'utilisateur n'a pas encore fait de choix
+        Un compte étranger ne peut pas être conseiller RSE, il n'a donc pas de choix à faire
         """
-        return self.is_conseiller_rse is None
+        return self.est_francais and self.is_conseiller_rse is None

@@ -25,3 +25,12 @@ def test_utilisateur_francais_par_defaut(django_user_model):
     utilisateur = django_user_model.objects.create(email="nouveau@test.fr")
 
     assert utilisateur.est_francais
+
+
+@pytest.mark.django_db
+def test_utilisateur_etranger_n_a_pas_a_choisir_son_type(django_user_model):
+    utilisateur = django_user_model.objects.create(
+        email="nouveau@test.fr", est_francais=False
+    )
+
+    assert not utilisateur.doit_choisir_type_utilisateur

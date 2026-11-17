@@ -106,3 +106,14 @@ def test_creation_compte_etranger_echec_si_balise_html_dans_prenom_ou_nom(db, ch
 
     assert not bound_form.is_valid()
     assert bound_form.errors[champ] == ["Les caractères < et > ne sont pas autorisés."]
+
+
+@pytest.mark.parametrize("form_class", [UserEditionForm, ProconnectUserEditionForm])
+def test_un_compte_etranger_n_a_pas_les_champs_conseiller_rse(db, alice, form_class):
+    alice.est_francais = False
+    alice.save()
+
+    form = form_class(instance=alice)
+
+    assert "is_conseiller_rse" not in form.fields
+    assert "fonction_rse" not in form.fields

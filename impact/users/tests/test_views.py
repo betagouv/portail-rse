@@ -634,3 +634,58 @@ def test_htmx_affiche_facultativement_le_champ_fonction_rse_selon_l_etat_conseil
 
     assert response.status_code == 200
     assert "auditeur" not in response.content.decode()
+
+
+def test_le_compte_etranger_n_est_pas_modifiable(client, alice_with_password):
+    alice = alice_with_password
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+    data = {
+        "prenom": "Alice",
+        "nom": "Cooper",
+        "email": alice.email,
+        "est_francais": "checked",
+        "action": "update-account",
+    }
+
+    client.post("/mon-compte", data=data, follow=True)
+
+    alice.refresh_from_db()
+    assert not alice.est_francais
+
+
+def test_page_mon_compte_sans_choix_conseiller_rse_pour_un_compte_etranger(
+    client, alice
+):
+    alice.est_francais = False
+    alice.save()
+    client.force_login(alice)
+
+    response = client.get("/mon-compte")
+
+    assert 'name="is_conseiller_rse"' not in response.content.decode("utf-8")
+
+
+def test_un_compte_etranger_ne_peut_pas_devenir_conseiller_rse(
+    client, alice_with_password
+):
+    alice = alice_with_password
+    alice.est_francais = False
+    alice.is_conseiller_rse = False
+    alice.save()
+    client.force_login(alice)
+    data = {
+        "prenom": "Alice",
+        "nom": "Cooper",
+        "email": alice.email,
+        "is_conseiller_rse": "checked",
+        "fonction_rse": "consultant",
+        "action": "update-account",
+    }
+
+    client.post("/mon-compte", data=data, follow=True)
+
+    alice.refresh_from_db()
+    assert alice.is_conseiller_rse is False
+    assert alice.fonction_rse is None

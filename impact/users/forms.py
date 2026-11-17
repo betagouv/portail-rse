@@ -145,6 +145,13 @@ class _AbstractUserEditionForm(DsfrForm, forms.ModelForm):
             "reception_actualites": "Je souhaite recevoir les actualités du Portail RSE (optionnel)",
         }
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        if not self.instance.est_francais:
+            # un compte étranger ne peut pas devenir conseiller RSE
+            del self.fields["is_conseiller_rse"]
+            del self.fields["fonction_rse"]
+
     def clean_prenom(self):
         return sans_balise_html(self.cleaned_data["prenom"])
 

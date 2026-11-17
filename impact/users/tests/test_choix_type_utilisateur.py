@@ -80,3 +80,26 @@ def test_choix_conseiller_rse_met_a_jour_utilisateur__choix_membre(
     assert not utilisateur.fonction_rse
     assert response.status_code == 302
     assert response.url == reverse("tableau_de_bord:resume")
+
+
+@pytest.mark.django_db
+def test_un_compte_etranger_ne_peut_pas_choisir_d_etre_conseiller_rse(
+    client, django_user_model
+):
+    utilisateur = django_user_model.objects.create(
+        email="nouveau@test.fr", est_francais=False
+    )
+    client.force_login(utilisateur)
+
+    response = client.post(
+        reverse("users:choix_type_utilisateur"),
+        {
+            "type_utilisateur": ChoixTypeUtilisateurForm.TYPE_CONSEILLER_RSE,
+            "fonction_rse": "auditeur",
+        },
+    )
+
+    assert response.status_code == 302
+    utilisateur.refresh_from_db()
+    assert not utilisateur.is_conseiller_rse
+    assert not utilisateur.fonction_rse
