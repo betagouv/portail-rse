@@ -35,6 +35,8 @@ def creation(request):
 
     Les utilisateurs français passent par ProConnect.
     """
+    if request.user.is_authenticated:
+        return redirect(settings.LOGIN_REDIRECT_URL)
     if request.method == "POST":
         form = CreationCompteEtrangerForm(request.POST)
         if form.is_valid():

@@ -28,6 +28,42 @@ def test_page_creation(client):
     assert "data-validation-mot-de-passe" in response.content.decode("utf-8")
 
 
+def test_page_creation_redirige_un_utilisateur_connecté(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/creation")
+
+    assert response.status_code == 302
+    assert response.url == settings.LOGIN_REDIRECT_URL
+
+
+def test_creation_impossible_pour_un_utilisateur_déjà_connecté(client, alice):
+    client.force_login(alice)
+    data = {
+        "email": "user@domaine.test",
+        "password1": "Passw0rd!123",
+        "password2": "Passw0rd!123",
+        "prenom": "Prénom",
+        "nom": "Nom",
+        "acceptation_cgu": "checked",
+    }
+
+    response = client.post("/creation", data=data)
+
+    assert response.status_code == 302
+    assert response.url == settings.LOGIN_REDIRECT_URL
+    assert not User.objects.filter(email="user@domaine.test").exists()
+
+
+def test_page_connexion_redirige_un_utilisateur_connecte(client, alice):
+    client.force_login(alice)
+
+    response = client.get("/connexion")
+
+    assert response.status_code == 302
+    assert response.url == settings.LOGIN_REDIRECT_URL
+
+
 def test_page_connexion_propose_la_creation_de_compte(client):
     response = client.get("/connexion")
 

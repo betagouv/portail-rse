@@ -8,6 +8,7 @@ from .forms import SetPasswordForm
 from .views import accepter_invitation
 from .views import account
 from .views import choix_type_utilisateur
+from .views import confirm_email
 from .views import creation
 from .views import deconnexion
 from .views import invitation
@@ -15,12 +16,13 @@ from .views import PasswordResetConfirmView
 from .views import PasswordResetView
 from .views import post_login_dispatch
 from .views import preremplissage_formulaire_compte
-from users.views import confirm_email
 
 app_name = "users"
 
 _connexion_view = auth_views.LoginView.as_view(
-    template_name="users/login.html", authentication_form=LoginForm
+    template_name="users/login.html",
+    authentication_form=LoginForm,
+    redirect_authenticated_user=True,
 )
 
 
