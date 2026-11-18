@@ -1,4 +1,3 @@
-import html
 from uuid import uuid4
 
 import pytest
@@ -118,33 +117,31 @@ def test_proconnect_dispatch_view_crée_une_habilitation_contributeur_si_adminis
     assert response.redirect_chain[0] == ("/post-login-dispatch", 302)
 
 
-def test_proconnect_dispatch_view_n_ajoute_pas_un_compte_etranger_a_une_entreprise_francaise_existante(
-    client, entreprise_factory, alice_sur_proconnect
+def test_proconnect_dispatch_view_passe_en_francais_un_compte_etranger_confirme_et_l_ajoute_a_une_entreprise_francaise_existante(
+    client, entreprise_factory, alice
 ):
-    alice_sur_proconnect.est_francais = False
-    alice_sur_proconnect.save()
+    alice.est_francais = False
+    alice.set_password("Passw0rd!123")
+    alice.oidc_sub_id = str(uuid4())
+    alice.save()
     siren = "123456789"
     entreprise = entreprise_factory(identifiant=siren)
     session = client.session
-    session["oidc_user_claims"] = {
-        "sub": alice_sur_proconnect.oidc_sub_id,
-        "siren": siren,
-    }
+    session["oidc_user_claims"] = {"sub": alice.oidc_sub_id, "siren": siren}
     session.save()
-    client.force_login(alice_sur_proconnect)
+    client.force_login(alice)
 
     response = client.get("/oidc/dispatch/", follow=True)
 
-    assert not Habilitation.existe(entreprise, alice_sur_proconnect)
-    assert response.redirect_chain[0] == (settings.LOGIN_REDIRECT_URL, 302)
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Un compte étranger ne peut pas être membre d'une entreprise française."
-        in content
-    )
+    alice.refresh_from_db()
+    assert alice.est_francais
+    assert alice.has_usable_password()
+    assert response.context["user"].is_authenticated
+    assert Habilitation.existe(entreprise, alice)
 
 
-def test_proconnect_dispatch_view_n_ajoute_pas_un_compte_etranger_a_une_nouvelle_entreprise_francaise(
+@pytest.mark.network
+def test_proconnect_dispatch_view_passe_en_francais_un_compte_etranger_confirme_et_cree_l_entreprise_francaise(
     client, alice_sur_proconnect, mock_api_infos_entreprise
 ):
     alice_sur_proconnect.est_francais = False
@@ -158,15 +155,13 @@ def test_proconnect_dispatch_view_n_ajoute_pas_un_compte_etranger_a_une_nouvelle
     session.save()
     client.force_login(alice_sur_proconnect)
 
-    response = client.get("/oidc/dispatch/", follow=True)
+    client.get("/oidc/dispatch/", follow=True)
 
-    assert not alice_sur_proconnect.entreprises
-    assert response.redirect_chain[0] == (settings.LOGIN_REDIRECT_URL, 302)
-    content = html.unescape(response.content.decode("utf-8"))
-    assert (
-        "Un compte étranger ne peut pas être membre d'une entreprise française."
-        in content
-    )
+    alice_sur_proconnect.refresh_from_db()
+    assert alice_sur_proconnect.est_francais
+    entreprise = Entreprise.objects.get(code_pays="FRA", identifiant=siren)
+    habilitation = Habilitation.objects.pour(entreprise, alice_sur_proconnect)
+    assert habilitation.role == UserRole.ADMINISTRATEUR
 
 
 def test_proconnect_dispatch_view_repasse_en_francais_un_compte_etranger_non_confirme(
@@ -193,24 +188,3 @@ def test_proconnect_dispatch_view_repasse_en_francais_un_compte_etranger_non_con
     assert not alice.has_usable_password()
     assert response.context["user"].is_authenticated
     assert Habilitation.existe(entreprise, alice)
-
-
-def test_proconnect_dispatch_view_ne_repasse_pas_en_francais_un_compte_etranger_confirme(
-    client, entreprise_factory, alice_sur_proconnect
-):
-    alice_sur_proconnect.est_francais = False
-    alice_sur_proconnect.save()
-    siren = "123456789"
-    entreprise_factory(identifiant=siren)
-    session = client.session
-    session["oidc_user_claims"] = {
-        "sub": alice_sur_proconnect.oidc_sub_id,
-        "siren": siren,
-    }
-    session.save()
-    client.force_login(alice_sur_proconnect)
-
-    client.get("/oidc/dispatch/", follow=True)
-
-    alice_sur_proconnect.refresh_from_db()
-    assert alice_sur_proconnect.est_etranger

@@ -15,16 +15,13 @@ from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
 from habilitations.enums import UserRole
 from habilitations.models import Habilitation
-from habilitations.models import HabilitationError
 from logs import event_logger as logger
 from utils.anonymisation import cache_partiellement_un_email
-from utils.messages import message_error_sans_html
 from utils.messages import message_success_sans_html
 
 
 class OIDCAuthenticationCallbackView(CallbackView):
-    """
-    En cas de connexion via ProConnect, le routage "normal" est détourné
+    """En cas de connexion via ProConnect, le routage "normal" est détourné
     et traité par des vues spécifiques pour certains cas d'utilisation :
         - nouvel utilisateur pour entreprise existante,
         - nouvel utilisateur pour nouvelle entreprise,
@@ -49,8 +46,7 @@ class OIDCAuthenticationCallbackView(CallbackView):
 
 
 def proconnect_dispatch_view(request):
-    """
-    En cas de succès d'une connexion ProConnect, cette vue 'récupère' le routage
+    """En cas de succès d'une connexion ProConnect, cette vue 'récupère' le routage
     pour pouvoir aiguiller ou traiter les cas spécifiques.
     """
     if not request.session.get("oidc_user_claims"):
@@ -62,13 +58,16 @@ def proconnect_dispatch_view(request):
     entreprise = None
 
     utilisateur = request.user
-    if utilisateur.est_etranger and not utilisateur.is_email_confirmed:
-        # le compte étranger a pu être créé par un tiers avec cet e-mail :
-        # ProConnect prouve que l'utilisateur possède l'adresse,
-        # le compte redevient français et le mot de passe du tiers est invalidé
+    if utilisateur.est_etranger:
+        # ProConnect prouve le rattachement à une organisation française :
+        # le compte devient français
         utilisateur.est_francais = True
-        utilisateur.is_email_confirmed = True
-        utilisateur.set_unusable_password()
+        if not utilisateur.is_email_confirmed:
+            # le compte étranger a pu être créé par un tiers avec cet e-mail :
+            # ProConnect prouve que l'utilisateur possède l'adresse,
+            # le mot de passe du tiers est invalidé
+            utilisateur.is_email_confirmed = True
+            utilisateur.set_unusable_password()
         utilisateur.save()
         update_session_auth_hash(request, utilisateur)
 
@@ -95,13 +94,10 @@ def proconnect_dispatch_view(request):
     if not entreprise:
         try:
             entreprise = _creation_entreprise(oidc_siren, request.user)
-        except HabilitationError as ex:
-            message_error_sans_html(request, str(ex))
-            return redirect(settings.LOGIN_REDIRECT_URL)
         except APIError as ex:
             logger.error(f"Impossible de contacter l'API entreprise : {ex}")
             return HttpResponseBadRequest(
-                f"Impossible de contacter l'API entreprise, veuillez-vous déconnecter et rééssayer ultérieurement."
+                "Impossible de contacter l'API entreprise, veuillez-vous déconnecter et rééssayer ultérieurement."
             )
         except Exception as ex:
             msg = f"Erreur lors de la création de l'entreprise SIREN: {oidc_siren}"
@@ -110,24 +106,20 @@ def proconnect_dispatch_view(request):
 
     # l'entreprise existe en base.
     # l'utilisateur connecté en est-il membre ?
-    try:
-        if Habilitation.existe(entreprise, request.user):
-            # on peut directement rediriger vers le tableau de bord
-            request.session["entreprise"] = entreprise.id
-            request.session.save()
-            message_success_sans_html(
-                request,
-                f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
-            )
-        elif Habilitation.objects.filter(entreprise=entreprise).count():
-            # d'autres utilisateurs sont membres de l'entreprise
-            Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
-            _envoie_email_aux_administrateurs_actuels(request, entreprise)
-        else:
-            Habilitation.ajouter(entreprise, request.user, role=UserRole.ADMINISTRATEUR)
-    except HabilitationError as ex:
-        message_error_sans_html(request, str(ex))
-        return redirect(settings.LOGIN_REDIRECT_URL)
+    if Habilitation.existe(entreprise, request.user):
+        # on peut directement rediriger vers le tableau de bord
+        request.session["entreprise"] = entreprise.id
+        request.session.save()
+        message_success_sans_html(
+            request,
+            f"Vous avez choisi de vous connecter via ProConnect avec : {entreprise}.",
+        )
+    elif Habilitation.objects.filter(entreprise=entreprise).count():
+        # d'autres utilisateurs sont membres de l'entreprise
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.CONTRIBUTEUR)
+        _envoie_email_aux_administrateurs_actuels(request, entreprise)
+    else:
+        Habilitation.ajouter(entreprise, request.user, role=UserRole.ADMINISTRATEUR)
 
     if request.session.get("page_suivante"):
         # cas d'une invitation faite par un conseiller
