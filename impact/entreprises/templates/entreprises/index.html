@@ -9,6 +9,7 @@
 {% block content %}
     <div class="fr-container fr-my-8w">
         <h2>Ajouter une entreprise</h2>
+        <p>Si l'entreprise dispose d'un numéro SIREN, choisissez « France » comme pays de l'entreprise.</p>
         <form method="post" class="fr-mb-4w">
             {% csrf_token %}
             {% include 'snippets/field.html' with field=form.code_pays %}
