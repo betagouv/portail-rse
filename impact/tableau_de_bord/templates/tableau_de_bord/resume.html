@@ -16,7 +16,7 @@
                 <!-- Ligne 1 : 3 tuiles -->
                 <div class="fr-grid-row fr-grid-row--gutters fr-mb-4w">
                     <!-- Tuile 1 : Réglementations applicables -->
-                    {% if entreprise.est_francaise %}
+                    {% if entreprise.a_un_siren %}
                     <div class="fr-col-12 fr-col-lg-4">
                         <div class="fr-tile fr-enlarge-link">
                             <div class="fr-tile__body">
@@ -98,7 +98,7 @@
                                 </h3>
                                 <div class="fr-card__start">
                                     <ul class="fr-tags-group">
-                                        {% if entreprise.est_francaise %}
+                                        {% if entreprise.a_un_siren %}
                                             <li><p class="fr-tag">SIREN : {{ entreprise.siren }}</p></li>
                                             {% if entreprise.categorie_juridique and entreprise.categorie_juridique.label %}
                                                 <li><p class="fr-tag">{{ entreprise.categorie_juridique.label }}</p></li>
@@ -109,7 +109,7 @@
                                         {% endif %}
                                     </ul>
                                 </div>
-                                {% if entreprise.est_francaise %}
+                                {% if entreprise.a_un_siren %}
                                 <p class="fr-card__desc">
                                     {% with caracs=entreprise.dernieres_caracteristiques_qualifiantes|default:entreprise.dernieres_caracteristiques %}
                                         Code NAF/APE : <b>{{ entreprise.code_NAF }}</b> ({{ entreprise.secteur_principal }})<br>
@@ -144,13 +144,13 @@
                                 </p>
                                 {% else %}
                                 <p class="fr-card__desc">
-                                    Cette entreprise est immatriculée à l'étranger : nous ne disposons pas de données complémentaires la concernant.
+                                    Cette entreprise n'a pas de SIREN : nous ne disposons pas de données complémentaires la concernant.
                                 </p>
                                 {% endif %}
                             </div>
                             <div class="fr-card__footer">
                                 <ul class="fr-btns-group--md fr-btns-group--inline-reverse fr-btns-group--inline-lg">
-                                    {% if entreprise.est_francaise %}
+                                    {% if entreprise.a_un_siren %}
                                     <li>
                                         <a href="{% url 'entreprises:qualification' entreprise.id_public %}" class="fr-btn fr-btn--icon-left fr-icon-edit-line">Modifier le profil</a>
                                     </li>

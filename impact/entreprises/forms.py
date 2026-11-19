@@ -95,7 +95,7 @@ class EntrepriseAttachForm(DsfrForm):
             ].libelle_identifiant_formulaire
 
     @property
-    def est_francaise(self):
+    def a_un_siren(self):
         return self["code_pays"].value() == CODE_PAYS_FRANCE
 
     def clean_identifiant(self):

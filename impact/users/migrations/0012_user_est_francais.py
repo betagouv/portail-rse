@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
             name="est_francais",
             field=models.BooleanField(
                 default=True,
-                help_text="Faux si le compte a été créé par e-mail et mot de passe pour une entreprise étrangère",
+                help_text="Faux si le compte a été créé par e-mail et mot de passe pour une entreprise sans SIREN",
                 verbose_name="est français"
             ),
         ),

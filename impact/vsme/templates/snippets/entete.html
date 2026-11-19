@@ -5,7 +5,7 @@
         </button>
         <div class="fr-collapse" id="breadcrumb-1">
             <ol class="fr-breadcrumb__list">
-                {% if entreprise.est_francaise %}
+                {% if entreprise.a_un_siren %}
                     <li>
                         <a class="fr-breadcrumb__link" href="{% url 'tableau_de_bord:index' entreprise.id_public %}">Mes réglementations RSE</a>
                     </li>

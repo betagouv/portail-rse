@@ -296,7 +296,7 @@ def test_tableau_de_bord_resume_entreprise_etrangere_oriente_vers_la_vsme(
     content = response.content.decode("utf-8")
     assert reverse("tableau_de_bord:reglementations", args=[entreprise.id_public]) not in content
     assert reverse("entreprises:qualification", args=[entreprise.id_public]) not in content
-    assert "SIREN" not in content
+    assert '<p class="fr-tag">SIREN' not in content
     assert "ICE : 001234567000089" in content
     assert "MAROC" in content
     assert (

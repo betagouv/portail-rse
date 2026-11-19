@@ -1203,7 +1203,7 @@ def test_fonctionnalite_reservee_aux_entreprises_francaises(
     response = client.get(response.url)
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Cette fonctionnalité n'est pas disponible pour une entreprise étrangère."
+        "Cette fonctionnalité n'est pas disponible pour une entreprise sans SIREN."
         in content
     )
 
@@ -1224,4 +1224,4 @@ def test_fonctionnalite_accessible_aux_entreprises_etrangeres(
 
     assert response.status_code == 200
     content = html.unescape(response.content.decode("utf-8"))
-    assert "n'est pas disponible pour une entreprise étrangère" not in content
+    assert "n'est pas disponible pour une entreprise sans SIREN" not in content

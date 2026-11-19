@@ -71,7 +71,7 @@ class User(AbstractBaseUser, TimestampedModel):
     est_francais = models.BooleanField(
         verbose_name="est français",
         default=True,
-        help_text="Faux si le compte a été créé par e-mail et mot de passe pour une entreprise étrangère",
+        help_text="Faux si le compte a été créé par e-mail et mot de passe pour une entreprise sans SIREN",
     )
 
     oidc_sub_id = models.UUIDField(
@@ -134,8 +134,8 @@ class User(AbstractBaseUser, TimestampedModel):
         return not self.est_francais
 
     def peut_etre_membre(self, entreprise):
-        # un compte étranger ne peut pas être membre d'une entreprise française
-        return not (self.est_etranger and entreprise.est_francaise)
+        # un compte étranger ne peut pas être membre d'une entreprise avec SIREN
+        return not (self.est_etranger and entreprise.a_un_siren)
 
     @property
     def created_with_oidc(self):

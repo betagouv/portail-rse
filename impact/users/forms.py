@@ -72,7 +72,7 @@ class UserPasswordForm(DsfrForm, forms.ModelForm):
 
 
 class CreationCompteEtrangerForm(UserPasswordForm):
-    """Création de compte par e-mail et mot de passe, réservée aux entreprises étrangères.
+    """Création de compte par e-mail et mot de passe, limitée aux entreprises étrangères.
 
     Les utilisateurs français passent par ProConnect.
     """

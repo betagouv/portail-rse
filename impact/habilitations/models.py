@@ -153,7 +153,7 @@ class Habilitation(TimestampedModel):
     ):
         if not utilisateur.peut_etre_membre(entreprise):
             raise HabilitationError(
-                "Un compte étranger ne peut pas être membre d'une entreprise française."
+                "Ce compte est limité aux entreprises sans SIREN : connectez-vous avec ProConnect pour rejoindre une entreprise avec SIREN."
             )
         h = cls(
             user=utilisateur,

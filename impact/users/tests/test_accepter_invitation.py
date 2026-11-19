@@ -168,7 +168,7 @@ def test_un_compte_etranger_ne_peut_pas_accepter_une_invitation_sur_une_entrepri
     assert response.status_code == 400
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "Un compte étranger ne peut pas être membre d'une entreprise française."
+        "Ce compte est limité aux entreprises sans SIREN : connectez-vous avec ProConnect pour rejoindre une entreprise avec SIREN."
         in content
     )
     assert not Habilitation.existe(invitation.entreprise, utilisateur_invite)

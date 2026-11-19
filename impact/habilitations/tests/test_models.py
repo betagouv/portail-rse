@@ -93,7 +93,7 @@ def test_un_compte_etranger_ne_peut_pas_etre_ajoute_a_une_entreprise_francaise(
 
     assert (
         str(erreur.value)
-        == "Un compte étranger ne peut pas être membre d'une entreprise française."
+        == "Ce compte est limité aux entreprises sans SIREN : connectez-vous avec ProConnect pour rejoindre une entreprise avec SIREN."
     )
     assert not Habilitation.existe(entreprise, alice)
 

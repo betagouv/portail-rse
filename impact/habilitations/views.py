@@ -49,7 +49,7 @@ def invitation(request, id_public):
             elif not utilisateur.peut_etre_membre(entreprise):
                 message_error_sans_html(
                     request,
-                    "L'invitation a échoué car un compte étranger ne peut pas être membre d'une entreprise française.",
+                    "L'invitation a échoué car ce compte est limité aux entreprises sans SIREN.",
                 )
             else:
                 _ajoute_membre(request, entreprise, utilisateur, role)

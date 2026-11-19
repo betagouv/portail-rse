@@ -429,7 +429,7 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
     match indicateur_schema_id:
         case "B1-24-e-i":  # indicateur forme juridique
             entreprise = rapport_vsme.entreprise
-            if entreprise.est_etrangere:
+            if entreprise.sans_siren:
                 infos_preremplissage["initial"] = {
                     # Personne morale de droit étranger, non immatriculée au RCS
                     "forme_juridique": "32",

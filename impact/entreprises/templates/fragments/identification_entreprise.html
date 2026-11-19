@@ -1,5 +1,5 @@
 <div id="htmx-identification-entreprise">
-    {% if form.est_francaise %}
+    {% if form.a_un_siren %}
         {% include 'fragments/siren_field.html' %}
     {% else %}
         {% include 'snippets/field.html' with field=form.identifiant %}

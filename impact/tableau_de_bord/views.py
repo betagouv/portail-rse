@@ -15,7 +15,7 @@ from .forms import AjoutEntrepriseConseillerForm
 from .forms import AnticipationForm
 from .metriques import calculer_metriques_entreprise
 from api.exceptions import APIError
-from entreprises.decorators import entreprise_francaise_requise
+from entreprises.decorators import entreprise_avec_siren_requis
 from entreprises.decorators import entreprise_qualifiee_requise
 from entreprises.decorators import entreprise_requise
 from entreprises.models import CODE_PAYS_FRANCE
@@ -53,7 +53,7 @@ def redirection_tableau_de_bord_par_siren(request, siren):
 @entreprise_requise
 @log_path("app:tableauDeBord")
 def resume(request, entreprise):
-    if entreprise.est_francaise:
+    if entreprise.a_un_siren:
         caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
         # Afficher un avertissement si le profil est incomplet
         if not caracteristiques:
@@ -129,7 +129,7 @@ def rapport_generique(request):
 
 
 @login_required
-@entreprise_francaise_requise
+@entreprise_avec_siren_requis
 @log_path("app:tableauDeBord:rapport:analyse_double_materialite")
 def analyse_double_materialite(request, entreprise):
     context = tableau_de_bord_menu_context(entreprise)
@@ -203,7 +203,7 @@ def reglementation(request, entreprise, id_reglementation):
 
 
 @login_required
-@entreprise_francaise_requise
+@entreprise_avec_siren_requis
 @log_path("app:tableauDeBord:anticiper")
 def anticiper(request, entreprise):
     if request.POST:

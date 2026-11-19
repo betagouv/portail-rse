@@ -21,7 +21,7 @@ from openpyxl import Workbook
 
 from analyseia.forms import AnalyseIAForm
 from analyseia.helpers import synthese_analyse_v1
-from entreprises.decorators import redirection_entreprise_etrangere
+from entreprises.decorators import redirection_entreprise_sans_siren
 from entreprises.models import CaracteristiquesAnnuelles
 from entreprises.models import CODE_PAYS_FRANCE
 from entreprises.models import Entreprise
@@ -546,8 +546,8 @@ def gestion_csrd(request, id_public=None, id_etape="introduction"):
         )
 
     entreprise = get_object_or_404(Entreprise, id_public=id_public)
-    if entreprise.est_etrangere:
-        return redirection_entreprise_etrangere(request, entreprise)
+    if entreprise.sans_siren:
+        return redirection_entreprise_sans_siren(request, entreprise)
     if not Habilitation.existe(entreprise, request.user):
         raise PermissionDenied
 

@@ -14,8 +14,8 @@ def calculer_metriques_entreprise(entreprise):
     caracteristiques = entreprise.dernieres_caracteristiques_qualifiantes
 
     # Calcul du nombre de reglementations applicables
-    if entreprise.est_etrangere:
-        # une entreprise étrangère n'a accès qu'à la VSME
+    if entreprise.sans_siren:
+        # une entreprise sans SIREN n'a accès qu'à la VSME
         nombre_reglementations_applicables = None
     elif caracteristiques:
         reglementations_applicables = [

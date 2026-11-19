@@ -245,7 +245,7 @@ def test_erreur_invitation_d_un_compte_etranger_sur_une_entreprise_francaise(
 
     content = html.unescape(response.content.decode("utf-8"))
     assert (
-        "L'invitation a échoué car un compte étranger ne peut pas être membre d'une entreprise française."
+        "L'invitation a échoué car ce compte est limité aux entreprises sans SIREN."
         in content
     )
     assert not Habilitation.existe(entreprise, bob)

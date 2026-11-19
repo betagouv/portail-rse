@@ -31,7 +31,7 @@ from utils.tokens import uidb64
 
 
 def creation(request):
-    """Création de compte par e-mail et mot de passe pour les entreprises étrangères
+    """Création de compte par e-mail et mot de passe pour les entreprises sans SIREN
 
     Les utilisateurs français passent par ProConnect.
     """
@@ -99,7 +99,7 @@ def invitation(request, id_invitation, code):
     """L'invité arrive sur cette page grâce au lien contenu dans l'e-mail qu'il a reçu.
 
     Valide l'invitation puis redirige vers ProConnect pour authentification,
-    ou vers la page de connexion pour une entreprise étrangère.
+    ou vers la page de connexion pour une entreprise sans SIREN.
     """
     try:
         invitation = Invitation.objects.get(id=id_invitation)
@@ -134,7 +134,7 @@ def invitation(request, id_invitation, code):
     request.session["page_suivante"] = url_acceptation
     request.session.save()
 
-    if invitation.entreprise.est_etrangere:
+    if invitation.entreprise.sans_siren:
         # l'invité peut avoir un compte étranger : connexion par e-mail et mot de passe
         # ou ProConnect au choix
         return redirect_to_login(url_acceptation)
@@ -337,7 +337,7 @@ def accepter_invitation(request, id_invitation, code):
 
     if not request.user.peut_etre_membre(invitation.entreprise):
         raise BadRequest(
-            "Un compte étranger ne peut pas être membre d'une entreprise française."
+            "Ce compte est limité aux entreprises sans SIREN : connectez-vous avec ProConnect pour rejoindre une entreprise avec SIREN."
         )
 
     if invitation.date_acceptation:
