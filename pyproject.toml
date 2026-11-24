@@ -42,6 +42,9 @@ dev = [
     "django-extensions",
 ]
 
+[tool.uv]
+exclude-newer = "3 days"
+
 [tool.ruff]
 src = ["impact"]
 
