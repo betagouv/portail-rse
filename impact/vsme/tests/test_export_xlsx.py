@@ -142,7 +142,7 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     onglet = workbook["B1"]
     assert onglet["A4"].value == "Module complet"
     assert onglet["B4"].value == "B6 - Eau"
-    assert onglet["B5"].value == "B8 - Effectifs : caractéristiques générales"
+    assert onglet["B5"].value == "B8 - Personnel : caractéristiques générales"
     assert onglet["C4"].value == "Base consolidée"
     assert onglet["D4"].value == "filiale 1"
     assert onglet["E4"].value == "adresse 1"

@@ -482,7 +482,7 @@ THEMATIQUES_DURABILITE = {
     "pollution": "Pollution",
     "eau": "Eau et ressources aquatiques et marines",
     "biodiversite": "Biodiversité et écosystèmes",
-    "economie_circulaire": "Économie circulaire",
+    "economie_circulaire": "Économie circulaire et utilisation des ressources",
     "personnel": "Personnel propre à l'entreprise",
     "travailleurs": "Travailleurs dans la chaîne de valeur",
     "communautes": "Communautés affectées",

@@ -218,7 +218,7 @@ def test_acces_au_schema_d_un_indicateur(rapport_vsme):
         == Indicateur.get_schema("B1-24-a")
         == {
             "titre": "Base d’établissement",
-            "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
+            "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VS (ex-VSME).",
             "ancre": "choix_module",
             "champs": [
                 {

@@ -1,12 +1,12 @@
 {
     "C8-63": {
         "titre": "Chiffre d’affaires dans certains secteurs sensibles",
-        "description": "Indiquer le chiffre d’affaires généré si l’entreprise exerce ses activités dans les secteurs suivants : armes controversées, tabac, combustibles fossiles (avec ventilation charbon, pétrole, gaz), pesticides et produits agrochimiques.",
+        "description": "Indiquer le chiffre d’affaires généré si l’entreprise exerce ses activités dans les secteurs suivants : armes interdites, tabac, combustibles fossiles (avec ventilation charbon, pétrole, gaz), pesticides et produits agrochimiques.",
         "ancre": "chiffre_affaires_secteurs_sensibles",
         "champs": [
             {
                 "id": "chiffre_affaires_armes_controversees",
-                "label": "Chiffre d’affaires issu des armes controversées",
+                "label": "Chiffre d’affaires issu des armes interdites",
                 "description": "Mines antipersonnel, sous-munitions, armes chimiques, biologiques. Unité : euros",
                 "type": "nombre_entier",
                 "min": 0,

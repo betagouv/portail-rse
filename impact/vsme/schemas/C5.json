@@ -46,9 +46,9 @@
         }
     },
     "C5-60": {
-        "titre": "Travailleurs indépendants et salariés temporaires",
-        "description": "Indiquer le nombre de travailleurs indépendants sans personnel qui travaillent exclusivement pour l'entreprise, ainsi que le nombre de salariés temporaires mis à disposition par des entreprises exerçant principalement des « activités liées à l’emploi ».",
-        "ancre": "travailleurs_independants_et_salaries_temporaires",
+        "titre": "Travailleurs indépendants et travailleurs temporaires",
+        "description": "Indiquer le nombre de travailleurs indépendants sans personnel qui travaillent exclusivement pour l'entreprise, ainsi que le nombre de travailleurs temporaires mis à disposition par des entreprises exerçant principalement des « activités liées à l’emploi ».",
+        "ancre": "travailleurs_independants_et_travailleurs_temporaires",
         "champs": [
             {
                 "id": "nombre_travailleurs_independants",

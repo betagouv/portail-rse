@@ -1,7 +1,7 @@
 {
     "B5-33": {
         "titre": "Sites situés dans les zones sensibles",
-        "description": "Publier le nombre et la superficie (en hectares ou mètres carrés) des sites que l'entreprise possède, qu’elle a loués ou qu’elle gère, qui se trouvent dans ou à proximité d’une zone sensible sur le plan de la biodiversité.",
+        "description": "Indiquer le nom des sites ou lieux d'implantation que l'entreprise possède, qu’elle a loués ou qu’elle gère, qui se trouvent à l'intérieur ou à proximité d’une zone sensible sur le plan de la biodiversité.",
         "ancre": "sites_zones_sensibles",
         "champs": [
             {

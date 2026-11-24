@@ -30,7 +30,7 @@
         }
     },
     "B9-41b": {
-        "titre": "Décès dus à des accidents du travail",
+        "titre": "Décès dus à des accidents du travail et à des maladies professionnelles comptabilisables",
         "description": "Indiquer le nombre de décès de salariés résultant d’accidents du travail et/ou de problèmes de santé liés au travail.",
         "ancre": "deces_accidents_travail",
         "champs": [

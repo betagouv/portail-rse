@@ -122,25 +122,25 @@
         }
     },
     "B10-42-d": {
-        "titre": "Nombre moyen d'heures de formation par genre",
+        "titre": "Nombre moyen d'heures de formation",
         "description": "Indiquer le nombre moyen d’heures de formation par an et par salarié, ventilé par genre.",
         "ancre": "nombre_heures_formation_par_genre",
         "champs": [
             {
                 "id": "nombre_heures_formation_par_genre",
-                "label": "Nombre moyen d'heures de formation par genre",
+                "label": "Nombre moyen d'heures de formation",
                 "type": "tableau_lignes_fixes",
                 "colonnes": [
                     {
                         "id": "total_heures_formation",
-                        "label": "Total des heures de formation suivies par les salariés de ce genre",
+                        "label": "Total des heures de formation suivies par les salariés",
                         "type": "nombre_decimal",
                         "unité": "heures",
                         "provoque_calcul_des_champs": ["nombre_moyen_heures_formation"]
                     },
                     {
                         "id": "nombre_moyen_heures_formation",
-                        "label": "Nombre moyen d'heures de formation",
+                        "label": "Nombre moyen d'heures de formation par an et par salarié",
                         "description": "Calculé automatiquement en fonction des nombres de salariés par genre renseignés dans B8.",
                         "type": "nombre_decimal",
                         "unité": "heures/salarié",

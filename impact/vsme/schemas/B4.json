@@ -1,7 +1,7 @@
 {
     "B4-32-p1": {
         "titre": "Pollution de l'air",
-        "description": "Indiquer la quantité de polluants atmosphériques que l'entreprise émet dans le cadre de ses propres activités, ventilée par type de polluant.",
+        "description": "Indiquer la quantité de polluants atmosphériques que l'entreprise émet dans le cadre de ses propres activités qu’elle est tenue de déclarer aux autorités compétentes en vertu du droit de l’Union ou du droit national, ou qu’elle déclare volontairement conformément à un système de management environnemental, ventilée par type de polluant.",
         "ancre": "pollution_air",
         "champs": [
             {
@@ -150,7 +150,7 @@
     },
     "B4-32-p2": {
         "titre": "Pollution de l'eau",
-        "description": "Indiquer la quantité de polluants que l'entreprise rejette dans l'eau dans le cadre de ses activités, ventilée par type de polluant.",
+        "description": "Indiquer la quantité de polluants que l'entreprise rejette dans l'eau dans le cadre de ses activités qu’elle est tenue de déclarer aux autorités compétentes en vertu du droit de l’Union ou du droit national, ou qu’elle déclare volontairement conformément à un système de management environnemental, ventilée par type de polluant.",
         "ancre": "pollution_eau",
         "champs": [
             {
@@ -299,7 +299,7 @@
     },
     "B4-32-p3": {
         "titre": "Pollution des sols",
-        "description": "Indiquer la quantité de polluants que l'entreprise rejette dans les sols dans le cadre de ses activités, ventilée par type de polluant.",
+        "description": "Indiquer la quantité de polluants que l'entreprise rejette dans les sols dans le cadre de ses activités qu’elle est tenue de déclarer aux autorités compétentes en vertu du droit de l’Union ou du droit national, ou qu’elle déclare volontairement conformément à un système de management environnemental, ventilée par type de polluant.",
         "ancre": "pollution_sols",
         "champs": [
             {

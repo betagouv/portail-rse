@@ -1,7 +1,7 @@
 {
     "C4-57": {
         "titre": "Aléas et risques climatiques recensés",
-        "description": "Si l'entreprise a identifié des aléas liés au changement climatique et/ou des événements de transition créant des risques climatiques, en fournir une description, indiquer l'évaluation de son exposition, préciser les horizons temporels et indiquer les actions d'adaptation entreprises.",
+        "description": "Si l'entreprise a identifié des aléas climatiques et/ou des événements liés à la transition climatique, en fournir une description, indiquer l'évaluation de son exposition, préciser les horizons temporels et indiquer les actions d'adaptation entreprises.",
         "ancre": "aleas_et_risques_climatiques",
         "champs": [
             {

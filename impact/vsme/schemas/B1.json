@@ -1,7 +1,7 @@
 {
     "B1-24-a": {
         "titre": "Base d’établissement",
-        "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VSME.",
+        "description": "Indiquer si vous utilisez le module de base ou le module complet pour votre déclaration de la norme VS (ex-VSME).",
         "ancre": "choix_module",
         "champs": [
             {
@@ -31,12 +31,12 @@
     },
     "B1-24-b": {
         "titre": "Omission d’informations",
-        "description": "Indiquer si l’entreprise a omis une information jugée classifiée ou sensible, et préciser laquelle parmi les exigences de publication.",
+        "description": "Indiquer si l’entreprise a omis une information au regard d'un des motifs d'omission (atteinte grave à la position commerciale, secret d'affaires, informations classifiées,respect d'une obligation) et préciser quelle information parmi les exigences de publication.",
         "ancre": "omission_informations",
         "champs": [
             {
                 "id": "omission_informations",
-                "label": "Exigences de publication dans lesquelles des informations ont été omises",
+                "label": "Exigences de publication dans lesquelles des informations ont été omises et utilisation du cas d'omission « informations dont la divulgation nuirait gravement à la position commerciale de l’entreprise »",
                 "type": "choix_multiple",
                 "choix": "CHOIX_EXIGENCE_DE_PUBLICATION",
                 "obligatoire": true

@@ -234,7 +234,7 @@
     },
     "B3-30-p1": {
         "titre": "Estimation des émissions brutes de GES des scopes 1 et 2",
-        "description": "L’entreprise publie ses émissions brutes de gaz à effet de serre (GES) en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
+        "description": "L’entreprise publie l'estimation de ses émissions brutes de gaz à effet de serre (GES) absolues générées sur la période de reporting en tonnes équivalent CO₂ (teqCO₂), ventilées entre le scope 1 (émissions directes) et le scope 2 basé sur la localisation (émissions indirectes liées à l’énergie achetée).",
         "ancre": "estimation_emissions_GES",
         "champs": [
             {

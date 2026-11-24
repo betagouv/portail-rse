@@ -9,7 +9,7 @@ from reglementations.views.base import ReglementationStatus
 
 class VSMEReglementation(Reglementation):
     id = "vsme"
-    title = "Standard volontaire européen - VSME"
+    title = "Standard volontaire européen - VS (ex-VSME)"
     more_info_url = "https://portail-rse.beta.gouv.fr/fiches-reglementaires/norme-volontaire-de-durabilite-vsme/"
     tag = "tag-durabilite"
     summary = ""
@@ -43,7 +43,7 @@ class VSMEReglementation(Reglementation):
                     "annee": date.today().year - 1,
                 },
             ),
-            "Remplir mes indicateurs VSME",
+            "Remplir mes indicateurs VS (ex-VSME)",
         )
 
         secondary_actions = [
@@ -55,13 +55,13 @@ class VSMEReglementation(Reglementation):
                         "etape": "introduction",
                     },
                 ),
-                "Découvrir la démarche VSME",
+                "Découvrir la démarche VS (ex-VSME)",
             )
         ]
 
         return ReglementationStatus(
             status=ReglementationStatus.STATUS_RECOMMANDE,
-            status_detail="Cette norme est volontaire et recommandée pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité.",
+            status_detail="""Cette norme est volontaire et recommandée pour les entreprises qui souhaitent mieux structurer leurs informations de durabilité et identifier un plafond d'informations à communiquer aux entreprises soumises à la CSRD ("value chain cap").""",
             primary_action=primary_action,
             secondary_actions=secondary_actions,
         )
