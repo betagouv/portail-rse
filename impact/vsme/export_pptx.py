@@ -46,7 +46,7 @@ def export_couverture(rapport_vsme, presentation):
     ].text = rapport_vsme.entreprise.denomination
     shape_titre.text_frame.paragraphs[1].runs[
         0
-    ].text = f"Rapport VSME {rapport_vsme.annee}"
+    ].text = f"Rapport VS {rapport_vsme.annee}"
 
 
 def export_sommaire(rapport_vsme, presentation):
