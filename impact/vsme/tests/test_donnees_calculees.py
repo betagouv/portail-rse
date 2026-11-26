@@ -54,3 +54,22 @@ def test_indicateur_calculé_affiche_na_si_incalculable(client, alice, rapport_v
         == "n/a"
     )  # valeur incalculable sans nombre de salariés renseigné dans B1
     assert "n/a" in content
+
+
+def test_estimation_emissions_GES_scopes_1_et_2_calcule_le_total_sans_intensite_GES(
+    rapport_vsme,
+):
+    indicateur = Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B3-30-p1",
+        data={
+            "estimation_emissions_GES": {
+                "emissions_brutes_GES": {"scope_1": "10", "scope_2_localisation": "5"}
+            }
+        },
+    )
+
+    data = indicateur.data
+
+    assert data["estimation_emissions_GES"]["emissions_brutes_GES"]["total"] == 15
+    assert "intensite_GES" not in data

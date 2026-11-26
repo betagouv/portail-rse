@@ -717,21 +717,6 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                 data["estimation_emissions_GES"]["emissions_brutes_GES"][
                     "total"
                 ] = total
-
-                indicateur_chiffre_affaires = "B1-24-e-iv"
-                try:
-                    chiffre_affaires = rapport_vsme.indicateurs.get(
-                        schema_id=indicateur_chiffre_affaires
-                    ).data.get("chiffre_affaires")
-                    if chiffre_affaires:
-                        intensite_GES = arrondit_2_decimales_si_superieur_a_1(
-                            total / chiffre_affaires
-                        )
-                    else:
-                        intensite_GES = "n/a"
-                except ObjectDoesNotExist:
-                    intensite_GES = "n/a"
-                data["intensite_GES"] = intensite_GES
         case "B3-30-p2":
             total_emissions_scope_3 = 0
             emissions = data.get("estimation_emissions_GES_scope_3") or {}

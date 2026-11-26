@@ -439,14 +439,11 @@ def preremplit_indicateur(indicateur_schema_id, rapport_vsme):
                     "nom": "l'Annuaire des Entreprise",
                     "url": "https://annuaire-entreprises.data.gouv.fr/",
                 }
-        case "B8-40" | "B10-42-b":
-            # indicateur taux de rotation du personnel | écart rémunération hommes/femmes
+        case "B10-42-b":  # indicateur écart rémunération hommes/femmes
             nombre_salaries = rapport_vsme.nombre_salaries
             if nombre_salaries is None:
                 pass
-            elif nombre_salaries < 50 or (
-                nombre_salaries < 150 and indicateur_schema_id == "B10-42-b"
-            ):
+            elif nombre_salaries < 150:
                 infos_preremplissage["initial"] = {
                     NON_PERTINENT_FIELD_NAME: True,
                 }

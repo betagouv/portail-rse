@@ -247,14 +247,14 @@
                         "label": "Scope 1",
                         "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["total", "intensite_GES"]
+                        "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "scope_2_localisation",
                         "label": "Scope 2 basé sur la localisation",
                         "description": "Unité : teqCO₂",
                         "type": "nombre_decimal",
-                        "provoque_calcul_des_champs": ["total", "intensite_GES"]
+                        "provoque_calcul_des_champs": ["total"]
                     },
                     {
                         "id": "total",
@@ -273,17 +273,6 @@
                 "export_pptx": {
                     "diapo": "B3-consommation",
                     "shape": "Table 18"
-                }
-            },
-            {
-                "id": "intensite_GES",
-                "label": "Intensité GES",
-                "description": "Calculée automatiquement en divisant le total des émissions brutes de gaz à effet de serre par le chiffre d'affaires renseigné dans B1.",
-                "type": "nombre_decimal",
-                "calculé": true,
-                "export_pptx": {
-                    "diapo": "B3-consommation",
-                    "shape": "Rounded Rectangle 5"
                 }
             }
         ],

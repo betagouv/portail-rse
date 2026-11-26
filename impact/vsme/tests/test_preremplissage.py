@@ -80,58 +80,6 @@ def test_indicateur_deja_complete_n_affiche_pas_le_preremplissage(
     assert context["multiform"].forms[0]["forme_juridique"].value() == "11"
 
 
-def test_preremplit_indicateur_taux_rotation_personnel_nb_salaries_inferieur_a_50(
-    rapport_vsme,
-):
-    indicateur_nombre_salaries = "B1-24-e-v"
-    rapport_vsme.indicateurs.create(
-        schema_id=indicateur_nombre_salaries, data={"nombre_salaries": 49}
-    )
-
-    indicateur_taux_rotation_personnel = "B8-40"
-    preremplissage = preremplit_indicateur(
-        indicateur_taux_rotation_personnel, rapport_vsme
-    )
-
-    assert preremplissage == {
-        "initial": {"non_pertinent": True},
-        "source": {
-            "nom": "l'indicateur Nombre de salariés dans B1",
-            "url": reverse(
-                "vsme:exigence_de_publication_vsme",
-                args=[rapport_vsme.id, "B1"],
-            ),
-        },
-    }
-
-
-def test_preremplit_indicateur_taux_rotation_personnel_nb_salaries_superieur_a_50(
-    rapport_vsme,
-):
-    indicateur_nombre_salaries = "B1-24-e-v"
-    rapport_vsme.indicateurs.create(
-        schema_id=indicateur_nombre_salaries, data={"nombre_salaries": 50}
-    )
-
-    indicateur_taux_rotation_personnel = "B8-40"
-    preremplissage = preremplit_indicateur(
-        indicateur_taux_rotation_personnel, rapport_vsme
-    )
-
-    assert preremplissage == {}
-
-
-def test_preremplit_indicateur_taux_rotation_personnel_nb_salaries_non_renseigne(
-    rapport_vsme,
-):
-    indicateur_taux_rotation_personnel = "B8-40"
-    preremplissage = preremplit_indicateur(
-        indicateur_taux_rotation_personnel, rapport_vsme
-    )
-
-    assert preremplissage == {}
-
-
 def test_preremplit_indicateur_ecart_remuneration_hommes_femmes_nb_salaries_inferieur_a_150(
     rapport_vsme,
 ):
