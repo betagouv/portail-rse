@@ -143,51 +143,51 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_intégralement_rempl
     assert onglet["A4"].value == "Module complet"
     assert onglet["B4"].value == "B6 - Eau"
     assert onglet["B5"].value == "B8 - Personnel : caractéristiques générales"
-    assert onglet["C4"].value == "Base consolidée"
-    assert onglet["D4"].value == "filiale 1"
-    assert onglet["E4"].value == "adresse 1"
-    assert onglet["F4"].value == "FRANCE"
-    assert onglet["G4"].value == "33000"
-    assert onglet["H4"].value == "commentaire F1"
-    assert onglet["D5"].value == "filiale 2"
-    assert onglet["E5"].value == "adresse 2"
-    assert onglet["F5"].value == "ALLEMAGNE"
-    assert onglet["G5"].value == "42000"
-    assert onglet["H5"].value == "commentaire F2"
-    assert onglet["I4"].value == "Société à responsabilité limitée (SARL)"
-    assert onglet["J4"].value == "OUI"
-    assert onglet["K4"].value == "Culture du riz"
-    assert onglet["K5"].value == "Culture de plantes à fibres"
-    assert onglet["L4"].value == 54321
-    assert onglet["M4"].value == 98765
-    assert onglet["N4"].value == "Équivalents temps plein (ETP)"
-    assert onglet["O4"].value == 42.0
-    assert onglet["P4"].value == "ALLEMAGNE"
-    assert onglet["P5"].value == "FRANCE"
-    assert onglet["Q4"].value == 1
-    assert onglet["R4"].value == "site 1"
-    assert onglet["S4"].value == "adresse site 1"
-    assert onglet["T4"].value == "75000"
-    assert onglet["U4"].value == "Paris"
-    assert onglet["V4"].value == "FRANCE"
-    assert onglet["W4"].value == "[2.294381,48.858099]"
-    assert onglet["Q5"].value == 2
-    assert onglet["R5"].value == "site 2"
-    assert onglet["S5"].value == "adresse site 2"
-    assert onglet["T5"].value == "12345"
-    assert onglet["U5"].value == "Berlin"
-    assert onglet["V5"].value == "ALLEMAGNE"
-    assert onglet["W5"].value == "[3,3]"
-    assert onglet["X4"].value == "label"
-    assert onglet["Y4"].value == "émetteur 1"
-    assert onglet["Z4"].value == "2000-12-12"
-    assert onglet["AA4"].value == "10/20"
-    assert onglet["AB4"].value == "un commentaire"
-    assert onglet["X5"].value == "certif"
-    assert onglet["Y5"].value == "émetteur 2"
-    assert onglet["Z5"].value == "2020-04-05"
-    assert onglet["AA5"].value == "bon"
-    assert not onglet["AB5"].value
+    assert onglet["D4"].value == "Base consolidée"
+    assert onglet["E4"].value == "filiale 1"
+    assert onglet["F4"].value == "adresse 1"
+    assert onglet["G4"].value == "FRANCE"
+    assert onglet["H4"].value == "33000"
+    assert onglet["I4"].value == "commentaire F1"
+    assert onglet["E5"].value == "filiale 2"
+    assert onglet["F5"].value == "adresse 2"
+    assert onglet["G5"].value == "ALLEMAGNE"
+    assert onglet["H5"].value == "42000"
+    assert onglet["I5"].value == "commentaire F2"
+    assert onglet["J4"].value == "Société à responsabilité limitée (SARL)"
+    assert onglet["K4"].value == "OUI"
+    assert onglet["L4"].value == "Culture du riz"
+    assert onglet["L5"].value == "Culture de plantes à fibres"
+    assert onglet["M4"].value == 54321
+    assert onglet["N4"].value == 98765
+    assert onglet["O4"].value == "Équivalents temps plein (ETP)"
+    assert onglet["P4"].value == 42.0
+    assert onglet["Q4"].value == "ALLEMAGNE"
+    assert onglet["Q5"].value == "FRANCE"
+    assert onglet["R4"].value == 1
+    assert onglet["S4"].value == "site 1"
+    assert onglet["T4"].value == "adresse site 1"
+    assert onglet["U4"].value == "75000"
+    assert onglet["V4"].value == "Paris"
+    assert onglet["W4"].value == "FRANCE"
+    assert onglet["X4"].value == "[2.294381,48.858099]"
+    assert onglet["R5"].value == 2
+    assert onglet["S5"].value == "site 2"
+    assert onglet["T5"].value == "adresse site 2"
+    assert onglet["U5"].value == "12345"
+    assert onglet["V5"].value == "Berlin"
+    assert onglet["W5"].value == "ALLEMAGNE"
+    assert onglet["X5"].value == "[3,3]"
+    assert onglet["Y4"].value == "label"
+    assert onglet["Z4"].value == "émetteur 1"
+    assert onglet["AA4"].value == "2000-12-12"
+    assert onglet["AB4"].value == "10/20"
+    assert onglet["AC4"].value == "un commentaire"
+    assert onglet["Y5"].value == "certif"
+    assert onglet["Z5"].value == "émetteur 2"
+    assert onglet["AA5"].value == "2020-04-05"
+    assert onglet["AB5"].value == "bon"
+    assert not onglet["AC5"].value
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non_pertinents(
@@ -217,11 +217,11 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B1_avec_indicateurs_non
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["B1"]
     assert not onglet["B4"].value
-    assert not onglet["T4"].value
     assert not onglet["U4"].value
     assert not onglet["V4"].value
     assert not onglet["W4"].value
     assert not onglet["X4"].value
+    assert not onglet["Y4"].value
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
@@ -314,15 +314,15 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2(
     )
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet_b2 = workbook["B2"]
-    assert onglet_b2["A4"].value == "PARTICIPATION"
-    assert onglet_b2["B4"].value == 222
-    assert onglet_b2["C4"].value == "LIMITES"
-    assert onglet_b2["E5"].value == "OUI"
-    assert onglet_b2["F5"].value == "OUI"
-    assert onglet_b2["G5"].value == "NON"
-    assert onglet_b2["E14"].value == "NON"
-    assert onglet_b2["F14"].value == "OUI"
-    assert onglet_b2["G14"].value == "OUI"
+    assert onglet_b2["E4"].value == "PARTICIPATION"
+    assert onglet_b2["F4"].value == 222
+    assert onglet_b2["G4"].value == "LIMITES"
+    assert onglet_b2["B5"].value == "OUI"
+    assert onglet_b2["C5"].value == "OUI"
+    assert onglet_b2["D5"].value == "NON"
+    assert onglet_b2["B14"].value == "NON"
+    assert onglet_b2["C14"].value == "OUI"
+    assert onglet_b2["D14"].value == "OUI"
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2_avec_indicateurs_non_applicables(
@@ -409,15 +409,15 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B2_avec_indicateurs_non
 
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet_b2 = workbook["B2"]
-    assert not onglet_b2["A4"].value
-    assert not onglet_b2["B4"].value
-    assert not onglet_b2["C4"].value
-    assert onglet_b2["E5"].value == "OUI"
-    assert onglet_b2["F5"].value == "OUI"
-    assert onglet_b2["G5"].value == "NON"
-    assert onglet_b2["E14"].value == "NON"
-    assert onglet_b2["F14"].value == "OUI"
-    assert onglet_b2["G14"].value == "OUI"
+    assert not onglet_b2["E4"].value
+    assert not onglet_b2["F4"].value
+    assert not onglet_b2["G4"].value
+    assert onglet_b2["B5"].value == "OUI"
+    assert onglet_b2["C5"].value == "OUI"
+    assert onglet_b2["D5"].value == "NON"
+    assert onglet_b2["B14"].value == "NON"
+    assert onglet_b2["C14"].value == "OUI"
+    assert onglet_b2["D14"].value == "OUI"
 
 
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B4(
@@ -967,9 +967,9 @@ def test_telechargement_d_un_rapport_vsme_C5(client, rapport_vsme, alice):
     response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
     workbook = load_workbook(filename=BytesIO(response.content))
     onglet = workbook["C5"]
-    assert onglet["A4"].value == 10
-    assert onglet["B4"].value == 1.5
-    assert onglet["C4"].value == 0.15  # ratio femmes/hommes calculé automatiquement
+    assert onglet["B4"].value == 10
+    assert onglet["C4"].value == 1.5
+    assert onglet["D4"].value == 0.15  # ratio femmes/hommes calculé automatiquement
 
 
 def test_telechargement_d_un_rapport_vsme_C6(client, rapport_vsme, alice):

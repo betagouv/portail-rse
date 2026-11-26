@@ -74,7 +74,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "C4"
+            "cellule": "D4"
         }
     },
     "B1-24-d": {
@@ -126,7 +126,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "D4"
+            "cellule": "E4"
         }
     },
     "B1-24-e-i": {
@@ -156,7 +156,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "I4"
+            "cellule": "J4"
         }
     },
     "B1-24-e-ii": {
@@ -177,7 +177,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "K4"
+            "cellule": "L4"
         }
     },
     "B1-24-e-iii": {
@@ -200,7 +200,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "L4"
+            "cellule": "M4"
         }
     },
     "B1-24-e-iv": {
@@ -223,7 +223,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "M4"
+            "cellule": "N4"
         }
     },
     "B1-24-e-v": {
@@ -261,7 +261,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "N4"
+            "cellule": "O4"
         }
     },
     "B1-24-e-vi": {
@@ -282,7 +282,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "P4"
+            "cellule": "Q4"
         }
     },
     "B1-24-e-vii": {
@@ -343,7 +343,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "Q4"
+            "cellule": "R4"
         }
     },
    "B1-25": {
@@ -394,7 +394,7 @@
             }
         ],
         "export_xlsx": {
-            "cellule": "X4"
+            "cellule": "Y4"
         },
         "si_pertinent": true
     }

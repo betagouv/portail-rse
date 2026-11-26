@@ -42,7 +42,7 @@
         ],
         "si_pertinent": true,
         "export_xlsx": {
-            "cellule": "A4"
+            "cellule": "B4"
         }
     },
     "C5-60": {
@@ -75,7 +75,7 @@
         ],
         "si_pertinent": true,
         "export_xlsx": {
-            "cellule": "D4"
+            "cellule": "E4"
         }
     }
 }
