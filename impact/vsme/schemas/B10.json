@@ -135,16 +135,7 @@
                         "id": "total_heures_formation",
                         "label": "Total des heures de formation suivies par les salariés",
                         "type": "nombre_decimal",
-                        "unité": "heures",
-                        "provoque_calcul_des_champs": ["nombre_moyen_heures_formation"]
-                    },
-                    {
-                        "id": "nombre_moyen_heures_formation",
-                        "label": "Nombre moyen d'heures de formation par an et par salarié",
-                        "description": "Calculé automatiquement en fonction des nombres de salariés par genre renseignés dans B8.",
-                        "type": "nombre_decimal",
-                        "unité": "heures/salarié",
-                        "calculé": true
+                        "unité": "heures"
                     }
                 ],
                 "lignes": [

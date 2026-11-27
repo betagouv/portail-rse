@@ -781,37 +781,6 @@ def ajoute_donnes_calculees(indicateur_schema_id, rapport_vsme, data):
                     data["taux_couverture_conventions_collectives"] = tranche_taux
                 else:
                     data["taux_couverture_conventions_collectives"] = "n/a"
-        case "B10-42-d":
-            if total_heure_formation_par_genre := data.get(
-                "nombre_heures_formation_par_genre"
-            ):
-                try:
-                    indicateur_nombre_salaries_par_genre = "B8-39-b"
-                    nombre_salaries_par_genre = rapport_vsme.indicateurs.get(
-                        schema_id=indicateur_nombre_salaries_par_genre
-                    ).data.get("effectifs_genre")
-                    if nombre_salaries_par_genre:
-                        for genre in nombre_salaries_par_genre:
-                            total_heure_formation = (
-                                data["nombre_heures_formation_par_genre"]
-                                .get(genre, {})
-                                .get("total_heures_formation")
-                            )
-                            if total_heure_formation is not None:
-                                nombre_salaries = nombre_salaries_par_genre[genre].get(
-                                    "nombre_salaries"
-                                )
-                                if nombre_salaries:
-                                    nombre_moyen_heures_formation = round(
-                                        total_heure_formation / nombre_salaries, 2
-                                    )
-                                else:
-                                    nombre_moyen_heures_formation = "n/a"
-                                data["nombre_heures_formation_par_genre"][genre][
-                                    "nombre_moyen_heures_formation"
-                                ] = nombre_moyen_heures_formation
-                except ObjectDoesNotExist:
-                    pass
         case "C3-54-p1" | "C3-54-p2":
             if indicateur_schema_id == "C3-54-p1":  # scope 1 et 2
                 tableau_cibles_id = "cibles_reduction_emissions_GES_scopes_1_2"

@@ -158,7 +158,11 @@ def _export_tableau_lignes_fixes(champ, data, cellule_depart: Cell) -> Cell:
                 lignes_ids = list(THEMATIQUES_DURABILITE.keys())
             else:
                 lignes_ids = [ligne["id"] for ligne in lignes]
-            if len(colonnes_ids) == 1:
+            # hack : le template présente ce tableau à une colonne en lignes
+            if (
+                len(colonnes_ids) == 1
+                and champ["id"] != "nombre_heures_formation_par_genre"
+            ):
                 # L'export des lignes se fait en colonnes plutôt qu'en lignes
                 for id_ligne, data_ligne in data.items():
                     offset_colonne = lignes_ids.index(id_ligne)

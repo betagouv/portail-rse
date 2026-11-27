@@ -73,3 +73,26 @@ def test_estimation_emissions_GES_scopes_1_et_2_calcule_le_total_sans_intensite_
 
     assert data["estimation_emissions_GES"]["emissions_brutes_GES"]["total"] == 15
     assert "intensite_GES" not in data
+
+
+def test_nombre_heures_formation_par_genre_sans_nombre_moyen_calcule(rapport_vsme):
+    Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B8-39-b",
+        data={"effectifs_genre": {"homme": {"nombre_salaries": 4}}},
+    )
+    indicateur = Indicateur.objects.create(
+        rapport_vsme=rapport_vsme,
+        schema_id="B10-42-d",
+        data={
+            "nombre_heures_formation_par_genre": {
+                "homme": {"total_heures_formation": 10}
+            }
+        },
+    )
+
+    data = indicateur.data
+
+    assert data["nombre_heures_formation_par_genre"]["homme"] == {
+        "total_heures_formation": 10
+    }

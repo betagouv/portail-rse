@@ -727,6 +727,34 @@ def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10_avec_champ_calculé
     assert onglet["D4"].value == 50  # résultat de ecart_remuneration_hommes_femmes
 
 
+def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B10_heures_de_formation(
+    client, rapport_vsme, alice
+):
+    rapport_vsme.indicateurs.create(
+        schema_id="B10-42-d",
+        data={
+            "nombre_heures_formation_par_genre": {
+                "homme": {"total_heures_formation": 10},
+                "femme": {"total_heures_formation": 20},
+                "autre": {"total_heures_formation": 3},
+                "non_communique": {"total_heures_formation": 4},
+            }
+        },
+    )
+    client.force_login(alice)
+
+    response = client.get(f"/vsme/{rapport_vsme.id}/export/xlsx")
+
+    workbook = load_workbook(filename=BytesIO(response.content))
+    onglet = workbook["B10"]
+    assert onglet["G4"].value == "Hommes"
+    assert onglet["H4"].value == 10
+    assert onglet["H5"].value == 20
+    assert onglet["H6"].value == 3
+    assert onglet["H7"].value == 4
+    assert onglet["I4"].value is None
+
+
 def test_telechargement_d_un_rapport_vsme_au_format_xlsx_B11(
     client, entreprise_factory, alice
 ):
